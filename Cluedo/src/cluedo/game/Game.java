@@ -11,7 +11,6 @@ import cluedo.board.Room;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
-import cluedo.view.Frame;
 
 /**
  * Main cluedo class that handles the game logic.
