@@ -10,6 +10,7 @@ import cluedo.board.Room;
 import cluedo.cards.*;
 import cluedo.tiles.WallTile;
 import cluedo.tokens.*;
+import cluedo.view.Frame;
 
 /**
  * User interface class that performs all the input and output operations for
@@ -22,6 +23,7 @@ public class UI {
 	// user interface fields
 	private Scanner s = new Scanner(System.in);
 	private Board board;
+	private Frame frame;
 
 	/**
 	 * Setup a new user interface instance.
@@ -31,6 +33,7 @@ public class UI {
 	 */
 	public UI(Board board) {
 		this.board = board;
+		frame = new Frame(board);
 	}
 
 	/**
