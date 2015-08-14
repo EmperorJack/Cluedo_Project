@@ -44,6 +44,7 @@ public class UI {
 	 */
 	public int requestNumberPlayers() {
 		return frame.numberPlayersDialog();
+		// DELTE ME
 //		 int n = 0;
 //		
 //		 // ask the user for a number until they give valid input
