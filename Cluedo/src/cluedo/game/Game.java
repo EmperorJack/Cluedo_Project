@@ -11,7 +11,7 @@ import cluedo.board.Room;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
-import cluedo.view.CharacterInputDialog;
+import cluedo.view.PlayerInputDialog;
 import cluedo.view.Frame;
 
 /**
@@ -341,15 +341,16 @@ public class Game {
 		// for each player
 		for (int i = 0; i < numberPlayers; i++) {
 			// setup a dialog box for the player to input a name and character
-			CharacterInputDialog dialog = new CharacterInputDialog(
+			PlayerInputDialog dialog = new PlayerInputDialog(
 					availableCharacters, i + 1);
 
-			// wait for the user to enter details into the dialog box
+			// while the dialog box input has not been completed
 			while (!dialog.inputChosen()) {
 				try {
+					// wait a bit
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					// a thread interrupted exception occurred
 					e.printStackTrace();
 				}
 			}
@@ -358,7 +359,7 @@ public class Game {
 			String name = dialog.getNameInput();
 			CharacterToken token = board.getCharacterToken(dialog
 					.getSelectedCharacter());
-			
+
 			// check the name is not an empty string
 			if (name.isEmpty()) {
 				name = "Player " + (i + 1);

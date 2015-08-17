@@ -16,15 +16,29 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+/**
+ * A custom window that acts as a dialog box with multiple inputs. Allows the
+ * current player to enter a name and select a character from a list of
+ * available characters.
+ */
 @SuppressWarnings("serial")
-public class CharacterInputDialog extends JFrame {
+public class PlayerInputDialog extends JFrame {
 
+	// dialog box fields
 	private JTextField nameField;
 	private ButtonGroup radioGroup;
 	private String selectedCharacter;
 	private boolean complete;
 
-	public CharacterInputDialog(List<String> characters, int playerNumber) {
+	/**
+	 * Setup a new player setup dialog box.
+	 * 
+	 * @param characters
+	 *            The available characters the player may choose from
+	 * @param playerNumber
+	 *            The ID number of the player
+	 */
+	public PlayerInputDialog(List<String> characters, int playerNumber) {
 		super("Player " + playerNumber + " Setup");
 		Container c = getContentPane();
 		c.setLayout(new GridLayout(0, 1));
@@ -69,8 +83,9 @@ public class CharacterInputDialog extends JFrame {
 			}
 		});
 		c.add(okButton);
+		getRootPane().setDefaultButton(okButton);
 
-		// setup the dialog box size
+		// setup the dialog box attributions
 		setSize(300, 350);
 		setResizable(false);
 		getRootPane().setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -79,7 +94,13 @@ public class CharacterInputDialog extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * An innter class that handles the events that occur when the user changes
+	 * the selected radio button.
+	 */
 	private class RadioButtonHandler implements ItemListener {
+
+		// character name associated with the radio button
 		private String name;
 
 		public RadioButtonHandler(String name) {
@@ -87,11 +108,15 @@ public class CharacterInputDialog extends JFrame {
 		}
 
 		public void itemStateChanged(ItemEvent e) {
+			// if the radio button was selected
 			if (e.getStateChange() == ItemEvent.SELECTED) {
+				// set the dialog box selected character to this character name
 				selectedCharacter = name;
 			}
 		}
 	}
+
+	// get methods below to return dialog box fields
 
 	public boolean inputChosen() {
 		return complete;
