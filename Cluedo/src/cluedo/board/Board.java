@@ -133,6 +133,7 @@ public class Board {
 		return roomInfo;
 	}
 
+	@Override
 	public String toString() {
 		String[] updatedBoard = updateBoard();
 		String boardString = ""; // Simply merges the array into a single string
@@ -167,7 +168,7 @@ public class Board {
 		return updatedBoard;
 	}
 	
-	public void draw(Graphics2D g2d) {
+	public void draw(Graphics2D g) {
 		// TODO draw the board
 	}
 

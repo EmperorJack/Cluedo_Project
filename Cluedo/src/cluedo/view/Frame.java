@@ -11,12 +11,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
+
 
 import cluedo.board.Board;
 
 @SuppressWarnings("serial")
-public class Frame extends JFrame {
+public class Frame extends JFrame{
 
 	JMenuBar menuBar;
 	JMenu menu;
@@ -50,18 +50,16 @@ public class Frame extends JFrame {
 			}
 		});
 		menu.add(quitMenuItem);
+
 		setJMenuBar(menuBar);
 
 		// setup canvas with center border layout
 		canvas = new Canvas(board);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
-		
-		// setup action button span
-		// TODO action buttons
 
 		// setup close operation
-		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
