@@ -34,6 +34,7 @@ public abstract class Card {
 		return name;
 	}
 
+
 	public void draw(Graphics g) {
 		g.drawImage(image, 0, 0, null);
 	}
