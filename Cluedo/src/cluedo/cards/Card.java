@@ -29,6 +29,7 @@ public abstract class Card {
 		// TODO Remove this constructor once image files have been made
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}

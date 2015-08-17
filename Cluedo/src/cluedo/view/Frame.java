@@ -1,8 +1,11 @@
 package cluedo.view;
 
 import java.awt.BorderLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -11,11 +14,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 import cluedo.board.Board;
 
 @SuppressWarnings("serial")
-public class Frame extends JFrame {
+public class Frame extends JFrame{
 
 	JMenuBar menuBar;
 	JMenu menu;
@@ -58,7 +62,7 @@ public class Frame extends JFrame {
 		add(canvas, BorderLayout.CENTER);
 
 		// setup close operation
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {

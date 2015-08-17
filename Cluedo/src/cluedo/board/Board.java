@@ -133,6 +133,7 @@ public class Board {
 		return roomInfo;
 	}
 
+	@Override
 	public String toString() {
 		String[] updatedBoard = updateBoard();
 		String boardString = ""; // Simply merges the array into a single string

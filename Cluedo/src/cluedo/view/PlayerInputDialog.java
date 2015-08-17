@@ -107,6 +107,7 @@ public class PlayerInputDialog extends JFrame {
 			this.name = name;
 		}
 
+		@Override
 		public void itemStateChanged(ItemEvent e) {
 			// if the radio button was selected
 			if (e.getStateChange() == ItemEvent.SELECTED) {

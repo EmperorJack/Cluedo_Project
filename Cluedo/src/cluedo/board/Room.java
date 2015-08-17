@@ -110,6 +110,7 @@ public class Room {
 	/**
 	 * Returns a verbose list of the name and tokens in room, returns an empty String if the room is empty.
 	 */
+	@Override
 	public String toString() {
 		if (!characterTokens.isEmpty() || !weaponTokens.isEmpty()) {
 			String roomString = "";
