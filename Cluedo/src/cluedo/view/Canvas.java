@@ -3,6 +3,7 @@ package cluedo.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.IOException;
 
@@ -33,22 +34,25 @@ public class Canvas extends JPanel {
 
 	@Override
 	public void paint(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		
 		// draw the background colour
-		g.setColor(Color.BLACK);
-		g.setColor(new Color((float) Math.random(), (float) Math.random(),
+		g2d.setColor(Color.BLACK);
+		g2d.setColor(new Color((float) Math.random(), (float) Math.random(),
 				(float) Math.random()));
-		g.fillRect(0, 0, getWidth(), getHeight());
+		g2d.fillRect(0, 0, getWidth(), getHeight());
 
 		// TODO game visible components here
 		g.translate(0, 0); // YO KELLY WE CAN TRANSLATE THE CANVAS
-		//YAAAAAAAS
-		board.draw(g);
+		// YAAAAAAAS
+		board.draw(g2d);
 	}
 
 	/**
 	 * Load an image from the file system using a given filename.
 	 * 
 	 * @param filename
+	 *            Name of the image file to load.
 	 * @return The image if it was successfully loaded.
 	 */
 	public static Image loadImage(String filename) {

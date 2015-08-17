@@ -11,6 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 import cluedo.board.Board;
 
@@ -49,16 +50,18 @@ public class Frame extends JFrame {
 			}
 		});
 		menu.add(quitMenuItem);
-
 		setJMenuBar(menuBar);
 
 		// setup canvas with center border layout
 		canvas = new Canvas(board);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
+		
+		// setup action button span
+		// TODO action buttons
 
 		// setup close operation
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
@@ -94,8 +97,12 @@ public class Frame extends JFrame {
 		if (input == null) {
 			// dialog box was closed
 			System.exit(0);
+
+			// will not be reached
+			return 0;
+		} else {
+			return (int) input;
 		}
-		return (int) input;
 	}
 
 	/**

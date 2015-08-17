@@ -1,6 +1,6 @@
 package cluedo.game;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.List;
 
@@ -94,7 +94,7 @@ public class Player {
 		eliminated = true;
 	}
 	
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g2d) {
 		
 	}
 
