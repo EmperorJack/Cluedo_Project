@@ -11,6 +11,7 @@ import cluedo.board.Room;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
+import cluedo.view.Frame;
 
 /**
  * Main cluedo class that handles the game logic.
@@ -20,6 +21,7 @@ public class Game {
 	// system fields
 	private UI ui;
 	private Board board;
+	private Frame frame;
 
 	// player fields
 	private int numberPlayers;
@@ -43,12 +45,13 @@ public class Game {
 		// setup system
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
+		frame = new Frame(board);
 
 		// generate a new complete deck
 		deck = new Deck(CHARACTERS, ROOMS, WEAPONS);
 
 		// request the user for the number of users playing
-		numberPlayers = ui.requestNumberPlayers();
+		numberPlayers = frame.numberPlayersRequestDialog();
 
 		// create new players each with a unique character token
 		players = setupPlayers(deck.getDeck());

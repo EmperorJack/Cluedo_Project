@@ -1,5 +1,6 @@
 package cluedo.game;
 
+import java.awt.Graphics;
 import java.util.HashSet;
 import java.util.List;
 
@@ -89,6 +90,10 @@ public class Player {
 	 */
 	public void eliminate() {
 		eliminated = true;
+	}
+	
+	public void draw(Graphics g) {
+		
 	}
 
 	// get methods below to return player fields

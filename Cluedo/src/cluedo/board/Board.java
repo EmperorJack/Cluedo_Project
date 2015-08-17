@@ -3,6 +3,7 @@ package cluedo.board;
 import cluedo.tiles.*;
 import cluedo.tokens.*;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -164,6 +165,10 @@ public class Board {
 			}
 		}
 		return updatedBoard;
+	}
+	
+	public void draw(Graphics g) {
+		// TODO draw the board
 	}
 
 	/**

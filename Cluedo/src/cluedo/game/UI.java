@@ -10,7 +10,6 @@ import cluedo.board.Room;
 import cluedo.cards.*;
 import cluedo.tiles.WallTile;
 import cluedo.tokens.*;
-import cluedo.view.Frame;
 
 /**
  * User interface class that performs all the input and output operations for
@@ -23,7 +22,6 @@ public class UI {
 	// user interface fields
 	private Scanner s = new Scanner(System.in);
 	private Board board;
-	private Frame frame;
 
 	/**
 	 * Setup a new user interface instance.
@@ -33,7 +31,6 @@ public class UI {
 	 */
 	public UI(Board board) {
 		this.board = board;
-		frame = new Frame(board);
 	}
 
 	/**
@@ -43,36 +40,34 @@ public class UI {
 	 * @return The number of players determined by the user input.
 	 */
 	public int requestNumberPlayers() {
-		return frame.numberPlayersDialog();
-		// DELTE ME
-//		 int n = 0;
-//		
-//		 // ask the user for a number until they give valid input
-//		 while (n == 0) {
-//		
-//		 // get the user input and check if it is of valid type and value
-//		 boolean correctType = false;
-//		 while (!correctType) {
-//		 try {
-//		 System.out
-//		 .print("Please enter the number of players (3-6): ");
-//		 n = s.nextInt();
-//		 correctType = true;
-//		 } catch (InputMismatchException ime) {
-//		 System.out
-//		 .println("Invalid input. Thats not a number! Try again.\n");
-//		 s.next();
-//		 }
-//		 }
-//		 if (n < 3 || 6 < n) {
-//		 // invalid user input
-//		 System.out
-//		 .println("Invalid input. Only 3 to 6 players are allowed.\n");
-//		 n = 0;
-//		 }
-//		 }
-//		
-//		 return n;
+		int n = 0;
+
+		// ask the user for a number until they give valid input
+		while (n == 0) {
+
+			// get the user input and check if it is of valid type and value
+			boolean correctType = false;
+			while (!correctType) {
+				try {
+					System.out
+							.print("Please enter the number of players (3-6): ");
+					n = s.nextInt();
+					correctType = true;
+				} catch (InputMismatchException ime) {
+					System.out
+							.println("Invalid input. Thats not a number! Try again.\n");
+					s.next();
+				}
+			}
+			if (n < 3 || 6 < n) {
+				// invalid user input
+				System.out
+						.println("Invalid input. Only 3 to 6 players are allowed.\n");
+				n = 0;
+			}
+		}
+
+		return n;
 	}
 
 	/**

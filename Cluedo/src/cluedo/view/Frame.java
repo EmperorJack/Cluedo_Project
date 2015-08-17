@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -46,7 +45,7 @@ public class Frame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				quitRequest();
+				quitRequestDialog();
 			}
 		});
 		menu.add(quitMenuItem);
@@ -63,7 +62,7 @@ public class Frame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				quitRequest();
+				quitRequestDialog();
 			}
 		});
 
@@ -83,7 +82,7 @@ public class Frame extends JFrame {
 	 * 
 	 * @return The number of players determined by the user input.
 	 */
-	public int numberPlayersDialog() {
+	public int numberPlayersRequestDialog() {
 		// user choices available
 		Object[] choices = { 3, 4, 5, 6 };
 
@@ -103,7 +102,7 @@ public class Frame extends JFrame {
 	/**
 	 * Prompts the user to confirm they want to quit the game.
 	 */
-	public void quitRequest() {
+	public void quitRequestDialog() {
 		// get user input from a dialog box
 		int reply = JOptionPane.showConfirmDialog(null,
 				"Are you sure you want to quit?", "Quit Confirmation",
