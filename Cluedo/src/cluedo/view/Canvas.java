@@ -41,6 +41,7 @@ public class Canvas extends JPanel {
 
 		// TODO game visible components here
 		g.translate(0, 0); // YO KELLY WE CAN TRANSLATE THE CANVAS
+		//YAAAAAAAS
 		board.draw(g);
 	}
 
