@@ -1,6 +1,6 @@
 package cluedo.cards;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.Image;
 
 import static cluedo.view.Canvas.loadImage;
@@ -29,12 +29,13 @@ public abstract class Card {
 		// TODO Remove this constructor once image files have been made
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
 
-	public void draw(Graphics2D g2d) {
-		g2d.drawImage(image, 0, 0, null);
+	public void draw(Graphics g) {
+		g.drawImage(image, 0, 0, null);
 	}
 
 	@Override
