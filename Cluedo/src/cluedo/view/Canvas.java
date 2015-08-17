@@ -16,7 +16,7 @@ import cluedo.board.Board;
 public class Canvas extends JPanel {
 
 	private Board board;
-	private static final String IMAGE_PATH = "images/";
+	private static final String IMAGE_PATH = "/images/";
 
 	public Canvas(Board board) {
 		this.board = board;
@@ -52,7 +52,6 @@ public class Canvas extends JPanel {
 	 * Load an image from the file system using a given filename.
 	 * 
 	 * @param filename
-	 *            Name of the image file to load.
 	 * @return The image if it was successfully loaded.
 	 */
 	public static Image loadImage(String filename) {
