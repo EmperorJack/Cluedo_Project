@@ -143,8 +143,8 @@ public class UI {
 		// print player turn information
 		System.out
 				.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.printf("%s's turn. (Player %d)\n",
-				player.getCharacterName(), player.getId());
+		System.out.printf("%s (%s)'s turn.\n", player.getName(),
+				player.getCharacterName());
 
 		// print player card info
 		printPlayerCardInfo(player);

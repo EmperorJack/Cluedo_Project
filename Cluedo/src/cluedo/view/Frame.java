@@ -66,10 +66,9 @@ public class Frame extends JFrame {
 			}
 		});
 
-		// pack components and make visible
+		// pack components
 		pack();
 		setResizable(true);
-		setVisible(true);
 	}
 
 	public void update() {
@@ -107,7 +106,7 @@ public class Frame extends JFrame {
 		int reply = JOptionPane.showConfirmDialog(null,
 				"Are you sure you want to quit?", "Quit Confirmation",
 				JOptionPane.YES_NO_OPTION);
-		
+
 		// quit if the yes reply was selected
 		if (reply == JOptionPane.YES_OPTION) {
 			System.exit(0);

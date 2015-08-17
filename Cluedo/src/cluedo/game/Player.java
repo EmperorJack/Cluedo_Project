@@ -17,6 +17,7 @@ public class Player {
 
 	// player fields
 	private CharacterToken character;
+	private String name;
 	private int id;
 	private HashSet<Card> hand;
 	private HashSet<Card> nonRefutedCards;
@@ -30,8 +31,9 @@ public class Player {
 	 * @param id
 	 *            A unique id number.
 	 */
-	public Player(CharacterToken character, int id) {
+	public Player(CharacterToken character, String name, int id) {
 		this.character = character;
+		this.name = name;
 		this.id = id;
 		hand = new HashSet<Card>();
 		eliminated = false;
@@ -100,6 +102,10 @@ public class Player {
 	
 	public CharacterToken getToken() {
 		return character;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public int getId() {

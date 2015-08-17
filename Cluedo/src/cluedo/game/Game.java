@@ -11,6 +11,7 @@ import cluedo.board.Room;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
+import cluedo.view.CharacterInputDialog;
 import cluedo.view.Frame;
 
 /**
@@ -61,6 +62,9 @@ public class Game {
 
 		// deal the remaining cards to the players
 		deck.dealCards(players, numberPlayers);
+
+		// display the frame
+		frame.setVisible(true);
 	}
 
 	/**
@@ -336,11 +340,38 @@ public class Game {
 
 		// for each player
 		for (int i = 0; i < numberPlayers; i++) {
-			// request the player to choose a character
-			CharacterToken t = ui.requestCharacter(availableCharacters, i + 1);
-			players[i] = new Player(t, i + 1);
+			// setup a dialog box for the player to input a name and character
+			CharacterInputDialog dialog = new CharacterInputDialog(
+					availableCharacters, i + 1);
 
-			// give each player a copy of the deck for possible suggestion cards
+			// wait for the user to enter details into the dialog box
+			while (!dialog.inputChosen()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			// setup a new player with the name and character from the dialog
+			String name = dialog.getNameInput();
+			CharacterToken token = board.getCharacterToken(dialog
+					.getSelectedCharacter());
+			
+			// check the name is not an empty string
+			if (name.isEmpty()) {
+				name = "Player " + (i + 1);
+			}
+			players[i] = new Player(token, name, i + 1);
+
+			// remove the chosen character from the list of available characters
+			availableCharacters.remove(dialog.getSelectedCharacter());
+
+			// dispose of the dialog box
+			dialog.dispose();
+
+			// give the player a copy of the deck for possible suggestion cards
 			players[i].setNonRefutedCards(possibleCards);
 		}
 		return players;
