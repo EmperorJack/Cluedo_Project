@@ -30,6 +30,7 @@ public class Game {
 
 	// game fields
 	private Deck deck;
+	private Dice dice;
 	public static final String[] CHARACTERS = { "Miss Scarlett",
 			"Colonel Mustard", "Mrs. White", "The Reverend Green",
 			"Mrs. Peacock", "Professor Plum" };
@@ -47,6 +48,7 @@ public class Game {
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
 		frame = new Frame(board);
+		dice = new Dice();
 
 		// generate a new complete deck
 		deck = new Deck(CHARACTERS, ROOMS, WEAPONS);
@@ -104,9 +106,6 @@ public class Game {
 				continue;
 			}
 
-			// generate the dice roll
-			int rollAmount = generateDiceRoll();
-
 			// get the room the player is in (null for no room)
 			Room playerRoom = board.roomIn(player.getToken());
 
@@ -133,6 +132,14 @@ public class Game {
 			// process the action (player may have opted to skip movement)
 			if (actionSelected == 1) {
 				// roll dice action selected
+				
+				// roll the dice
+				dice.roll();
+				
+				// get the value of the rolled dice
+				int rollAmount = dice.getResult();
+				System.out.println(rollAmount);
+				
 				// TODO allowing mouse to select move target should start here
 				action = ui.requestMove(player, rollAmount);
 			} else if (actionSelected == 2 && playerRoom != null) {
@@ -252,16 +259,6 @@ public class Game {
 			}
 		}
 		return count;
-	}
-
-	/**
-	 * Generates a random number between 2 and 12 to simulate the rolling of two
-	 * dice.
-	 * 
-	 * @return The resulting number from rolling the dice.
-	 */
-	public int generateDiceRoll() {
-		return (int) (Math.random() * 11 + 2);
 	}
 
 	/**

@@ -103,10 +103,11 @@ public class Tests {
 	
 	@Test
 	public void testDiceRollsValid() {
-		Game game = new Game("test");
+		Dice dice = new Dice();
 		int i = 1000;
 		while (0 < i) {
-			int roll = game.generateDiceRoll();
+			dice.roll();
+			int roll = dice.getResult();
 			assertTrue(2 <= roll && roll <= 12);
 			i--;
 		}
