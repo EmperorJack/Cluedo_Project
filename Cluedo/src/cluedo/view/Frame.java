@@ -2,7 +2,6 @@ package cluedo.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +23,11 @@ import cluedo.board.Board;
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
 
+	// frame fields
 	private Canvas canvas;
+	private JButton rollDiceButton, secretPassageButton, skipMovementButton,
+			suggestionButton, accusationButton, endTurnButton;
+	private int actionButtonSelected;
 
 	public Frame(Board board) {
 		super("Cluedo Game");
@@ -63,25 +66,76 @@ public class Frame extends JFrame {
 		JPanel actionPanel = new JPanel();
 		actionPanel.setLayout(new GridLayout(1, 0, 10, 10));
 		actionPanel.add(Box.createVerticalStrut(5));
-		
+
 		// setup roll dice button
-		JButton rollDiceButton = new JButton("Roll Dice");
+		rollDiceButton = new JButton("Roll Dice");
+		rollDiceButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 1;
+			}
+		});
 		actionPanel.add(rollDiceButton);
-		
+
 		// setup secret passage button
-		JButton secretPassageButton = new JButton("Secret Passage");
+		secretPassageButton = new JButton("Secret Passage");
+		secretPassageButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 2;
+			}
+		});
 		actionPanel.add(secretPassageButton);
-		
+
+		// setup skip movement button
+		skipMovementButton = new JButton("Skip Movement");
+		skipMovementButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 3;
+			}
+		});
+		actionPanel.add(skipMovementButton);
+
 		// setup suggestion button
-		JButton suggestButton = new JButton("Suggest");
-		actionPanel.add(suggestButton);
-		
+		suggestionButton = new JButton("Suggestion");
+		suggestionButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 4;
+			}
+		});
+		actionPanel.add(suggestionButton);
+
 		// setup accusation button
-		JButton accuseButton = new JButton("Accuse");
-		actionPanel.add(accuseButton);
-		
+		accusationButton = new JButton("Accusation");
+		accusationButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 5;
+			}
+		});
+		actionPanel.add(accusationButton);
+
+		// setup end turn button
+		endTurnButton = new JButton("End Turn");
+		endTurnButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionButtonSelected = 6;
+			}
+		});
+		actionPanel.add(endTurnButton);
+
 		actionPanel.add(Box.createVerticalStrut(5));
-		
+		setButtonSelectable("all", false);
+
 		// setup close operation
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -92,6 +146,7 @@ public class Frame extends JFrame {
 		});
 
 		// finish setting up the frame attributes
+		actionButtonSelected = 0;
 		actionPanel.setPreferredSize(new Dimension(0, 80));
 		actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(actionPanel, BorderLayout.SOUTH);
@@ -132,6 +187,26 @@ public class Frame extends JFrame {
 		}
 	}
 
+	public int requestActionButtonInput() {
+		// while an action button has not been pressed
+		while (actionButtonSelected == 0) {
+			try {
+				// wait a bit
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// a thread interrupted exception occurred
+				e.printStackTrace();
+			}
+		}
+
+		// copy the selected action to a temporary string
+		int action = actionButtonSelected;
+
+		// reset the selected action string and return the temporary string
+		actionButtonSelected = 0;
+		return action;
+	}
+
 	/**
 	 * Prompts the user to confirm they want to quit the game.
 	 */
@@ -144,6 +219,39 @@ public class Frame extends JFrame {
 		// quit if the yes reply was selected
 		if (reply == JOptionPane.YES_OPTION) {
 			System.exit(0);
+		}
+	}
+
+	public void setButtonSelectable(String button, boolean b) {
+		switch (button) {
+		case "all":
+			rollDiceButton.setEnabled(b);
+			secretPassageButton.setEnabled(b);
+			skipMovementButton.setEnabled(b);
+			suggestionButton.setEnabled(b);
+			accusationButton.setEnabled(b);
+			endTurnButton.setEnabled(b);
+			break;
+		case "rollDice":
+			rollDiceButton.setEnabled(b);
+			break;
+		case "secretPassage":
+			secretPassageButton.setEnabled(b);
+			break;
+		case "skipMovement":
+			skipMovementButton.setEnabled(b);
+			break;
+		case "suggestion":
+			suggestionButton.setEnabled(b);
+			break;
+		case "accusation":
+			accusationButton.setEnabled(b);
+			break;
+		case "endTurn":
+			endTurnButton.setEnabled(b);
+			break;
+		default:
+			break;
 		}
 	}
 }

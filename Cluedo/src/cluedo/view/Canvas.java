@@ -42,7 +42,7 @@ public class Canvas extends JPanel {
 				(float) Math.random()));
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
-		// TODO game visible components here
+		// TODO draw game visible components here
 		g.translate(0, 0); // YO KELLY WE CAN TRANSLATE THE CANVAS
 		// YAAAAAAAS
 		board.draw(g2d);

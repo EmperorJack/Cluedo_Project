@@ -118,6 +118,19 @@ public class PlayerInputDialog extends JFrame {
 			}
 		}
 	}
+	
+	public void requestInput() {
+		// while the dialog box input has not been completed
+		while (!inputChosen()) {
+			try {
+				// wait a bit
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// a thread interrupted exception occurred
+				e.printStackTrace();
+			}
+		}
+	}
 
 	// get methods below to return dialog box fields
 

@@ -110,9 +110,48 @@ public class Game {
 			// get the room the player is in (null for no room)
 			Room playerRoom = board.roomIn(player.getToken());
 
-			// request the player for an action they want to perform
-			Action action = ui.requestPlayerAction(player, rollAmount,
-					playerRoom);
+			// update the action buttons that can be used in the next turn stage
+			frame.setButtonSelectable("rollDice", true);
+			if (playerRoom != null && playerRoom.hasPassage()) {
+				// if the player is in a room with secret passage
+				frame.setButtonSelectable("secretPassage", true);
+			}
+			frame.setButtonSelectable("skipMovement", true);
+			frame.setButtonSelectable("accusation", true);
+
+			// TODO Remove once GUI replaces text output
+			System.out
+					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			System.out.printf("%s (%s)'s turn.\n", player.getName(),
+					player.getCharacterName());
+
+			// player action button selection stage 1 (movement or accusation)
+			// wait for the dialog box to get player input for selected action
+			int actionSelected = frame.requestActionButtonInput();
+			Action action = null;
+
+			// process the action (player may have opted to skip movement)
+			if (actionSelected == 1) {
+				// roll dice action selected
+				// TODO allowing mouse to select move target should start here
+				action = ui.requestMove(player, rollAmount);
+			} else if (actionSelected == 2 && playerRoom != null) {
+				// secret passage action selected
+				action = new SecretPassageAction(playerRoom,
+						playerRoom.getPassage());
+			} else if (actionSelected == 5) {
+				// accusation action selected
+				Action accusation = ui.requestAccusationYN(player);
+
+				// return the accusation action if the player followed through
+				// with the action after the warning message
+				if (accusation != null) {
+					action = accusation;
+				}
+			}
+
+			// update the action buttons that can be selected in the frame
+			frame.setButtonSelectable("all", false);
 
 			// if a valid move action was chosen
 			if (action instanceof MoveAction) {
@@ -124,13 +163,6 @@ public class Game {
 				// update the room the player is in (may have moved out of or
 				// changed room)
 				playerRoom = board.roomIn(player.getToken());
-			}
-
-			// if an accusation action was chosen
-			if (action instanceof AccusationAction) {
-				// set winner to the result of the accusation
-				// 1 means they won and 0 means the player was eliminated
-				winner = performAccusation(player, (AccusationAction) action);
 			}
 
 			// if a secret passage action was chosen
@@ -145,25 +177,70 @@ public class Game {
 				playerRoom = board.roomIn(player.getToken());
 			}
 
-			// check to see if the player is in a room so we can offer the
-			// player the option to make a suggestion, providing they have not
-			// won the game or been eliminated from an accusation
-			if (playerRoom != null && winner == 0 && !player.isEliminated()) {
-				// player in a room so can make a suggestion
+			// if an accusation action was chosen
+			if (action instanceof AccusationAction) {
+				// set winner to the result of the accusation
+				// 1 means they won and 0 means the player was eliminated
+				winner = performAccusation(player, (AccusationAction) action);
+			}
+			
+			// check if the player has been eliminated or became the winner
+			if (winner != 0 || player.isEliminated()) {
+				// skip the second action stage of the player turn
+				continue;
+			}
+
+			// update the action buttons that can be used in the next turn stage
+			if (playerRoom != null) {
+				// if the player is in a room
+				frame.setButtonSelectable("suggestion", true);
+			}
+			frame.setButtonSelectable("accusation", true);
+			frame.setButtonSelectable("endTurn", true);
+
+			// player action button selection stage 2 (suggestion or accusation)
+			// wait for the dialog box to get player input for selected action
+			actionSelected = frame.requestActionButtonInput();
+			action = null;
+
+			// process the action (player may have opted to end their turn)
+			if (actionSelected == 4 && playerRoom != null) {
+				// suggestion action selected
 				SuggestionAction suggestion = ui.requestSuggestion(player,
 						playerRoom);
+				// TODO remove this null check when text suggestion input
+				// replaced with gui input
 				if (suggestion != null) {
 					performSuggestion(player, suggestion, playerRoom);
 				}
+			} else if (actionSelected == 5) {
+				// accusation action selected
+				Action accusation = ui.requestAccusationYN(player);
+
+				// return the accusation action if the player followed through
+				// with the action after the warning message
+				if (accusation != null) {
+					action = accusation;
+				}
 			}
+
+			// if an accusation action was chosen
+			if (action instanceof AccusationAction) {
+				// set winner to the result of the accusation
+				// 1 means they won and 0 means the player was eliminated
+				winner = performAccusation(player, (AccusationAction) action);
+			}
+
+			// update the action buttons that can be selected in the frame
+			frame.setButtonSelectable("all", false);
 		} while (winner == 0);
 
-		// print the winner information and the soution
+		// print the winner information and the solution
 		ui.printWinner(players[winner - 1], deck.getSolution());
 	}
 
 	/**
-	 * Returns the number of players in the game who have not been elimated.
+	 * Returns the number of players in the game who have not been eliminated.
 	 * 
 	 * @return The number of players remaining.
 	 */
@@ -344,16 +421,8 @@ public class Game {
 			PlayerInputDialog dialog = new PlayerInputDialog(
 					availableCharacters, i + 1);
 
-			// while the dialog box input has not been completed
-			while (!dialog.inputChosen()) {
-				try {
-					// wait a bit
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// a thread interrupted exception occurred
-					e.printStackTrace();
-				}
-			}
+			// wait for the dialog box to get player input
+			dialog.requestInput();
 
 			// setup a new player with the name and character from the dialog
 			String name = dialog.getNameInput();
