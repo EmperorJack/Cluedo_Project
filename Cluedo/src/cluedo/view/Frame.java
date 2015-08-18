@@ -1,26 +1,28 @@
 package cluedo.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
+import javax.swing.JPanel;
 
 import cluedo.board.Board;
 
 @SuppressWarnings("serial")
-public class Frame extends JFrame{
-
-	JMenuBar menuBar;
-	JMenu menu;
-	JMenuItem restartMenuItem, quitMenuItem;
+public class Frame extends JFrame {
 
 	private Canvas canvas;
 
@@ -28,20 +30,20 @@ public class Frame extends JFrame{
 		super("Cluedo Game");
 
 		// setup menu bar
-		menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 
 		// setup menu
-		menu = new JMenu("Game");
+		JMenu menu = new JMenu("Game");
 		menu.getAccessibleContext().setAccessibleDescription(
 				"The only menu in this program that has menu items");
 		menuBar.add(menu);
 
 		// setup restart menu item
-		restartMenuItem = new JMenuItem("Restart");
+		JMenuItem restartMenuItem = new JMenuItem("Restart");
 		menu.add(restartMenuItem);
 
 		// setup quit menu item
-		quitMenuItem = new JMenuItem("Quit");
+		JMenuItem quitMenuItem = new JMenuItem("Quit");
 		quitMenuItem.addActionListener(new ActionListener() {
 
 			@Override
@@ -50,7 +52,6 @@ public class Frame extends JFrame{
 			}
 		});
 		menu.add(quitMenuItem);
-
 		setJMenuBar(menuBar);
 
 		// setup canvas with center border layout
@@ -58,6 +59,29 @@ public class Frame extends JFrame{
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 
+		// setup panel with action buttons
+		JPanel actionPanel = new JPanel();
+		actionPanel.setLayout(new GridLayout(1, 0, 10, 10));
+		actionPanel.add(Box.createVerticalStrut(5));
+		
+		// setup roll dice button
+		JButton rollDiceButton = new JButton("Roll Dice");
+		actionPanel.add(rollDiceButton);
+		
+		// setup secret passage button
+		JButton secretPassageButton = new JButton("Secret Passage");
+		actionPanel.add(secretPassageButton);
+		
+		// setup suggestion button
+		JButton suggestButton = new JButton("Suggest");
+		actionPanel.add(suggestButton);
+		
+		// setup accusation button
+		JButton accuseButton = new JButton("Accuse");
+		actionPanel.add(accuseButton);
+		
+		actionPanel.add(Box.createVerticalStrut(5));
+		
 		// setup close operation
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -67,9 +91,14 @@ public class Frame extends JFrame{
 			}
 		});
 
-		// pack components
+		// finish setting up the frame attributes
+		actionPanel.setPreferredSize(new Dimension(0, 80));
+		actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		add(actionPanel, BorderLayout.SOUTH);
 		pack();
+		setSize(1280, 720);
 		setResizable(true);
+		setLocationRelativeTo(null);
 	}
 
 	public void update() {

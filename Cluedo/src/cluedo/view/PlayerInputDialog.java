@@ -1,6 +1,5 @@
 package cluedo.view;
 
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +12,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
@@ -40,17 +40,17 @@ public class PlayerInputDialog extends JFrame {
 	 */
 	public PlayerInputDialog(List<String> characters, int playerNumber) {
 		super("Player " + playerNumber + " Setup");
-		Container c = getContentPane();
-		c.setLayout(new GridLayout(0, 1));
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 1));
 		complete = false;
 
 		// player name input area setup
-		c.add(new JLabel("Player Name:"));
+		panel.add(new JLabel("Player Name:"));
 		nameField = new JTextField("", 10);
-		c.add(nameField);
+		panel.add(nameField);
 
 		// player character select area setup
-		c.add(new JLabel("Available Characters:"));
+		panel.add(new JLabel("Available Characters:"));
 		radioGroup = new ButtonGroup();
 
 		// setup a radio button for each selectable character
@@ -65,7 +65,7 @@ public class PlayerInputDialog extends JFrame {
 			}
 
 			// add the new radio button to the container and radio button group
-			c.add(button);
+			panel.add(button);
 			radioGroup.add(button);
 
 			// create a listener for the new radio button
@@ -82,13 +82,15 @@ public class PlayerInputDialog extends JFrame {
 				complete = true;
 			}
 		});
-		c.add(okButton);
-		getRootPane().setDefaultButton(okButton);
+		panel.add(okButton);
 
-		// setup the dialog box attributions
+		// finish setting up the dialog box attributes
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+		add(panel);
+		getRootPane().setDefaultButton(okButton);
+		pack();
 		setSize(300, 350);
 		setResizable(false);
-		getRootPane().setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
