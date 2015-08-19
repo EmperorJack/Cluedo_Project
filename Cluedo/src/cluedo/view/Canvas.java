@@ -35,17 +35,17 @@ public class Canvas extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		
+
 		// draw the background colour
 		g2d.setColor(Color.BLACK);
-		g2d.setColor(new Color((float) Math.random(), (float) Math.random(),
-				(float) Math.random()));
+		// g2d.setColor(new Color((float) Math.random(), (float) Math.random(),
+		// (float) Math.random()));
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
 		// TODO draw game visible components here
 		g.translate(0, 0); // YO KELLY WE CAN TRANSLATE THE CANVAS
 		// YAAAAAAAS
-		board.draw(g2d);
+		board.draw(g2d, getWidth(), getHeight());
 	}
 
 	/**

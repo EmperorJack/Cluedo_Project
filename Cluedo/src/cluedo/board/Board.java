@@ -2,8 +2,10 @@ package cluedo.board;
 
 import cluedo.tiles.*;
 import cluedo.tokens.*;
+import cluedo.view.Canvas;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +17,8 @@ public class Board {
 	List<CharacterToken> characters;
 	Map<String, Room> roomMap;
 	List<WeaponToken> weapons;
+	private Image boardImage;
+
 	
 	/**
 	  * Creates the game board. The underlying board for the game logic is a Map
@@ -26,6 +30,8 @@ public class Board {
 	 * @author Kelly
 	 */
 	public Board(String[] weapons, String[] rooms) {
+		
+		this.boardImage = Canvas.loadImage("board.jpg");
 
 		// Construct string version of the board
 		boardStrings = BoardParser.parseStringBoard();
@@ -168,7 +174,14 @@ public class Board {
 		return updatedBoard;
 	}
 	
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g, int width, int height) {
+		int minSize = Math.min(width, height);
+		double proportion = boardImage.getWidth(null)/boardImage.getHeight(null);
+		if (width < height){
+			g.drawImage(boardImage, 0, (height - minSize)/2, (int)(minSize*proportion), minSize, null);
+			} else {
+			g.drawImage(boardImage, (width-minSize)/2, 0, (int)(minSize*proportion), minSize, null);
+			}
 		// TODO draw the board
 	}
 
