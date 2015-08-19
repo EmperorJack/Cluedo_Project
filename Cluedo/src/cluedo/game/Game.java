@@ -11,6 +11,7 @@ import cluedo.board.Room;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
+import cluedo.view.CardInputDialog;
 import cluedo.view.PlayerInputDialog;
 import cluedo.view.Frame;
 
@@ -209,6 +210,22 @@ public class Game {
 		if (actionSelected == 4 && playerRoom != null) {
 			// TODO replace with suggestion dialog
 			return ui.requestSuggestion(player, playerRoom);
+			
+			/*
+			// setup a dialog box for the player to input their suggested cards
+			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
+					"Suggestion");
+
+			// wait for the dialog box to get player input
+			dialog.requestInput();
+
+			SuggestionAction suggestion = new SuggestionAction(
+					dialog.getCharacter(), dialog.getRoom(), dialog.getWeapon());
+
+			// dispose of the dialog box
+			dialog.dispose();
+
+			return suggestion;*/
 		}
 
 		// accusation action selected

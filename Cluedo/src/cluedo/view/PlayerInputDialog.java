@@ -10,25 +10,22 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
- * A custom window that acts as a dialog box with multiple inputs. Allows the
- * current player to enter a name and select a character from a list of
- * available characters.
+ * Dialog box that allows the current player to enter a name and select a
+ * character from a list of available characters.
  */
 @SuppressWarnings("serial")
-public class PlayerInputDialog extends JFrame {
+public class PlayerInputDialog extends InputDialog {
 
 	// dialog box fields
 	private JTextField nameField;
 	private ButtonGroup radioGroup;
 	private String selectedCharacter;
-	private boolean complete;
 
 	/**
 	 * Setup a new player setup dialog box.
@@ -42,7 +39,6 @@ public class PlayerInputDialog extends JFrame {
 		super("Player " + playerNumber + " Setup");
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 1));
-		complete = false;
 
 		// player name input area setup
 		panel.add(new JLabel("Player Name:"));
@@ -53,7 +49,7 @@ public class PlayerInputDialog extends JFrame {
 		panel.add(new JLabel("Available Characters:"));
 		radioGroup = new ButtonGroup();
 
-		// setup a radio button for each selectable character
+		// setup a radio button for each available character
 		for (int i = 0; i < characters.size(); i++) {
 			JRadioButton button;
 			if (i == 0) {
@@ -97,7 +93,7 @@ public class PlayerInputDialog extends JFrame {
 	}
 
 	/**
-	 * An innter class that handles the events that occur when the user changes
+	 * An inner class that handles the events that occur when the user changes
 	 * the selected radio button.
 	 */
 	private class RadioButtonHandler implements ItemListener {
@@ -118,25 +114,8 @@ public class PlayerInputDialog extends JFrame {
 			}
 		}
 	}
-	
-	public void requestInput() {
-		// while the dialog box input has not been completed
-		while (!inputChosen()) {
-			try {
-				// wait a bit
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// a thread interrupted exception occurred
-				e.printStackTrace();
-			}
-		}
-	}
 
 	// get methods below to return dialog box fields
-
-	public boolean inputChosen() {
-		return complete;
-	}
 
 	public String getNameInput() {
 		return nameField.getText();
