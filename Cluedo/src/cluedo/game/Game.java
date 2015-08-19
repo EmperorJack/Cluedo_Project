@@ -31,6 +31,7 @@ public class Game {
 	// game fields
 	private Deck deck;
 	private Dice dice;
+	private int winner;
 	public static final String[] CHARACTERS = { "Miss Scarlett",
 			"Colonel Mustard", "Mrs. White", "The Reverend Green",
 			"Mrs. Peacock", "Professor Plum" };
@@ -49,6 +50,7 @@ public class Game {
 		ui = new UI(board);
 		frame = new Frame(board);
 		dice = new Dice();
+		winner = 0;
 
 		// generate a new complete deck
 		deck = new Deck(CHARACTERS, ROOMS, WEAPONS);
@@ -87,7 +89,6 @@ public class Game {
 		int playerIndex = -1;
 
 		// loop until a player wins or the game exits
-		int winner = 0;
 		do {
 			// move onto the next player
 			playerIndex = (playerIndex + 1) % numberPlayers;
@@ -109,7 +110,15 @@ public class Game {
 			// get the room the player is in (null for no room)
 			Room playerRoom = board.roomIn(player.getToken());
 
-			// update the action buttons that can be used in the next turn stage
+			// TODO Remove once GUI replaces text output
+			System.out
+					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			System.out.printf("%s (%s)'s turn.\n", player.getName(),
+					player.getCharacterName());
+
+			// first player action turn stage (movement or accusation)
+
+			// enable the buttons that can be used in the first turn stage
 			frame.setButtonSelectable("rollDice", true);
 			if (playerRoom != null && playerRoom.hasPassage()) {
 				// if the player is in a room with secret passage
@@ -118,86 +127,34 @@ public class Game {
 			frame.setButtonSelectable("skipMovement", true);
 			frame.setButtonSelectable("accusation", true);
 
-			// TODO Remove once GUI replaces text output
-			System.out
-					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			System.out.printf("%s (%s)'s turn.\n", player.getName(),
-					player.getCharacterName());
-
-			// player action button selection stage 1 (movement or accusation)
-			// wait for the dialog box to get player input for selected action
+			// wait for the frame to get player input for selected action
 			int actionSelected = frame.requestActionButtonInput();
-			Action action = null;
 
-			// process the action (player may have opted to skip movement)
-			if (actionSelected == 1) {
-				// roll dice action selected
-				
-				// roll the dice
-				dice.roll();
-				
-				// get the value of the rolled dice
-				int rollAmount = dice.getResult();
-				System.out.println(rollAmount);
-				
-				// TODO allowing mouse to select move target should start here
-				action = ui.requestMove(player, rollAmount);
-			} else if (actionSelected == 2 && playerRoom != null) {
-				// secret passage action selected
-				action = new SecretPassageAction(playerRoom,
-						playerRoom.getPassage());
-			} else if (actionSelected == 5) {
-				// accusation action selected
-				Action accusation = ui.requestAccusationYN(player);
+			// if the player did not choose to skip moving their character
+			if (actionSelected != 3) {
+				// first create the action from the given selection
+				Action action = createActionSelected(player, playerRoom,
+						actionSelected);
 
-				// return the accusation action if the player followed through
-				// with the action after the warning message
-				if (accusation != null) {
-					action = accusation;
-				}
+				// then perform the action
+				performAction(player, playerRoom, action);
+
+				// update the player room in case it changed
+				playerRoom = board.roomIn(player.getToken());
 			}
 
-			// update the action buttons that can be selected in the frame
+			// disable all frame action buttons
 			frame.setButtonSelectable("all", false);
 
-			// if a valid move action was chosen
-			if (action instanceof MoveAction) {
-				// move the player and print the board result
-				Location loc = ((MoveAction) action).getLocation();
-				board.movePlayer(player.getToken(), loc);
-				ui.printBoard();
-
-				// update the room the player is in (may have moved out of or
-				// changed room)
-				playerRoom = board.roomIn(player.getToken());
-			}
-
-			// if a secret passage action was chosen
-			if (action instanceof SecretPassageAction) {
-				// move the player via secret passage
-				SecretPassageAction passageAction = (SecretPassageAction) action;
-				board.moveTokenToRoom(player.getToken(),
-						passageAction.getDestination());
-
-				// update the room the player is in (may have moved through a
-				// secret passage)
-				playerRoom = board.roomIn(player.getToken());
-			}
-
-			// if an accusation action was chosen
-			if (action instanceof AccusationAction) {
-				// set winner to the result of the accusation
-				// 1 means they won and 0 means the player was eliminated
-				winner = performAccusation(player, (AccusationAction) action);
-			}
-			
 			// check if the player has been eliminated or became the winner
 			if (winner != 0 || player.isEliminated()) {
 				// skip the second action stage of the player turn
 				continue;
 			}
 
-			// update the action buttons that can be used in the next turn stage
+			// second player action turn stage (suggestion or accusation)
+
+			// enable the buttons that can be used in the second turn stage
 			if (playerRoom != null) {
 				// if the player is in a room
 				frame.setButtonSelectable("suggestion", true);
@@ -205,45 +162,104 @@ public class Game {
 			frame.setButtonSelectable("accusation", true);
 			frame.setButtonSelectable("endTurn", true);
 
-			// player action button selection stage 2 (suggestion or accusation)
-			// wait for the dialog box to get player input for selected action
+			// wait for the frame to get player input for selected action
 			actionSelected = frame.requestActionButtonInput();
-			action = null;
 
-			// process the action (player may have opted to end their turn)
-			if (actionSelected == 4 && playerRoom != null) {
-				// suggestion action selected
-				SuggestionAction suggestion = ui.requestSuggestion(player,
-						playerRoom);
-				// TODO remove this null check when text suggestion input
-				// replaced with gui input
-				if (suggestion != null) {
-					performSuggestion(player, suggestion, playerRoom);
-				}
-			} else if (actionSelected == 5) {
-				// accusation action selected
-				Action accusation = ui.requestAccusationYN(player);
+			// if the player did not choose to end their turn
+			if (actionSelected != 6) {
+				// first create the action from the given selection
+				Action action = createActionSelected(player, playerRoom,
+						actionSelected);
 
-				// return the accusation action if the player followed through
-				// with the action after the warning message
-				if (accusation != null) {
-					action = accusation;
-				}
+				// then perform the action
+				performAction(player, playerRoom, action);
 			}
 
-			// if an accusation action was chosen
-			if (action instanceof AccusationAction) {
-				// set winner to the result of the accusation
-				// 1 means they won and 0 means the player was eliminated
-				winner = performAccusation(player, (AccusationAction) action);
-			}
-
-			// update the action buttons that can be selected in the frame
+			// disable all frame action buttons
 			frame.setButtonSelectable("all", false);
 		} while (winner == 0);
 
 		// print the winner information and the solution
 		ui.printWinner(players[winner - 1], deck.getSolution());
+	}
+
+	private Action createActionSelected(Player player, Room playerRoom,
+			int actionSelected) {
+		// process the selected action given by the player input
+		if (actionSelected == 1) {
+			// roll dice action selected
+
+			// roll the dice
+			dice.roll();
+
+			// get the value of the rolled dice
+			int rollAmount = dice.getResult();
+			System.out.println(rollAmount);
+
+			// TODO allowing mouse to select move target should start here
+			return ui.requestMove(player, rollAmount);
+		}
+
+		if (actionSelected == 2 && playerRoom != null) {
+			// secret passage action selected
+			return new SecretPassageAction(playerRoom, playerRoom.getPassage());
+		}
+
+		// suggestion action selected
+		if (actionSelected == 4 && playerRoom != null) {
+			// TODO replace with suggestion dialog
+			return ui.requestSuggestion(player, playerRoom);
+		}
+
+		// accusation action selected
+		if (actionSelected == 5) {
+			// check the player wants to make an accusation
+			Action accusation = ui.requestAccusationYN(player);
+
+			// return the accusation action if the player followed through
+			// with the action after the warning message
+			if (accusation != null) {
+				// TODO replace with accusation dialog
+				return accusation;
+			}
+		}
+
+		return null;
+	}
+
+	private void performAction(Player player, Room playerRoom, Action action) {
+		// if a valid move action was chosen
+		if (action instanceof MoveAction) {
+			// move the player and print the board result
+			Location loc = ((MoveAction) action).getLocation();
+			board.movePlayer(player.getToken(), loc);
+			ui.printBoard();
+			return;
+		}
+
+		// if a secret passage action was chosen
+		if (action instanceof SecretPassageAction) {
+			// move the player via secret passage
+			SecretPassageAction passageAction = (SecretPassageAction) action;
+			board.moveTokenToRoom(player.getToken(),
+					passageAction.getDestination());
+			return;
+		}
+
+		// if an accusation action was chosen
+		if (action instanceof AccusationAction) {
+			// set winner to the result of the accusation
+			// 1 means they won and 0 means the player was eliminated
+			winner = performAccusation(player, (AccusationAction) action);
+			return;
+		}
+
+		// if a suggestion action was chosen
+		if (action instanceof SuggestionAction) {
+			// perform the suggestion action requested by the player
+			performSuggestion(player, (SuggestionAction) action, playerRoom);
+			return;
+		}
 	}
 
 	/**
@@ -428,6 +444,7 @@ public class Game {
 
 			// check the name is not an empty string
 			if (name.isEmpty()) {
+				// use a default name instead
 				name = "Player " + (i + 1);
 			}
 			players[i] = new Player(token, name, i + 1);

@@ -443,7 +443,7 @@ public class UI {
 			WeaponCard weapon = requestWeaponCard();
 
 			// return the valid suggestion action
-			return new AccusationAction(character, new RoomCard(
+			return new SuggestionAction(character, new RoomCard(
 					roomIn.getName()), weapon);
 		}
 

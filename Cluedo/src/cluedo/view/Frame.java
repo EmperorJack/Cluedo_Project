@@ -103,7 +103,7 @@ public class Frame extends JFrame {
 		// setup suggestion button
 		suggestionButton = new JButton("Suggestion");
 		suggestionButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				actionButtonSelected = 4;
@@ -114,7 +114,7 @@ public class Frame extends JFrame {
 		// setup accusation button
 		accusationButton = new JButton("Accusation");
 		accusationButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				actionButtonSelected = 5;
@@ -125,7 +125,7 @@ public class Frame extends JFrame {
 		// setup end turn button
 		endTurnButton = new JButton("End Turn");
 		endTurnButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				actionButtonSelected = 6;
@@ -199,10 +199,10 @@ public class Frame extends JFrame {
 			}
 		}
 
-		// copy the selected action to a temporary string
+		// copy the selected action to a temporary variable
 		int action = actionButtonSelected;
 
-		// reset the selected action string and return the temporary string
+		// reset the selected action and return the temporary variable
 		actionButtonSelected = 0;
 		return action;
 	}
