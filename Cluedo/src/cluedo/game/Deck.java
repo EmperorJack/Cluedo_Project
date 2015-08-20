@@ -33,6 +33,8 @@ public class Deck {
 	public Deck(String[] characters, String[] rooms, String[] weapons) {
 		// define a new deck of cards
 		deck = new ArrayList<Card>();
+		
+		// use the following lists to store card types separately
 		characterCards = new ArrayList<Card>();
 		roomCards = new ArrayList<Card>();
 		weaponCards = new ArrayList<Card>();

@@ -6,15 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import cluedo.game.ClockThread;
-import cluedo.board.Board;
-import cluedo.board.Location;
-import cluedo.board.Room;
+import cluedo.board.*;
 import cluedo.cards.Card;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
-import cluedo.view.CardInputDialog;
-import cluedo.view.PlayerInputDialog;
-import cluedo.view.Frame;
+import cluedo.view.*;
 
 /**
  * Main cluedo class that handles the game logic.
@@ -29,6 +25,7 @@ public class Game {
 	// player fields
 	private int numberPlayers;
 	private Player[] players;
+	private Player currentPlayer;
 
 	// game fields
 	private Deck deck;
@@ -47,7 +44,7 @@ public class Game {
 	 * Setup a new game of Cluedo.
 	 */
 	public Game() {
-		// setup system
+		// setup game systems
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
 		frame = new Frame(board);
@@ -85,7 +82,6 @@ public class Game {
 		// setup system
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
-
 	}
 
 	/**
@@ -99,10 +95,10 @@ public class Game {
 		do {
 			// move onto the next player
 			playerIndex = (playerIndex + 1) % numberPlayers;
-			Player player = players[playerIndex];
+			currentPlayer = players[playerIndex];
 
 			// if the current player has been eliminated
-			if (player.isEliminated()) {
+			if (currentPlayer.isEliminated()) {
 				// skip their turn
 				continue;
 			}
@@ -110,18 +106,18 @@ public class Game {
 			// check the current player is not the only player remaining
 			if (playersRemaining() < 2) {
 				// this player wins as they are the last remaining player
-				winner = player.getId();
+				winner = currentPlayer.getId();
 				continue;
 			}
 
 			// get the room the player is in (null for no room)
-			Room playerRoom = board.roomIn(player.getToken());
+			Room playerRoom = board.roomIn(currentPlayer.getToken());
 
 			// TODO Remove once GUI replaces text output
 			System.out
 					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			System.out.printf("%s (%s)'s turn.\n", player.getName(),
-					player.getCharacterName());
+			System.out.printf("%s (%s)'s turn.\n", currentPlayer.getName(),
+					currentPlayer.getCharacterName());
 
 			// first player action turn stage (movement or accusation)
 
@@ -140,21 +136,21 @@ public class Game {
 			// if the player did not choose to skip moving their character
 			if (actionSelected != 3) {
 				// first create the action from the given selection
-				Action action = createActionSelected(player, playerRoom,
+				Action action = createActionSelected(currentPlayer, playerRoom,
 						actionSelected);
 
 				// then perform the action
-				performAction(player, playerRoom, action);
+				performAction(currentPlayer, playerRoom, action);
 
 				// update the player room in case it changed
-				playerRoom = board.roomIn(player.getToken());
+				playerRoom = board.roomIn(currentPlayer.getToken());
 			}
 
 			// disable all frame action buttons
 			frame.setButtonSelectable("all", false);
 
 			// check if the player has been eliminated or became the winner
-			if (winner != 0 || player.isEliminated()) {
+			if (winner != 0 || currentPlayer.isEliminated()) {
 				// skip the second action stage of the player turn
 				continue;
 			}
@@ -175,11 +171,11 @@ public class Game {
 			// if the player did not choose to end their turn
 			if (actionSelected != 6) {
 				// first create the action from the given selection
-				Action action = createActionSelected(player, playerRoom,
+				Action action = createActionSelected(currentPlayer, playerRoom,
 						actionSelected);
 
 				// then perform the action
-				performAction(player, playerRoom, action);
+				performAction(currentPlayer, playerRoom, action);
 			}
 
 			// disable all frame action buttons
@@ -220,7 +216,7 @@ public class Game {
 
 			// wait for the dialog box to get player input
 			dialog.requestInput();
-			
+
 			// create a suggestion action based on the dialog input
 			SuggestionAction suggestion = new SuggestionAction(
 					dialog.getCharacter(), dialog.getRoom(), dialog.getWeapon());
@@ -243,7 +239,7 @@ public class Game {
 				return accusation;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -452,7 +448,7 @@ public class Game {
 		for (int i = 0; i < numberPlayers; i++) {
 			// setup a dialog box for the player to input a name and character
 			PlayerInputDialog dialog = new PlayerInputDialog(
-					availableCharacters, i + 1);
+					availableCharacters, board, i + 1);
 
 			// wait for the dialog box to get player input
 			dialog.requestInput();
@@ -476,7 +472,8 @@ public class Game {
 			dialog.dispose();
 
 			// give the player a copy of the deck for possible suggestion cards
-			players[i].setNonRefutedCards(deck.getCharacters(), deck.getRooms(), deck.getWeapons());
+			players[i].setNonRefutedCards(deck.getCharacters(),
+					deck.getRooms(), deck.getWeapons());
 		}
 		return players;
 	}

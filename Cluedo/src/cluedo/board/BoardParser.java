@@ -11,16 +11,20 @@ import java.util.Scanner;
 import cluedo.tiles.*;
 import cluedo.tokens.CharacterToken;
 
+import static cluedo.view.Canvas.loadImage;
+
 public class BoardParser {
 
 	/**
 	 * Parses the display board.
+	 * 
 	 * @return A String array containing the display board.
 	 */
 	public static String[] parseStringBoard() {
 		String[] boardStrings = new String[27]; // construct array of strings
 		try {
-			Scanner stringMapScanner = new Scanner(new File("src/cluedomap.txt"));
+			Scanner stringMapScanner = new Scanner(
+					new File("src/cluedomap.txt"));
 			int i = 0;
 			while (stringMapScanner.hasNextLine()) { // scan each line of the
 														// board into the array
@@ -36,7 +40,8 @@ public class BoardParser {
 
 	/**
 	 * Constructs a map of the rooms on the board.
-	 * @return A map of Strings to Rooms. 
+	 * 
+	 * @return A map of Strings to Rooms.
 	 */
 	public static Map<String, Room> constructRoomSet() {
 		Map<String, Room> rooms = new HashMap<String, Room>();
@@ -57,9 +62,11 @@ public class BoardParser {
 	}
 
 	/**
-	 * Constructs a map of Locations to Tiles for to carry out the board logic, also adds DoorTiles to the
-	 * appropriate rooms.
-	 * @param rooms A map of rooms on the board
+	 * Constructs a map of Locations to Tiles for to carry out the board logic,
+	 * also adds DoorTiles to the appropriate rooms.
+	 * 
+	 * @param rooms
+	 *            A map of rooms on the board
 	 * @return A map of Locations to Tiles.
 	 */
 	public static Map<Location, Tile> parseTileBoard(Map<String, Room> rooms) {
@@ -99,42 +106,48 @@ public class BoardParser {
 					}
 					case ('1'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Kitchen"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Kitchen"));
 						tiles.put(loc, entrance);
 						rooms.get("Kitchen").addEntrance(entrance);
 						break;
 					}
 					case ('2'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Ballroom"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Ballroom"));
 						tiles.put(loc, entrance);
 						rooms.get("Ballroom").addEntrance(entrance);
 						break;
 					}
 					case ('3'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Conservatory"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Conservatory"));
 						tiles.put(loc, entrance);
 						rooms.get("Conservatory").addEntrance(entrance);
 						break;
 					}
 					case ('4'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Billiard Room"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Billiard Room"));
 						tiles.put(loc, entrance);
 						rooms.get("Billiard Room").addEntrance(entrance);
 						break;
 					}
 					case ('5'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Library"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Library"));
 						tiles.put(loc, entrance);
 						rooms.get("Library").addEntrance(entrance);
 						break;
 					}
 					case ('6'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Study"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Study"));
 						tiles.put(loc, entrance);
 						rooms.get("Study").addEntrance(entrance);
 						break;
@@ -148,14 +161,16 @@ public class BoardParser {
 					}
 					case ('8'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Lounge"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Lounge"));
 						tiles.put(loc, entrance);
 						rooms.get("Lounge").addEntrance(entrance);
 						break;
 					}
 					case ('9'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Dining Room"));
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Dining Room"));
 						tiles.put(loc, entrance);
 						rooms.get("Dining Room").addEntrance(entrance);
 						break;
@@ -175,7 +190,9 @@ public class BoardParser {
 	}
 
 	/**
-	 * Constructs a list of CharacterTokens constructed with their initial position on the board.
+	 * Constructs a list of CharacterTokens constructed with their initial
+	 * position on the board.
+	 * 
 	 * @return A list of CharacterTokens on the board.
 	 */
 	public static List<CharacterToken> parseCharacters() {
@@ -196,32 +213,32 @@ public class BoardParser {
 					switch (currentChars[j]) {
 					case ('g'): {
 						characters.add(new CharacterToken("The Reverend Green",
-								'G', j, i));
+								'G', j, i, loadImage("portraits/Green.jpg")));
 						break;
 					}
 					case ('w'): {
 						characters.add(new CharacterToken("Mrs. White", 'W', j,
-								i));
+								i, loadImage("portraits/White.jpg")));
 						break;
 					}
 					case ('b'): {
 						characters.add(new CharacterToken("Mrs. Peacock", 'B',
-								j, i));
+								j, i, loadImage("portraits/Peacock.jpg")));
 						break;
 					}
 					case ('p'): {
 						characters.add(new CharacterToken("Professor Plum",
-								'P', j, i));
+								'P', j, i, loadImage("portraits/Plum.jpg")));
 						break;
 					}
 					case ('m'): {
 						characters.add(new CharacterToken("Colonel Mustard",
-								'M', j, i));
+								'M', j, i, loadImage("portraits/Mustard.jpg")));
 						break;
 					}
 					case ('s'): {
 						characters.add(new CharacterToken("Miss Scarlett", 'S',
-								j, i));
+								j, i, loadImage("portraits/Scarlett.jpg")));
 						break;
 					}
 					default:
@@ -236,5 +253,4 @@ public class BoardParser {
 		}
 		return characters;
 	}
-
 }

@@ -1,13 +1,14 @@
 package cluedo.tokens;
 
+import java.awt.Image;
+
 import cluedo.board.Room;
 
 public class WeaponToken extends Token {
 	Room room;
 
-	public WeaponToken(String name, Room room) {
-		super(name);
-
+	public WeaponToken(String name, Room room, Image image) {
+		super(name, image);
 	}
 
 	public void leaveRoom() {

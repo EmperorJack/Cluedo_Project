@@ -38,13 +38,10 @@ public class Canvas extends JPanel {
 
 		// draw the background colour
 		g2d.setColor(Color.BLACK);
-		// g2d.setColor(new Color((float) Math.random(), (float) Math.random(),
-		// (float) Math.random()));
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
 		// TODO draw game visible components here
-		g.translate(0, 0); // YO KELLY WE CAN TRANSLATE THE CANVAS
-		// YAAAAAAAS
+		g.translate(0, 0);
 		board.draw(g2d, getWidth(), getHeight());
 	}
 
@@ -54,8 +51,8 @@ public class Canvas extends JPanel {
 	 * @param filename
 	 * @return The image if it was successfully loaded.
 	 */
-	public static Image loadImage(String filename) {
 		// using the URL means the image loads when stored
+	public static Image loadImage(String filename) {
 		// in a jar or expanded into individual files.
 		java.net.URL imageURL = Canvas.class.getResource(IMAGE_PATH + filename);
 

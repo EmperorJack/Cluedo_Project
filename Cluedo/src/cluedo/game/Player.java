@@ -1,6 +1,7 @@
 package cluedo.game;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,9 +21,9 @@ public class Player {
 	private String name;
 	private int id;
 	private HashSet<Card> hand;
-	private HashSet<Card> nonRefutedCharacters;
-	private HashSet<Card> nonRefutedRooms;
-	private HashSet<Card> nonRefutedWeapons;
+	private ArrayList<Card> nonRefutedCharacters;
+	private ArrayList<Card> nonRefutedRooms;
+	private ArrayList<Card> nonRefutedWeapons;
 	private boolean eliminated;
 
 	/**
@@ -70,9 +71,9 @@ public class Player {
 	 */
 	public void setNonRefutedCards(List<Card> characterCards,
 			List<Card> roomCards, List<Card> weaponCards) {
-		nonRefutedCharacters = new HashSet<Card>(characterCards);
-		nonRefutedRooms = new HashSet<Card>(roomCards);
-		nonRefutedWeapons = new HashSet<Card>(weaponCards);
+		nonRefutedCharacters = new ArrayList<Card>(characterCards);
+		nonRefutedRooms = new ArrayList<Card>(roomCards);
+		nonRefutedWeapons = new ArrayList<Card>(weaponCards);
 	}
 
 	/**
@@ -126,15 +127,15 @@ public class Player {
 		return hand;
 	}
 
-	public HashSet<Card> getNonRefutedCharacters() {
+	public ArrayList<Card> getNonRefutedCharacters() {
 		return nonRefutedCharacters;
 	}
 	
-	public HashSet<Card> getNonRefutedRooms() {
+	public ArrayList<Card> getNonRefutedRooms() {
 		return nonRefutedRooms;
 	}
 	
-	public HashSet<Card> getNonRefutedWeapons() {
+	public ArrayList<Card> getNonRefutedWeapons() {
 		return nonRefutedCharacters;
 	}
 

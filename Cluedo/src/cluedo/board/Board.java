@@ -1,5 +1,7 @@
 package cluedo.board;
 
+import cluedo.game.Dice;
+import cluedo.game.Player;
 import cluedo.tiles.*;
 import cluedo.tokens.*;
 import cluedo.view.Canvas;
@@ -12,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static cluedo.view.Canvas.loadImage;
+
 public class Board {
 	Map<Location, Tile> tiles;
 	String[] boardStrings;
@@ -22,18 +26,20 @@ public class Board {
 	private Image boardImage;
 	int clkCnt = 0;
 
-	
 	/**
-	  * Creates the game board. The underlying board for the game logic is a Map
+	 * Creates the game board. The underlying board for the game logic is a Map
 	 * of Locations(x,y) to Tile objects, while an array of Strings is used to
 	 * return a more visually appealing representation to the UI class.
-	 * @param weapons An array of the names of the weapons on the board.
-	 * @param rooms An array of the names of the rooms on the board.
+	 * 
+	 * @param weapons
+	 *            An array of the names of the weapons on the board.
+	 * @param rooms
+	 *            An array of the names of the rooms on the board.
 	 * 
 	 * @author Kelly
 	 */
 	public Board(String[] weapons, String[] rooms) {
-		
+
 		this.boardImage = Canvas.loadImage("board.jpg");
 		scaleTest = 1;
 
@@ -51,8 +57,10 @@ public class Board {
 		roomsList.addAll(Arrays.asList(rooms));
 		for (int i = 0; i < weapons.length; i++) {
 			int randomIndex = (int) (Math.random() * roomsList.size());
+			// TODO parse in weapon tokens with their individual images
 			WeaponToken tokenToAdd = new WeaponToken(weapons[i],
-					roomMap.get(roomsList.get(randomIndex)));
+					roomMap.get(roomsList.get(randomIndex)),
+					loadImage("placeholder.jpg"));
 			this.weapons.add(tokenToAdd);
 			roomMap.get(roomsList.get(randomIndex)).addToken(tokenToAdd);
 			roomsList.remove(randomIndex);
@@ -60,10 +68,15 @@ public class Board {
 	}
 
 	/**
-	 * Uses Dijkstra's algorithm to calculate the shortest possible path to a location on the board.
-	 * @param token CharacterToken to move 
-	 * @param loc Destination location.
-	 * @return The number of steps in the shortest path, or -1 if there is no available path.
+	 * Uses Dijkstra's algorithm to calculate the shortest possible path to a
+	 * location on the board.
+	 * 
+	 * @param token
+	 *            CharacterToken to move
+	 * @param loc
+	 *            Destination location.
+	 * @return The number of steps in the shortest path, or -1 if there is no
+	 *         available path.
 	 */
 	public int calculatePathLength(CharacterToken token, Location loc) {
 		if (!token.inRoom()) {
@@ -87,7 +100,9 @@ public class Board {
 
 	/**
 	 * Checks if a CharacterToken is on a given location on the board.
-	 * @param loc Location to check.
+	 * 
+	 * @param loc
+	 *            Location to check.
 	 * @return True if there is a CharacterToken, false if not.
 	 */
 	public boolean hasCharacterOn(Location loc) {
@@ -102,8 +117,10 @@ public class Board {
 	 * Moves the player token to the set location on the board, if the
 	 * characterToken is on a door tile it moves the token into the room.
 	 * 
-	 * @param token CharacterToken to move.
-	 * @param  loc Location to place on board.
+	 * @param token
+	 *            CharacterToken to move.
+	 * @param loc
+	 *            Location to place on board.
 	 */
 	public void movePlayer(CharacterToken token, Location loc) {
 		Tile t = getTile(loc);
@@ -124,7 +141,9 @@ public class Board {
 
 	/**
 	 * Returns the room a character is in.
-	 * @param token Character in room.
+	 * 
+	 * @param token
+	 *            Character in room.
 	 * @return Room the character is in, null if none.
 	 */
 	public Room roomIn(CharacterToken token) {
@@ -157,7 +176,8 @@ public class Board {
 	/**
 	 * Splices character positions onto the text board.
 	 * 
-	 * @return A new String array of the board with the correct character positions.
+	 * @return A new String array of the board with the correct character
+	 *         positions.
 	 */
 	public String[] updateBoard() {
 		String[] updatedBoard = Arrays
@@ -177,25 +197,28 @@ public class Board {
 		}
 		return updatedBoard;
 	}
-	
+
 	public void draw(Graphics2D g, int width, int height) {
 		int minSize = Math.min(width, height);
 		AffineTransform tx1 = new AffineTransform();
 		tx1.scale(scaleTest, scaleTest);
 		g.setTransform(tx1);
-		double proportion = boardImage.getWidth(null)/boardImage.getHeight(null);
-		if (width < height){
-			g.drawImage(boardImage, 0, (height - minSize)/2, (int)(minSize*proportion), minSize, null);
-			} else {
-			g.drawImage(boardImage, (width-minSize)/2, 0, (int)(minSize*proportion), minSize, null);
-			}
+		double proportion = boardImage.getWidth(null)
+				/ boardImage.getHeight(null);
+		if (width < height) {
+			g.drawImage(boardImage, 0, (height - minSize) / 2,
+					(int) (minSize * proportion), minSize, null);
+		} else {
+			g.drawImage(boardImage, (width - minSize) / 2, 0,
+					(int) (minSize * proportion), minSize, null);
+		}
 		g.dispose();
 		// TODO draw the board
 	}
-	
-	public void tick(){
+
+	public void tick() {
 		clkCnt++;
-		scaleTest = 0.9 + (0.1 *(Math.sin(Math.toRadians(clkCnt))));
+		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
 	}
 
 	/**
@@ -235,5 +258,4 @@ public class Board {
 		token.leaveRoom();
 		token.setRoom(destination);
 	}
-
 }
