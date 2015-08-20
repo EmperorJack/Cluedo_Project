@@ -15,6 +15,9 @@ public class Deck {
 
 	// deck fields
 	private List<Card> deck;
+	private List<Card> characterCards;
+	private List<Card> roomCards;
+	private List<Card> weaponCards;
 	private List<Card> solution;
 
 	/**
@@ -30,20 +33,29 @@ public class Deck {
 	public Deck(String[] characters, String[] rooms, String[] weapons) {
 		// define a new deck of cards
 		deck = new ArrayList<Card>();
+		characterCards = new ArrayList<Card>();
+		roomCards = new ArrayList<Card>();
+		weaponCards = new ArrayList<Card>();
 
 		// add character cards
 		for (int i = 0; i < characters.length; i++) {
-			deck.add(new CharacterCard(characters[i]));
+			CharacterCard character = new CharacterCard(characters[i]);
+			deck.add(character);
+			characterCards.add(character);
 		}
 
 		// add room cards
 		for (int i = 0; i < rooms.length; i++) {
-			deck.add(new RoomCard(rooms[i]));
+			RoomCard room = new RoomCard(rooms[i]);
+			deck.add(room);
+			roomCards.add(room);
 		}
 
 		// add weapon cards
 		for (int i = 0; i < weapons.length; i++) {
-			deck.add(new WeaponCard(weapons[i]));
+			WeaponCard weapon = new WeaponCard(weapons[i]);
+			deck.add(weapon);
+			weaponCards.add(weapon);
 		}
 
 		// shuffle the complete deck of cards
@@ -118,9 +130,21 @@ public class Deck {
 	}
 
 	// get methods below to return the deck data structures
-
+	
 	public List<Card> getDeck() {
 		return deck;
+	}
+
+	public List<Card> getCharacters() {
+		return characterCards;
+	}
+	
+	public List<Card> getRooms() {
+		return roomCards;
+	}
+	
+	public List<Card> getWeapons() {
+		return weaponCards;
 	}
 
 	public List<Card> getSolution() {

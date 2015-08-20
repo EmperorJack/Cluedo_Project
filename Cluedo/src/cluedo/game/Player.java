@@ -20,7 +20,9 @@ public class Player {
 	private String name;
 	private int id;
 	private HashSet<Card> hand;
-	private HashSet<Card> nonRefutedCards;
+	private HashSet<Card> nonRefutedCharacters;
+	private HashSet<Card> nonRefutedRooms;
+	private HashSet<Card> nonRefutedWeapons;
 	private boolean eliminated;
 
 	/**
@@ -52,30 +54,38 @@ public class Player {
 		hand.add(c);
 
 		// remove the card from possible suggestion cards
-		nonRefutedCards.remove(c);
+		nonRefutedCharacters.remove(c);
+		nonRefutedRooms.remove(c);
+		nonRefutedWeapons.remove(c);
 	}
 
 	/**
-	 * Given a list of cards will set the players set of non-refuted cards to
-	 * the list. Used in initial game setup, should be given a complete listing
-	 * of the deck of cards.
+	 * Given lists of all possible cards will set the players sets of
+	 * non-refuted cards to each list. Used in initial game setup, should be
+	 * given a complete listing of the deck of cards.
 	 * 
-	 * @param cards
-	 *            The list of cards to set the non-refuted cards too.
+	 * @param characterCards
+	 * @param roomCards
+	 * @param weaponCards
 	 */
-	public void setNonRefutedCards(List<Card> cards) {
-		nonRefutedCards = new HashSet<Card>(cards);
+	public void setNonRefutedCards(List<Card> characterCards,
+			List<Card> roomCards, List<Card> weaponCards) {
+		nonRefutedCharacters = new HashSet<Card>(characterCards);
+		nonRefutedRooms = new HashSet<Card>(roomCards);
+		nonRefutedWeapons = new HashSet<Card>(weaponCards);
 	}
 
 	/**
-	 * Given a card will remove it from the non-refuted cards. The card has been
+	 * Given a card will remove it from the non-refuted card sets. The card has been
 	 * ruled out as a possible solution.
 	 * 
 	 * @param c
 	 *            The card to refute.
 	 */
 	public void refuteCard(Card c) {
-		nonRefutedCards.remove(c);
+		nonRefutedCharacters.remove(c);
+		nonRefutedRooms.remove(c);
+		nonRefutedWeapons.remove(c);
 	}
 
 	/**
@@ -93,17 +103,17 @@ public class Player {
 	public void eliminate() {
 		eliminated = true;
 	}
-	
+
 	public void draw(Graphics2D g2d) {
-		
+
 	}
 
 	// get methods below to return player fields
-	
+
 	public CharacterToken getToken() {
 		return character;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -116,8 +126,16 @@ public class Player {
 		return hand;
 	}
 
-	public HashSet<Card> getNonRefutedCards() {
-		return nonRefutedCards;
+	public HashSet<Card> getNonRefutedCharacters() {
+		return nonRefutedCharacters;
+	}
+	
+	public HashSet<Card> getNonRefutedRooms() {
+		return nonRefutedRooms;
+	}
+	
+	public HashSet<Card> getNonRefutedWeapons() {
+		return nonRefutedCharacters;
 	}
 
 	public String getCharacterName() {

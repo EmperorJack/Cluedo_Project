@@ -53,7 +53,9 @@ public class Game {
 		frame = new Frame(board);
 		dice = new Dice();
 		winner = 0;
-		ClockThread clk = new ClockThread(1,board,frame);	
+
+		// start the clock thread for continuous board updating
+		ClockThread clk = new ClockThread(1, board, frame);
 		clk.start();
 
 		// generate a new complete deck
@@ -63,7 +65,7 @@ public class Game {
 		numberPlayers = frame.numberPlayersRequestDialog();
 
 		// create new players each with a unique character token
-		players = setupPlayers(deck.getDeck());
+		players = setupPlayers();
 
 		// generate the solution cards
 		deck.generateSolution();
@@ -80,10 +82,10 @@ public class Game {
 	 * JUnit Testing.
 	 */
 	public Game(String test) {
-		// setup system	
+		// setup system
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
-		
+
 	}
 
 	/**
@@ -212,24 +214,21 @@ public class Game {
 
 		// suggestion action selected
 		if (actionSelected == 4 && playerRoom != null) {
-			// TODO replace with suggestion dialog
-			return ui.requestSuggestion(player, playerRoom);
-			
-			/*
-			// setup a dialog box for the player to input their suggested cards
+			// setup a dialog box for the player to input their suggested
 			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
 					"Suggestion");
 
 			// wait for the dialog box to get player input
 			dialog.requestInput();
-
+			
+			// create a suggestion action based on the dialog input
 			SuggestionAction suggestion = new SuggestionAction(
 					dialog.getCharacter(), dialog.getRoom(), dialog.getWeapon());
 
 			// dispose of the dialog box
 			dialog.dispose();
 
-			return suggestion;*/
+			return suggestion;
 		}
 
 		// accusation action selected
@@ -244,7 +243,7 @@ public class Game {
 				return accusation;
 			}
 		}
-
+		
 		return null;
 	}
 
@@ -441,7 +440,7 @@ public class Game {
 	 *            All possible cards available in the game of cluedo.
 	 * @return The new list of players.
 	 */
-	private Player[] setupPlayers(List<Card> possibleCards) {
+	private Player[] setupPlayers() {
 		// create a list of players with size given by the number of players
 		players = new Player[numberPlayers];
 
@@ -477,7 +476,7 @@ public class Game {
 			dialog.dispose();
 
 			// give the player a copy of the deck for possible suggestion cards
-			players[i].setNonRefutedCards(possibleCards);
+			players[i].setNonRefutedCards(deck.getCharacters(), deck.getRooms(), deck.getWeapons());
 		}
 		return players;
 	}

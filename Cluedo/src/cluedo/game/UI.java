@@ -609,8 +609,8 @@ public class UI {
 		System.out.printf("Your cards are: %s\n", player.getHand());
 
 		// print the known refuted suggestion cards for this player
-		System.out.printf("Non-refuted possible suggestion cards are: %s\n",
-				player.getNonRefutedCards());
+		// System.out.printf("Non-refuted possible suggestion cards are: %s\n",
+		// player.getNonRefutedCards());
 	}
 
 	/**
