@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import cluedo.game.ClockThread;
 import cluedo.board.Board;
 import cluedo.board.Location;
 import cluedo.board.Room;
@@ -52,6 +53,8 @@ public class Game {
 		frame = new Frame(board);
 		dice = new Dice();
 		winner = 0;
+		ClockThread clk = new ClockThread(1,board,frame);	
+		clk.start();
 
 		// generate a new complete deck
 		deck = new Deck(CHARACTERS, ROOMS, WEAPONS);
@@ -77,9 +80,10 @@ public class Game {
 	 * JUnit Testing.
 	 */
 	public Game(String test) {
-		// setup system
+		// setup system	
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
+		
 	}
 
 	/**

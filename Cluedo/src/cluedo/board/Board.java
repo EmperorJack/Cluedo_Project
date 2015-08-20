@@ -6,6 +6,7 @@ import cluedo.view.Canvas;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,9 @@ public class Board {
 	List<CharacterToken> characters;
 	Map<String, Room> roomMap;
 	List<WeaponToken> weapons;
+	double scaleTest;
 	private Image boardImage;
+	int clkCnt = 0;
 
 	
 	/**
@@ -32,6 +35,7 @@ public class Board {
 	public Board(String[] weapons, String[] rooms) {
 		
 		this.boardImage = Canvas.loadImage("board.jpg");
+		scaleTest = 1;
 
 		// Construct string version of the board
 		boardStrings = BoardParser.parseStringBoard();
@@ -176,13 +180,22 @@ public class Board {
 	
 	public void draw(Graphics2D g, int width, int height) {
 		int minSize = Math.min(width, height);
+		AffineTransform tx1 = new AffineTransform();
+		tx1.scale(scaleTest, scaleTest);
+		g.setTransform(tx1);
 		double proportion = boardImage.getWidth(null)/boardImage.getHeight(null);
 		if (width < height){
 			g.drawImage(boardImage, 0, (height - minSize)/2, (int)(minSize*proportion), minSize, null);
 			} else {
 			g.drawImage(boardImage, (width-minSize)/2, 0, (int)(minSize*proportion), minSize, null);
 			}
+		g.dispose();
 		// TODO draw the board
+	}
+	
+	public void tick(){
+		clkCnt++;
+		scaleTest = 0.9 + (0.1 *(Math.sin(Math.toRadians(clkCnt))));
 	}
 
 	/**
