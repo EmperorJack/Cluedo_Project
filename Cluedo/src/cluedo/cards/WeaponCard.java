@@ -6,7 +6,7 @@ package cluedo.cards;
 public class WeaponCard extends Card {
 
 	/**
-	 * Setup a new weapon card.
+	 * /** Setup a new weapon card.
 	 * 
 	 * @param name
 	 *            The given card name.

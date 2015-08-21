@@ -15,9 +15,9 @@ public class Deck {
 
 	// deck fields
 	private List<Card> deck;
-	private List<Card> characterCards;
-	private List<Card> roomCards;
-	private List<Card> weaponCards;
+	private List<CharacterCard> characterCards;
+	private List<RoomCard> roomCards;
+	private List<WeaponCard> weaponCards;
 	private List<Card> solution;
 
 	/**
@@ -35,9 +35,9 @@ public class Deck {
 		deck = new ArrayList<Card>();
 		
 		// use the following lists to store card types separately
-		characterCards = new ArrayList<Card>();
-		roomCards = new ArrayList<Card>();
-		weaponCards = new ArrayList<Card>();
+		characterCards = new ArrayList<CharacterCard>();
+		roomCards = new ArrayList<RoomCard>();
+		weaponCards = new ArrayList<WeaponCard>();
 
 		// add character cards
 		for (int i = 0; i < characters.length; i++) {
@@ -137,15 +137,15 @@ public class Deck {
 		return deck;
 	}
 
-	public List<Card> getCharacters() {
+	public List<CharacterCard> getCharacters() {
 		return characterCards;
 	}
 	
-	public List<Card> getRooms() {
+	public List<RoomCard> getRooms() {
 		return roomCards;
 	}
 	
-	public List<Card> getWeapons() {
+	public List<WeaponCard> getWeapons() {
 		return weaponCards;
 	}
 

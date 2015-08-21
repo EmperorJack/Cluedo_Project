@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import cluedo.cards.Card;
+import cluedo.cards.*;
 import cluedo.tokens.CharacterToken;
 
 /**
@@ -21,9 +21,9 @@ public class Player {
 	private String name;
 	private int id;
 	private HashSet<Card> hand;
-	private ArrayList<Card> nonRefutedCharacters;
-	private ArrayList<Card> nonRefutedRooms;
-	private ArrayList<Card> nonRefutedWeapons;
+	private ArrayList<CharacterCard> nonRefutedCharacters;
+	private ArrayList<RoomCard> nonRefutedRooms;
+	private ArrayList<WeaponCard> nonRefutedWeapons;
 	private boolean eliminated;
 
 	/**
@@ -69,11 +69,11 @@ public class Player {
 	 * @param roomCards
 	 * @param weaponCards
 	 */
-	public void setNonRefutedCards(List<Card> characterCards,
-			List<Card> roomCards, List<Card> weaponCards) {
-		nonRefutedCharacters = new ArrayList<Card>(characterCards);
-		nonRefutedRooms = new ArrayList<Card>(roomCards);
-		nonRefutedWeapons = new ArrayList<Card>(weaponCards);
+	public void setNonRefutedCards(List<CharacterCard> characterCards,
+			List<RoomCard> roomCards, List<WeaponCard> weaponCards) {
+		nonRefutedCharacters = new ArrayList<CharacterCard>(characterCards);
+		nonRefutedRooms = new ArrayList<RoomCard>(roomCards);
+		nonRefutedWeapons = new ArrayList<WeaponCard>(weaponCards);
 	}
 
 	/**
@@ -127,16 +127,16 @@ public class Player {
 		return hand;
 	}
 
-	public ArrayList<Card> getNonRefutedCharacters() {
+	public ArrayList<CharacterCard> getNonRefutedCharacters() {
 		return nonRefutedCharacters;
 	}
 	
-	public ArrayList<Card> getNonRefutedRooms() {
+	public ArrayList<RoomCard> getNonRefutedRooms() {
 		return nonRefutedRooms;
 	}
 	
-	public ArrayList<Card> getNonRefutedWeapons() {
-		return nonRefutedCharacters;
+	public ArrayList<WeaponCard> getNonRefutedWeapons() {
+		return nonRefutedWeapons;
 	}
 
 	public String getCharacterName() {

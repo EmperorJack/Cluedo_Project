@@ -158,10 +158,10 @@ public class Game {
 			// second player action turn stage (suggestion or accusation)
 
 			// enable the buttons that can be used in the second turn stage
-			if (playerRoom != null) {
+			//if (playerRoom != null) {
 				// if the player is in a room
 				frame.setButtonSelectable("suggestion", true);
-			}
+			//} // TODO UNCOMMENT NULL CHECK
 			frame.setButtonSelectable("accusation", true);
 			frame.setButtonSelectable("endTurn", true);
 
@@ -203,13 +203,13 @@ public class Game {
 			return ui.requestMove(player, rollAmount);
 		}
 
-		if (actionSelected == 2 && playerRoom != null) {
+		if (actionSelected == 2) {
 			// secret passage action selected
 			return new SecretPassageAction(playerRoom, playerRoom.getPassage());
 		}
 
 		// suggestion action selected
-		if (actionSelected == 4 && playerRoom != null) {
+		if (actionSelected == 4) {
 			// setup a dialog box for the player to input their suggested
 			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
 					"Suggestion");

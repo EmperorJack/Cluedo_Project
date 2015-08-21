@@ -3,8 +3,6 @@ package cluedo.tokens;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-import static cluedo.view.Canvas.loadImage;
-
 public abstract class Token {
 
 	private String name;

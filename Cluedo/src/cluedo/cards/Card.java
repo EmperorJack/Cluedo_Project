@@ -19,14 +19,10 @@ public abstract class Card {
 	 * @param name
 	 *            The given card name.
 	 */
-	public Card(String name, String fileName) {
-		this.name = name;
-		this.image = loadImage(fileName);
-	}
-
 	public Card(String name) {
 		this.name = name;
-		// TODO Remove this constructor once image files have been made
+		//this.image = loadImage("cards/" + name + ".jpg");
+		this.image = loadImage("placeholder.jpg");
 	}
 
 	@Override
@@ -34,9 +30,12 @@ public abstract class Card {
 		return name;
 	}
 
-
 	public void draw(Graphics g) {
 		g.drawImage(image, 0, 0, null);
+	}
+	
+	public Image getImage() {
+		return image;
 	}
 
 	@Override

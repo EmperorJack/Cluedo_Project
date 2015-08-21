@@ -82,11 +82,13 @@ public class PlayerInputDialog extends InputDialog {
 			button.addItemListener(new RadioButtonHandler(characters.get(i),
 					board.getCharacterToken(characters.get(i))));
 		}
+		panel.add(optionPanel);
 
 		// setup the portrait of the currently selected character
 		JPanel portraitPanel = new JPanel(new FlowLayout());
 		imageLabel = new JLabel(new ImageIcon(currentToken.getImage()));
 		portraitPanel.add(imageLabel);
+		panel.add(portraitPanel);
 
 		// setup the OK button to confirm player selection
 		JPanel buttonPanel = new JPanel(new FlowLayout());
@@ -100,11 +102,9 @@ public class PlayerInputDialog extends InputDialog {
 			}
 		});
 		buttonPanel.add(okButton);
+		panel.add(buttonPanel);
 
 		// finish setting up the dialog box attributes
-		panel.add(optionPanel);
-		panel.add(portraitPanel);
-		panel.add(buttonPanel);
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		add(panel);
 		getRootPane().setDefaultButton(okButton);
@@ -137,6 +137,8 @@ public class PlayerInputDialog extends InputDialog {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				// set the dialog box selected character to this character name
 				selectedCharacter = name;
+
+				// set the dialog box character portrait to this token image
 				imageLabel.setIcon(new ImageIcon(token.getImage()));
 			}
 		}
