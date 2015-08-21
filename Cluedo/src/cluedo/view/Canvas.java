@@ -23,11 +23,6 @@ public class Canvas extends JPanel {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-	}
-
-	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(600, 600);
 	}

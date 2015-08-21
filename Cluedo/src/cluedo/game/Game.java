@@ -158,10 +158,10 @@ public class Game {
 			// second player action turn stage (suggestion or accusation)
 
 			// enable the buttons that can be used in the second turn stage
-			//if (playerRoom != null) {
+			if (playerRoom != null) {
 				// if the player is in a room
 				frame.setButtonSelectable("suggestion", true);
-			//} // TODO UNCOMMENT NULL CHECK
+			}
 			frame.setButtonSelectable("accusation", true);
 			frame.setButtonSelectable("endTurn", true);
 
