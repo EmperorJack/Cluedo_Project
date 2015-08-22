@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static cluedo.view.Canvas.loadImage;
-
 public class Board {
 	Map<Location, Tile> tiles;
 	String[] boardStrings;
@@ -59,8 +57,7 @@ public class Board {
 			int randomIndex = (int) (Math.random() * roomsList.size());
 			// TODO parse in weapon tokens with their individual images
 			WeaponToken tokenToAdd = new WeaponToken(weapons[i],
-					roomMap.get(roomsList.get(randomIndex)),
-					loadImage("placeholder.jpg"));
+					roomMap.get(roomsList.get(randomIndex)));
 			this.weapons.add(tokenToAdd);
 			roomMap.get(roomsList.get(randomIndex)).addToken(tokenToAdd);
 			roomsList.remove(randomIndex);

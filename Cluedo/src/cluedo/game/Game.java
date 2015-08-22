@@ -118,6 +118,8 @@ public class Game {
 					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.printf("%s (%s)'s turn.\n", currentPlayer.getName(),
 					currentPlayer.getCharacterName());
+			// print player card info
+			ui.printPlayerCardInfo(currentPlayer);
 
 			// first player action turn stage (movement or accusation)
 
@@ -210,9 +212,9 @@ public class Game {
 
 		// suggestion action selected
 		if (actionSelected == 4) {
-			// setup a dialog box for the player to input their suggested
+			// setup a dialog box for the player to input their suggestion
 			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
-					"Suggestion");
+					"Suggestion", deck);
 
 			// wait for the dialog box to get player input
 			dialog.requestInput();
@@ -230,14 +232,23 @@ public class Game {
 		// accusation action selected
 		if (actionSelected == 5) {
 			// check the player wants to make an accusation
-			Action accusation = ui.requestAccusationYN(player);
+			// TODO Confirm player wants to make an accusation here
 
-			// return the accusation action if the player followed through
-			// with the action after the warning message
-			if (accusation != null) {
-				// TODO replace with accusation dialog
-				return accusation;
-			}
+			// setup a dialog box for the player to input their suggestion
+			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
+					"Accusation", deck);
+
+			// wait for the dialog box to get player input
+			dialog.requestInput();
+
+			// create an accusation action based on the dialog input
+			AccusationAction accusation = new AccusationAction(
+					dialog.getCharacter(), dialog.getRoom(), dialog.getWeapon());
+
+			// dispose of the dialog box
+			dialog.dispose();
+
+			return accusation;
 		}
 
 		return null;

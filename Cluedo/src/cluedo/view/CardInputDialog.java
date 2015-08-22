@@ -4,19 +4,22 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import cluedo.board.Room;
 import cluedo.cards.*;
+import cluedo.game.Deck;
 import cluedo.game.Player;
 
 /**
@@ -27,18 +30,18 @@ import cluedo.game.Player;
 public class CardInputDialog extends InputDialog {
 
 	// dialog box fields
-	private JComboBox characterSelector;
-	private JComboBox roomSelector;
-	private JComboBox weaponSelector;
+	private ButtonGroup characterRadioGroup;
+	private ButtonGroup roomRadioGroup;
+	private ButtonGroup weaponRadioGroup;
 	private JLabel characterImageLabel;
 	private JLabel roomImageLabel;
 	private JLabel weaponImageLabel;
 	private CharacterCard character;
 	private RoomCard room;
 	private WeaponCard weapon;
-	private Object[] characters;
-	private Object[] rooms;
-	private Object[] weapons;
+	private List<CharacterCard> characters;
+	private List<RoomCard> rooms;
+	private List<WeaponCard> weapons;
 
 	/**
 	 * Setup a new suggestion / accusation input dialog.
@@ -46,89 +49,131 @@ public class CardInputDialog extends InputDialog {
 	 * @param player
 	 * @param playerRoom
 	 */
-	public CardInputDialog(Player player, Room playerRoom, String type) {
+	public CardInputDialog(Player player, Room playerRoom, String type,
+			Deck deck) {
 		super(type + " Input");
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		// setup the option panel to hold input fields
+		// get lists of selectable cards
+		characters = deck.getCharacters();
+		rooms = deck.getRooms();
+		weapons = deck.getWeapons();
+
+		// setup the card selector headings panel
+		JPanel headerPanel = new JPanel(new GridLayout(0, 3));
+		headerPanel.add(new JLabel("Character Card Select"));
+		headerPanel.add(new JLabel("Room Card Select"));
+		headerPanel.add(new JLabel("Weapon Card Select"));
+		panel.add(headerPanel);
+
+		// setup the option panel to hold card input fields
 		JPanel optionPanel = new JPanel();
 		optionPanel.setLayout(new GridLayout(0, 3));
 
-		// get lists of selectable cards
-		characters = player.getNonRefutedCharacters().toArray();
-		rooms = player.getNonRefutedRooms().toArray();
-		weapons = player.getNonRefutedWeapons().toArray();
-
-		// set default selected cards
-		character = (CharacterCard) characters[0];
-		room = (RoomCard) rooms[0];
-		weapon = (WeaponCard) weapons[0];
-
-		// if this dialog is for a suggestion action
-		if (type.equals("Suggestion")) {
-			// the player must use the room they are currently in
-			room = new RoomCard(playerRoom.getName());
-			rooms = new RoomCard[] { room };
-		}
-
-		// setup the card selector headings
-		optionPanel.add(new JLabel("Character Card Select"));
-		optionPanel.add(new JLabel("Room Card Select"));
-		optionPanel.add(new JLabel("Weapon Card Select"));
-
 		// setup the character card selector
-		JPanel characterSelectorPanel = new JPanel(new FlowLayout());
-		characterSelector = new JComboBox(characters);
-		characterSelector.setSelectedIndex(0);
-		characterSelector.addActionListener(new ActionListener() {
+		JPanel characterSelectorPanel = new JPanel(new GridLayout(0, 1));
+		characterRadioGroup = new ButtonGroup();
+		boolean defaultSelected = false;
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// set the dialog currently selected character to the new card
-				character = (CharacterCard) characterSelector.getSelectedItem();
-
-				// set the dialog character image label to the new card image
-				characterImageLabel.setIcon(new ImageIcon(character.getImage()));
+		// setup a radio button for each character card
+		for (int i = 0; i < characters.size(); i++) {
+			JRadioButton button;
+			button = new JRadioButton(characters.get(i).toString(), false);
+			// grey out the character buttons the player knows has been refuted
+			if (!player.getNonRefutedCharacters().contains(characters.get(i))) {
+				button.setEnabled(false);
+			} else if (!defaultSelected) {
+				// set the default selected button if it has not been chosen yet
+				button.setSelected(true);
+				character = characters.get(i);
+				defaultSelected = true;
 			}
-		});
-		characterSelectorPanel.add(characterSelector);
+
+			// add the new radio button to the container and radio button group
+			characterSelectorPanel.add(button);
+			characterRadioGroup.add(button);
+
+			// create a listener for the new radio button
+			button.addItemListener(new CharacterRadioButtonHandler(characters
+					.get(i)));
+		}
 		optionPanel.add(characterSelectorPanel);
 
 		// setup the room card selector
-		JPanel roomSelectorPanel = new JPanel(new FlowLayout());
-		roomSelector = new JComboBox(rooms);
-		roomSelector.setSelectedIndex(0);
-		roomSelector.addActionListener(new ActionListener() {
+		JPanel roomSelectorPanel = new JPanel(new GridLayout(0, 1));
+		roomRadioGroup = new ButtonGroup();
+		defaultSelected = false;
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// set the dialog currently selected character to the new card
-				room = (RoomCard) roomSelector.getSelectedItem();
+		// setup a radio button for each room card
+		for (int i = 0; i < rooms.size(); i++) {
+			JRadioButton button;
+			button = new JRadioButton(rooms.get(i).toString(), false);
 
-				// set the dialog character image label to the new card image
-				roomImageLabel.setIcon(new ImageIcon(room.getImage()));
+			// if this dialog is for a suggestion action
+			if (type.equals("Suggestion")) {
+				// if the current room button matches the player room
+				if (rooms.get(i).toString().equals(playerRoom.getName())) {
+					// the player must select the room they are currently in
+					room = rooms.get(i);
+					button.setSelected(true);
+					defaultSelected = true;
+
+					// grey out the button if the player knows it to be refuted
+					if (!player.getNonRefutedRooms().contains(rooms.get(i))) {
+						button.setEnabled(false);
+					}
+				} else {
+					button.setEnabled(false);
+				}
 			}
-		});
-		roomSelectorPanel.add(roomSelector);
+
+			// grey out the room buttons the player knows has been refuted
+			else if (!player.getNonRefutedRooms().contains(rooms.get(i))) {
+				button.setEnabled(false);
+			} else if (!defaultSelected) {
+				// set the default selected button if it has not been chosen yet
+				button.setSelected(true);
+				room = rooms.get(i);
+				defaultSelected = true;
+			}
+
+			// add the new radio button to the container and radio button group
+			roomSelectorPanel.add(button);
+			roomRadioGroup.add(button);
+
+			// create a listener for the new radio button
+			button.addItemListener(new RoomRadioButtonHandler(rooms.get(i)));
+		}
 		optionPanel.add(roomSelectorPanel);
 
 		// setup the weapon card selector
-		JPanel weaponSelectorPanel = new JPanel(new FlowLayout());
-		weaponSelector = new JComboBox(weapons);
-		weaponSelector.setSelectedIndex(0);
-		weaponSelector.addActionListener(new ActionListener() {
+		JPanel weaponSelectorPanel = new JPanel(new GridLayout(0, 1));
+		weaponRadioGroup = new ButtonGroup();
+		defaultSelected = false;
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// set the dialog currently selected character to the new card
-				weapon = (WeaponCard) weaponSelector.getSelectedItem();
+		// setup a radio button for each weapon card
+		for (int i = 0; i < weapons.size(); i++) {
+			JRadioButton button;
+			button = new JRadioButton(weapons.get(i).toString(), false);
 
-				// set the dialog character image label to the new card image
-				weaponImageLabel.setIcon(new ImageIcon(weapon.getImage()));
+			// add the new radio button to the container and radio button group
+			weaponSelectorPanel.add(button);
+			weaponRadioGroup.add(button);
+
+			// grey out the weapon buttons the player knows has been refuted
+			if (!player.getNonRefutedWeapons().contains(weapons.get(i))) {
+				button.setEnabled(false);
+			} else if (!defaultSelected) {
+				// set the default selected button if it has not been chosen yet
+				button.setSelected(true);
+				weapon = weapons.get(i);
+				defaultSelected = true;
 			}
-		});
-		weaponSelectorPanel.add(weaponSelector);
+
+			// create a listener for the new radio button
+			button.addItemListener(new WeaponRadioButtonHandler(weapons.get(i)));
+		}
 		optionPanel.add(weaponSelectorPanel);
 
 		panel.add(optionPanel);
@@ -169,11 +214,89 @@ public class CardInputDialog extends InputDialog {
 		add(panel);
 		getRootPane().setDefaultButton(okButton);
 		pack();
-		setSize(300, 350);
+		setSize(700, 650);
 		setResizable(true);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
+	}
+
+	/**
+	 * An inner class that handles the events that occur when the user changes
+	 * the selected character card radio button.
+	 */
+	private class CharacterRadioButtonHandler implements ItemListener {
+
+		// character card associated with this radio button
+		private CharacterCard card;
+
+		public CharacterRadioButtonHandler(CharacterCard card) {
+			this.card = card;
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// if the radio button was selected
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				// set the dialog box character card to this character card
+				character = card;
+				
+				// set the dialog box character image to this card image
+				characterImageLabel.setIcon(new ImageIcon(character.getImage()));
+			}
+		}
+	}
+
+	/**
+	 * An inner class that handles the events that occur when the user changes
+	 * the selected room card radio button.
+	 */
+	private class RoomRadioButtonHandler implements ItemListener {
+
+		// room card associated with this radio button
+		private RoomCard card;
+
+		public RoomRadioButtonHandler(RoomCard card) {
+			this.card = card;
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// if the radio button was selected
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				// set the dialog box room card to this room card
+				room = card;
+				
+				// set the dialog box room image to this card image
+				roomImageLabel.setIcon(new ImageIcon(room.getImage()));
+			}
+		}
+	}
+
+	/**
+	 * An inner class that handles the events that occur when the user changes
+	 * the selected weapon card radio button.
+	 */
+	private class WeaponRadioButtonHandler implements ItemListener {
+
+		// weapon card associated with this radio button
+		private WeaponCard card;
+
+		public WeaponRadioButtonHandler(WeaponCard card) {
+			this.card = card;
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// if the radio button was selected
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				// set the dialog box weapon card to this weapon card
+				weapon = card;
+				
+				// set the dialog box weapon image to this card image
+				weaponImageLabel.setIcon(new ImageIcon(weapon.getImage()));
+			}
+		}
 	}
 
 	// get methods below to return dialog box fields

@@ -3,14 +3,16 @@ package cluedo.tokens;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
+import static cluedo.view.Canvas.loadImage;
+
 public abstract class Token {
 
 	private String name;
 	private Image image;
 
-	public Token(String name, Image image) {
+	public Token(String name) {
 		this.name = name;
-		this.image = image;
+		this.image = loadImage(name + ".jpg");
 	}
 
 	public String getName() {

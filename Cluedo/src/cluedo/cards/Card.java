@@ -21,8 +21,7 @@ public abstract class Card {
 	 */
 	public Card(String name) {
 		this.name = name;
-		//this.image = loadImage("cards/" + name + ".jpg");
-		this.image = loadImage("placeholder.jpg");
+		this.image = loadImage(name + ".jpg");
 	}
 
 	@Override

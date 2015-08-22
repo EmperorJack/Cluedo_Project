@@ -11,8 +11,6 @@ import java.util.Scanner;
 import cluedo.tiles.*;
 import cluedo.tokens.CharacterToken;
 
-import static cluedo.view.Canvas.loadImage;
-
 public class BoardParser {
 
 	/**
@@ -213,32 +211,32 @@ public class BoardParser {
 					switch (currentChars[j]) {
 					case ('g'): {
 						characters.add(new CharacterToken("The Reverend Green",
-								'G', j, i, loadImage("portraits/Green.jpg")));
+								'G', j, i));
 						break;
 					}
 					case ('w'): {
 						characters.add(new CharacterToken("Mrs. White", 'W', j,
-								i, loadImage("portraits/White.jpg")));
+								i));
 						break;
 					}
 					case ('b'): {
 						characters.add(new CharacterToken("Mrs. Peacock", 'B',
-								j, i, loadImage("portraits/Peacock.jpg")));
+								j, i));
 						break;
 					}
 					case ('p'): {
 						characters.add(new CharacterToken("Professor Plum",
-								'P', j, i, loadImage("portraits/Plum.jpg")));
+								'P', j, i));
 						break;
 					}
 					case ('m'): {
 						characters.add(new CharacterToken("Colonel Mustard",
-								'M', j, i, loadImage("portraits/Mustard.jpg")));
+								'M', j, i));
 						break;
 					}
 					case ('s'): {
 						characters.add(new CharacterToken("Miss Scarlett", 'S',
-								j, i, loadImage("portraits/Scarlett.jpg")));
+								j, i));
 						break;
 					}
 					default:

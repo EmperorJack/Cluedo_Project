@@ -1,7 +1,5 @@
 package cluedo.tokens;
 
-import java.awt.Image;
-
 import cluedo.board.Location;
 import cluedo.board.Room;
 
@@ -12,8 +10,8 @@ public class CharacterToken extends Token {
 	Room room;
 	boolean inRoom;
 
-	public CharacterToken(String name, char characterLetter, int x, int y, Image image) {
-		super(name, image);
+	public CharacterToken(String name, char characterLetter, int x, int y) {
+		super(name);
 		this.characterLetter = characterLetter;
 		this.location = new Location(x, y);
 		this.room = null;
