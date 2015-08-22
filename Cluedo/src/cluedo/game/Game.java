@@ -458,7 +458,7 @@ public class Game {
 		// for each player
 		for (int i = 0; i < numberPlayers; i++) {
 			// setup a dialog box for the player to input a name and character
-			PlayerInputDialog dialog = new PlayerInputDialog(
+			PlayerInputDialog dialog = new PlayerInputDialog(CHARACTERS,
 					availableCharacters, board, i + 1);
 
 			// wait for the dialog box to get player input

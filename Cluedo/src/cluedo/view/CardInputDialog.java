@@ -80,6 +80,7 @@ public class CardInputDialog extends InputDialog {
 		for (int i = 0; i < characters.size(); i++) {
 			JRadioButton button;
 			button = new JRadioButton(characters.get(i).toString(), false);
+			
 			// grey out the character buttons the player knows has been refuted
 			if (!player.getNonRefutedCharacters().contains(characters.get(i))) {
 				button.setEnabled(false);

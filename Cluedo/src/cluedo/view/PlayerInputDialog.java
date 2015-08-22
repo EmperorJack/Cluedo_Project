@@ -43,8 +43,8 @@ public class PlayerInputDialog extends InputDialog {
 	 * @param playerNumber
 	 *            The ID number of the player
 	 */
-	public PlayerInputDialog(List<String> characters, Board board,
-			int playerNumber) {
+	public PlayerInputDialog(String[] characters,
+			List<String> remainingCharacters, Board board, int playerNumber) {
 		super("Player " + playerNumber + " Setup");
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -61,17 +61,22 @@ public class PlayerInputDialog extends InputDialog {
 		// player character select area setup
 		optionPanel.add(new JLabel("Available Characters:"));
 		radioGroup = new ButtonGroup();
+		boolean defaultSelected = false;
 
 		// setup a radio button for each available character
-		for (int i = 0; i < characters.size(); i++) {
+		for (int i = 0; i < characters.length; i++) {
 			JRadioButton button;
-			if (i == 0) {
-				// set the first radio button to be the default selection
-				button = new JRadioButton(characters.get(i), true);
-				selectedCharacter = characters.get(i);
-				currentToken = board.getCharacterToken(characters.get(i));
-			} else {
-				button = new JRadioButton(characters.get(i), false);
+			button = new JRadioButton(characters[i], false);
+
+			// grey out the character buttons that have already been selected
+			if (!remainingCharacters.contains(characters[i])) {
+				button.setEnabled(false);
+			} else if (!defaultSelected) {
+				// set the default selected button if it has not been chosen yet
+				button.setSelected(true);
+				selectedCharacter = characters[i];
+				currentToken = board.getCharacterToken(characters[i]);
+				defaultSelected = true;
 			}
 
 			// add the new radio button to the container and radio button group
@@ -79,8 +84,8 @@ public class PlayerInputDialog extends InputDialog {
 			radioGroup.add(button);
 
 			// create a listener for the new radio button
-			button.addItemListener(new RadioButtonHandler(characters.get(i),
-					board.getCharacterToken(characters.get(i))));
+			button.addItemListener(new RadioButtonHandler(characters[i], board
+					.getCharacterToken(characters[i])));
 		}
 		panel.add(optionPanel);
 
