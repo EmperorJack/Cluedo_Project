@@ -28,7 +28,7 @@ public class ClockThread extends Thread {
 		while(true) {
 			// Loop forever			
 			try {
-				Thread.sleep(16);
+				Thread.sleep(delay);
 				board.tick();
 				if(display != null) {
 					display.update();

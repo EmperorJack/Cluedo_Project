@@ -44,10 +44,6 @@ public class Game {
 	 * Setup a new game of Cluedo.
 	 */
 	public Game() {
-		setupGame();
-	}
-
-	public void setupGame() {
 		// setup game systems
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
@@ -56,7 +52,7 @@ public class Game {
 		winner = 0;
 
 		// start the clock thread for continuous board updating
-		ClockThread clk = new ClockThread(1, board, frame);
+		ClockThread clk = new ClockThread(16, board, frame);
 		clk.start();
 
 		// generate a new complete deck

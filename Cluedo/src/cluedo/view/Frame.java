@@ -37,13 +37,7 @@ public class Frame extends JFrame {
 
 		// setup menu
 		JMenu menu = new JMenu("Game");
-		menu.getAccessibleContext().setAccessibleDescription(
-				"The only menu in this program that has menu items");
 		menuBar.add(menu);
-
-		// setup restart menu item
-		JMenuItem restartMenuItem = new JMenuItem("Restart");
-		menu.add(restartMenuItem);
 
 		// setup quit menu item
 		JMenuItem quitMenuItem = new JMenuItem("Quit");
@@ -59,7 +53,7 @@ public class Frame extends JFrame {
 
 		// setup canvas with center border layout
 		canvas = new Canvas(board);
-		canvas.setSize(988,985);
+		canvas.setSize(988, 985);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 
@@ -152,7 +146,7 @@ public class Frame extends JFrame {
 		actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(actionPanel, BorderLayout.SOUTH);
 		pack();
-		setSize(1000,1000);
+		setSize(1000, 1000);
 		setResizable(false);
 		setLocationRelativeTo(null);
 	}
