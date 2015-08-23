@@ -116,7 +116,7 @@ public class Game {
 
 			// get the room the player is in (null for no room)
 			Room playerRoom = board.roomIn(currentPlayer.getToken());
-			
+
 			// update the board with the current player
 			board.setPlayer(currentPlayer);
 
@@ -267,20 +267,20 @@ public class Game {
 			return;
 		}
 
+		// if a suggestion action was chosen
+		if (action instanceof SuggestionAction) {
+			// perform the suggestion action requested by the player
+			performSuggestion(player, (SuggestionAction) action, playerRoom);
+			suggested = true;
+			return;
+		}
+
 		// if an accusation action was chosen
 		if (action instanceof AccusationAction) {
 			// set winner to the result of the accusation
 			// 1 means they won and 0 means the player was eliminated
 			winner = performAccusation(player, (AccusationAction) action);
 			endTurn = true;
-			return;
-		}
-
-		// if a suggestion action was chosen
-		if (action instanceof SuggestionAction) {
-			// perform the suggestion action requested by the player
-			performSuggestion(player, (SuggestionAction) action, playerRoom);
-			suggested = true;
 			return;
 		}
 	}
