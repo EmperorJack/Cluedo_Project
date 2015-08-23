@@ -44,10 +44,14 @@ public class Game {
 	 * Setup a new game of Cluedo.
 	 */
 	public Game() {
+		setupGame();
+	}
+
+	public void setupGame() {
 		// setup game systems
 		board = new Board(WEAPONS, ROOMS);
 		ui = new UI(board);
-		frame = new Frame(board);
+		frame = new Frame(board, this);
 		dice = new Dice();
 		winner = 0;
 
@@ -487,6 +491,32 @@ public class Game {
 					deck.getRooms(), deck.getWeapons());
 		}
 		return players;
+	}
+
+	/**
+	 * If the user chooses to restart the game of cluedo or start a new game
+	 * after the previous one has finished.
+	 */
+	public void resetGame() {
+		// first confirm the player wants to start a new game
+		if (frame.restartRequestDialog()) {
+			// dispose of the current frame
+			frame.dispose();
+
+			// assert the fields are set back to null first
+			ui = null;
+			board = null;
+			frame = null;
+			numberPlayers = 0;
+			players = null;
+			currentPlayer = null;
+			deck = null;
+			dice = null;
+			winner = 0;
+
+			// then set the game up again
+			setupGame();
+		}
 	}
 
 	/**

@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import cluedo.board.Board;
+import cluedo.game.Game;
 
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
@@ -29,7 +30,7 @@ public class Frame extends JFrame {
 			suggestionButton, accusationButton, endTurnButton;
 	private int actionButtonSelected;
 
-	public Frame(Board board) {
+	public Frame(Board board, final Game game) {
 		super("Cluedo Game");
 
 		// setup menu bar
@@ -37,12 +38,17 @@ public class Frame extends JFrame {
 
 		// setup menu
 		JMenu menu = new JMenu("Game");
-		menu.getAccessibleContext().setAccessibleDescription(
-				"The only menu in this program that has menu items");
 		menuBar.add(menu);
 
 		// setup restart menu item
 		JMenuItem restartMenuItem = new JMenuItem("Restart");
+		restartMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				game.resetGame();
+			}
+		});
 		menu.add(restartMenuItem);
 
 		// setup quit menu item
@@ -58,7 +64,8 @@ public class Frame extends JFrame {
 		setJMenuBar(menuBar);
 
 		// setup canvas with center border layout
-		canvas = new Canvas(board);
+		canvas = new Canvas(game.getBoard());
+		canvas.setSize(988,985);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 
@@ -151,8 +158,8 @@ public class Frame extends JFrame {
 		actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(actionPanel, BorderLayout.SOUTH);
 		pack();
-		setSize(1280, 720);
-		setResizable(true);
+		setSize(1000,1000);
+		setResizable(false);
 		setLocationRelativeTo(null);
 	}
 
@@ -205,6 +212,22 @@ public class Frame extends JFrame {
 		// reset the selected action and return the temporary variable
 		actionButtonSelected = 0;
 		return action;
+	}
+
+	/**
+	 * Prompts the user to confirm they want to start a new game.
+	 */
+	public boolean restartRequestDialog() {
+		// get user input from a dialog box
+		int reply = JOptionPane.showConfirmDialog(null,
+				"Do you want to start a new game?", "New Cluedo Game",
+				JOptionPane.YES_NO_OPTION);
+
+		// return true the yes reply was selected
+		if (reply == JOptionPane.YES_OPTION) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
