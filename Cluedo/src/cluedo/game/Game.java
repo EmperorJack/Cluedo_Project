@@ -45,10 +45,10 @@ public class Game {
 	 */
 	public Game() {
 		// setup game systems
-		board = new Board(WEAPONS, ROOMS);
+		dice = new Dice();
+		board = new Board(WEAPONS, ROOMS, dice);
 		ui = new UI(board);
 		frame = new Frame(board);
-		dice = new Dice();
 		winner = 0;
 
 		// start the clock thread for continuous board updating
@@ -80,7 +80,8 @@ public class Game {
 	 */
 	public Game(String test) {
 		// setup system
-		board = new Board(WEAPONS, ROOMS);
+		dice = new Dice();
+		board = new Board(WEAPONS, ROOMS, dice);
 		ui = new UI(board);
 	}
 

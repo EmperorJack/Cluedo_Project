@@ -26,6 +26,8 @@ public class Board {
 	double scaleTest;
 	private BufferedImage boardImage;
 	int clkCnt = 0;
+	private Player currentPlayer;
+	private Dice dice;
 
 	/**
 	 * Creates the game board. The underlying board for the game logic is a Map
@@ -39,8 +41,8 @@ public class Board {
 	 * 
 	 * @author Kelly
 	 */
-	public Board(String[] weapons, String[] rooms) {
-
+	public Board(String[] weapons, String[] rooms, Dice dice) {
+		this.dice = dice;
 		this.boardImage = (BufferedImage) Canvas.loadImage("board.jpg");
 		scaleTest = 1;
 
@@ -58,7 +60,6 @@ public class Board {
 		roomsList.addAll(Arrays.asList(rooms));
 		for (int i = 0; i < weapons.length; i++) {
 			int randomIndex = (int) (Math.random() * roomsList.size());
-			// TODO parse in weapon tokens with their individual images
 			WeaponToken tokenToAdd = new WeaponToken(weapons[i],
 					roomMap.get(roomsList.get(randomIndex)));
 			this.weapons.add(tokenToAdd);
@@ -268,5 +269,9 @@ public class Board {
 	public void moveTokenToRoom(WeaponToken token, Room destination) {
 		token.leaveRoom();
 		token.setRoom(destination);
+	}
+	
+	public void setPlayer(Player player) {
+		currentPlayer = player;
 	}
 }

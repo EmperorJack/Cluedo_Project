@@ -115,7 +115,7 @@ public class Tests {
 	
 	@Test
 	public void charTestOne() {
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		// getToken should not return null
 		assertFalse(missScarlett == null);
@@ -125,7 +125,7 @@ public class Tests {
 
 	@Test
 	public void charTestTwo() {
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missPurp = b.getCharacterToken("Miss Purp");
 		// getToken should return null
 		assertTrue(missPurp == null);
@@ -133,7 +133,7 @@ public class Tests {
 
 	@Test
 	public void pathTestOne(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		//Path from Miss Scarlett to the Study
 		assertEquals(b.calculatePathLength(missScarlett, new Location(5,19)), 8);
@@ -141,7 +141,7 @@ public class Tests {
 	
 	@Test
 	public void pathTestTwo(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		//Shouldn't be able to find a path to a wallTile
 		assertEquals(b.calculatePathLength(missScarlett, new Location(1,1)), -1);
@@ -149,7 +149,7 @@ public class Tests {
 	
 	@Test
 	public void moveTestOne(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		//Miss Scarlett should move
 		b.movePlayer(missScarlett, new Location(5,18));
@@ -158,7 +158,7 @@ public class Tests {
 	
 	@Test
 	public void moveTestTwo(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		//Miss Scarlett shouldn't move
 		b.movePlayer(missScarlett, new Location(1,1));
@@ -167,7 +167,7 @@ public class Tests {
 	
 	@Test
 	public void moveTestThree(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		CharacterToken colMustard = b.getCharacterToken("Colonel Mustard");
 		//Miss Scarlett shouldn't move
@@ -178,7 +178,7 @@ public class Tests {
 	
 	@Test
 	public void roomTestOne(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		b.movePlayer(missScarlett, new Location(5,18));
 		//Miss Scarlett shouldn't be in a room
@@ -187,7 +187,7 @@ public class Tests {
 	
 	@Test
 	public void roomTestTwo(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		b.movePlayer(missScarlett, new Location(5,19));
 		//Miss Scarlett should be in a room
@@ -196,7 +196,7 @@ public class Tests {
 	
 	@Test
 	public void roomTestThree(){
-		Board b = new Board(Game.WEAPONS, Game.ROOMS);
+		Board b = new Board(Game.WEAPONS, Game.ROOMS, new Dice());
 		CharacterToken missScarlett = b.getCharacterToken("Miss Scarlett");
 		b.movePlayer(missScarlett, new Location(5,19));
 		Room r = missScarlett.getRoom();
