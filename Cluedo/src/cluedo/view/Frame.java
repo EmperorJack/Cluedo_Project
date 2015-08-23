@@ -25,8 +25,8 @@ public class Frame extends JFrame {
 
 	// frame fields
 	private Canvas canvas;
-	private JButton rollDiceButton, secretPassageButton, skipMovementButton,
-			suggestionButton, accusationButton, endTurnButton;
+	private JButton rollDiceButton, secretPassageButton, suggestionButton,
+			accusationButton, endTurnButton;
 	private int actionButtonSelected;
 
 	public Frame(Board board) {
@@ -84,24 +84,13 @@ public class Frame extends JFrame {
 		});
 		actionPanel.add(secretPassageButton);
 
-		// setup skip movement button
-		skipMovementButton = new JButton("Skip Movement");
-		skipMovementButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actionButtonSelected = 3;
-			}
-		});
-		actionPanel.add(skipMovementButton);
-
 		// setup suggestion button
 		suggestionButton = new JButton("Suggestion");
 		suggestionButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				actionButtonSelected = 4;
+				actionButtonSelected = 3;
 			}
 		});
 		actionPanel.add(suggestionButton);
@@ -112,7 +101,7 @@ public class Frame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				actionButtonSelected = 5;
+				actionButtonSelected = 4;
 			}
 		});
 		actionPanel.add(accusationButton);
@@ -123,7 +112,7 @@ public class Frame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				actionButtonSelected = 6;
+				actionButtonSelected = 5;
 			}
 		});
 		actionPanel.add(endTurnButton);
@@ -222,7 +211,6 @@ public class Frame extends JFrame {
 		case "all":
 			rollDiceButton.setEnabled(b);
 			secretPassageButton.setEnabled(b);
-			skipMovementButton.setEnabled(b);
 			suggestionButton.setEnabled(b);
 			accusationButton.setEnabled(b);
 			endTurnButton.setEnabled(b);
@@ -232,9 +220,6 @@ public class Frame extends JFrame {
 			break;
 		case "secretPassage":
 			secretPassageButton.setEnabled(b);
-			break;
-		case "skipMovement":
-			skipMovementButton.setEnabled(b);
 			break;
 		case "suggestion":
 			suggestionButton.setEnabled(b);
