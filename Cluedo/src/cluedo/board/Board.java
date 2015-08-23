@@ -6,6 +6,7 @@ import cluedo.tiles.*;
 import cluedo.tokens.*;
 import cluedo.view.Canvas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
@@ -24,12 +25,17 @@ public class Board {
 	Map<String, Room> roomMap;
 	List<WeaponToken> weapons;
 	double scaleTest;
-	private BufferedImage boardImage;
+	private Image boardImage;
 	int clkCnt = 0;
 	int mouseX;
 	int mouseY;
+	int boardOffset;
 	private Player currentPlayer;
 	private Dice dice;
+	
+	public static final int squareSize = 36;
+	public static final int gridXoffset = 61;
+	public static final int gridYoffset = 41;
 
 	/**
 	 * Creates the game board. The underlying board for the game logic is a Map
@@ -45,7 +51,7 @@ public class Board {
 	 */
 	public Board(String[] weapons, String[] rooms, Dice dice) {
 		this.dice = dice;
-		this.boardImage = (BufferedImage) Canvas.loadImage("board.jpg");
+		this.boardImage = Canvas.loadImage("board.jpg");
 		scaleTest = 1;
 
 		// Construct string version of the board
@@ -202,16 +208,22 @@ public class Board {
 	}
 
 	public void draw(Graphics2D g, int width, int height) {
-		double scale = (double)height/boardImage.getHeight(null);
+		double scale = (double)height/boardImage.getHeight(null); //Scalar of the image
+		boardOffset = (int)(width - boardImage.getWidth(null) * scale)/2;
 		AffineTransform transform = new AffineTransform();
-		transform.translate((width - boardImage.getWidth(null) * scale)/ 2, 0);
+		transform.translate(boardOffset, 0);
 		g.setTransform(transform);
-		try {
-			BufferedImage imageToDraw  = getScaledImage(boardImage, (int)(boardImage.getWidth(null) * scale), height);
-			g.drawImage(imageToDraw,0,0, null);
-		} catch (IOException e) {
-		}
+		AffineTransform scaleTransform = AffineTransform.getScaleInstance(scale, scale);
+		AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+		//g.drawImage(boardImage,0,0,null);
+	    g.drawImage(bilinearScaleOp.filter((BufferedImage)boardImage, new BufferedImage((int)(boardImage.getWidth(null) * scale), height, ((BufferedImage) boardImage).getType())), 0, 0, null);
 		g.drawString(mouseX + " " + mouseY, 10 ,10);
+		transform.scale(scale, scale);
+		g.setTransform(transform);
+		for (Tile t: tiles.values()){
+			t.draw(g, gridXoffset, gridYoffset, squareSize);
+		}
+		
 		// TODO draw the board
 	}
 	

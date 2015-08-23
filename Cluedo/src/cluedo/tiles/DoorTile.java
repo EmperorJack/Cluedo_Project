@@ -1,4 +1,6 @@
 package cluedo.tiles;
+import java.awt.Graphics2D;
+
 import cluedo.board.*;
 
 public class DoorTile extends Tile {
@@ -10,6 +12,13 @@ public class DoorTile extends Tile {
 	
 	public Room getRoom(){
 		return room;
+	}
+
+	@Override
+	public void draw(Graphics2D g, int gridXoffset, int gridYoffset,
+			int squareSize) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
