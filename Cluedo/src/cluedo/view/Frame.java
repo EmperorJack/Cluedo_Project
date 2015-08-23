@@ -65,9 +65,6 @@ public class Frame extends JFrame {
 		// setup canvas with center border layout
 		canvas = new Canvas(game.getBoard());
 		canvas.setSize(988,985);
-		canvas.setSize(988,985);
-		canvas.setSize(988,985);
-		canvas.setSize(988,985);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 
