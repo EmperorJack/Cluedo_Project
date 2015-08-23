@@ -223,6 +223,17 @@ public class Board {
 		for (Tile t: tiles.values()){
 			t.draw(g, gridXoffset, gridYoffset, squareSize);
 		}
+		for (CharacterToken t: characters){
+			AffineTransform tokenTransform = new AffineTransform();
+			tokenTransform.translate(boardOffset, 0);
+			int tokenXoffSet = t.getLocation().getX() * squareSize + gridXoffset;
+			int tokenYoffSet = t.getLocation().getY() * squareSize + gridYoffset;
+			tokenTransform.scale(scale,scale);
+			tokenTransform.translate(tokenXoffSet, tokenYoffSet);
+			
+			g.setTransform(tokenTransform);
+			t.draw(g);
+		}
 		
 		// TODO draw the board
 	}
