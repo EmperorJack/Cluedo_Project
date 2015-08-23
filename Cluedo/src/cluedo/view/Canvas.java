@@ -39,7 +39,6 @@ public class Canvas extends JPanel implements MouseMotionListener {
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
 		// TODO draw game visible components here
-		g.translate(0, 0);
 		board.draw(g2d, getWidth(), getHeight());
 	}
 
