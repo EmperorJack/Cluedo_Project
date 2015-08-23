@@ -11,8 +11,8 @@ public class PathTile extends Tile {
 		super(location);
 	}
 	
-	public void draw(Graphics2D g, int gridXoffset, int gridYoffset, int squareSize){
-		g.setColor(new Color(0,0,255,125));
+	public void draw(Graphics2D g, int gridXoffset, int gridYoffset, int squareSize, Color col){
+		g.setColor(col);
 		g.fillRect(location.getX() * squareSize + gridXoffset,location.getY() * squareSize + gridYoffset, squareSize, squareSize);
 	}
 

@@ -6,6 +6,7 @@ import cluedo.tiles.*;
 import cluedo.tokens.*;
 import cluedo.view.Canvas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
@@ -32,6 +33,7 @@ public class Board {
 	int mouseX;
 	int mouseY;
 	int boardOffset;
+	double boardScale;
 	private Player currentPlayer;
 	private Dice dice;
 	
@@ -215,25 +217,44 @@ public class Board {
 		}
 		return updatedBoard;
 	}
+	
+	public Tile getSelectedTile(Graphics2D g){
+		double newGridX = gridXoffset *  boardScale;
+		double newGridY = gridYoffset *  boardScale;
+		double newSquareSize = squareSize *boardScale;
+		int X = (int)((mouseX - boardOffset - newGridX)/newSquareSize);
+		int Y = (int)((mouseY - newGridY)/newSquareSize);
+		g.drawString("X:" + X + " " + "Y:" + Y, 20, 20);
+		if (X >= 0 && X <= 23 && Y >= 0 && Y <= 24){
+			return tiles.get(new Location(X,Y));
+		}
+		else return null;
+	}
 
 	public void draw(Graphics2D g, int width, int height) {
-		double scale = (double)height/boardImage.getHeight(null); //Scalar of the image
-		boardOffset = (int)(width - boardImage.getWidth(null) * scale)/2;
+		
+		boardScale = (double)height/boardImage.getHeight(null); //Scalar of the image
+		boardOffset = (int)(width - boardImage.getWidth(null) * boardScale)/2;
 		AffineTransform transform = new AffineTransform();
 		transform.translate(boardOffset, 0);
 		g.setTransform(transform);
-		AffineTransform scaleTransform = AffineTransform.getScaleInstance(scale, scale);
+		AffineTransform scaleTransform = AffineTransform.getScaleInstance(boardScale, boardScale);
 		AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
 		//g.drawImage(boardImage,0,0,null);
-	    g.drawImage(bilinearScaleOp.filter((BufferedImage)boardImage, new BufferedImage((int)(boardImage.getWidth(null) * scale), height, ((BufferedImage) boardImage).getType())), 0, 0, null);
+	    g.drawImage(bilinearScaleOp.filter((BufferedImage)boardImage, new BufferedImage((int)(boardImage.getWidth(null) * boardScale), height, ((BufferedImage) boardImage).getType())), 0, 0, null);
 		g.drawString(mouseX + " " + mouseY, 10 ,10);
-		transform.scale(scale, scale);
+		transform.scale(boardScale, boardScale);
 		g.setTransform(transform);
 
 		if (dice.getResult() > 0){
 			for (Tile t: validTiles){
-				t.draw(g, gridXoffset, gridYoffset, squareSize);
+				t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,0,255,125));
 			}
+		}
+		
+		Tile selected = getSelectedTile(g);
+		if (selected != null) {
+			selected.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,255,0,125));
 		}
 		
 		for (CharacterToken t: characters){
@@ -241,7 +262,7 @@ public class Board {
 			tokenTransform.translate(boardOffset, 0);
 			int tokenXoffSet = t.getLocation().getX() * squareSize + gridXoffset;
 			int tokenYoffSet = t.getLocation().getY() * squareSize + gridYoffset;
-			tokenTransform.scale(scale,scale);
+			tokenTransform.scale(boardScale,boardScale);
 			tokenTransform.translate(tokenXoffSet, tokenYoffSet);
 			
 			g.setTransform(tokenTransform);
@@ -251,19 +272,6 @@ public class Board {
 		// TODO draw the board
 	}
 	
-	public static BufferedImage getScaledImage(BufferedImage image, int width, int height) throws IOException {
-	    int imageWidth  = image.getWidth();
-	    int imageHeight = image.getHeight();
-
-	    double scaleX = (double)width/imageWidth;
-	    double scaleY = (double)height/imageHeight;
-	    AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
-	    AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
-
-	    return bilinearScaleOp.filter(
-	        image,
-	        new BufferedImage(width, height, image.getType()));
-	}
 
 	public void tick() {
 		clkCnt++;
@@ -315,6 +323,5 @@ public class Board {
 	public void updateMousePos(int x, int y) {
 		mouseX = x;
 		mouseY = y;
-		
 	}
 }

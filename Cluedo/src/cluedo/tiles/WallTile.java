@@ -1,5 +1,6 @@
 package cluedo.tiles;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cluedo.board.Location;
@@ -12,9 +13,10 @@ public class WallTile extends Tile {
 
 	@Override
 	public void draw(Graphics2D g, int gridXoffset, int gridYoffset,
-			int squareSize) {
+			int squareSize, Color color) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

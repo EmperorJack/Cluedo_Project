@@ -1,5 +1,6 @@
 package cluedo.tiles;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cluedo.board.Location;
@@ -15,7 +16,7 @@ public abstract class Tile {
 		return location;
 	}
 	
-	public abstract void draw(Graphics2D g, int gridXoffset, int gridYoffset, int squareSize);
+	public abstract void draw(Graphics2D g, int gridXoffset, int gridYoffset, int squareSize, Color color);
 
 	@Override
 	public int hashCode() {
