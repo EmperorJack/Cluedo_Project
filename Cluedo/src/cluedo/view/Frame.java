@@ -59,6 +59,7 @@ public class Frame extends JFrame {
 
 		// setup canvas with center border layout
 		canvas = new Canvas(board);
+		canvas.setSize(988,985);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 
@@ -151,8 +152,8 @@ public class Frame extends JFrame {
 		actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(actionPanel, BorderLayout.SOUTH);
 		pack();
-		setSize(1280, 720);
-		setResizable(true);
+		setSize(1000,1000);
+		setResizable(false);
 		setLocationRelativeTo(null);
 	}
 

@@ -9,6 +9,9 @@ import cluedo.view.Canvas;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +24,7 @@ public class Board {
 	Map<String, Room> roomMap;
 	List<WeaponToken> weapons;
 	double scaleTest;
-	private Image boardImage;
+	private BufferedImage boardImage;
 	int clkCnt = 0;
 
 	/**
@@ -38,7 +41,7 @@ public class Board {
 	 */
 	public Board(String[] weapons, String[] rooms) {
 
-		this.boardImage = Canvas.loadImage("board.jpg");
+		this.boardImage = (BufferedImage) Canvas.loadImage("board.jpg");
 		scaleTest = 1;
 
 		// Construct string version of the board
@@ -196,21 +199,32 @@ public class Board {
 	}
 
 	public void draw(Graphics2D g, int width, int height) {
-		int minSize = Math.min(width, height);
-		AffineTransform tx1 = new AffineTransform();
-		tx1.scale(scaleTest, scaleTest);
-		g.setTransform(tx1);
-		double proportion = boardImage.getWidth(null)
-				/ boardImage.getHeight(null);
-		if (width < height) {
-			g.drawImage(boardImage, 0, (height - minSize) / 2,
-					(int) (minSize * proportion), minSize, null);
-		} else {
-			g.drawImage(boardImage, (width - minSize) / 2, 0,
-					(int) (minSize * proportion), minSize, null);
+		double scale = (double)height/boardImage.getHeight(null);
+		AffineTransform transform = new AffineTransform();
+		transform.translate((width - boardImage.getWidth(null) * scale)/ 2, 0);
+		g.setTransform(transform);
+		try {
+			BufferedImage imageToDraw  = getScaledImage(boardImage, (int)(boardImage.getWidth(null) * scale), height);
+			g.drawImage(imageToDraw,0,0, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		g.dispose();
 		// TODO draw the board
+	}
+	
+	public static BufferedImage getScaledImage(BufferedImage image, int width, int height) throws IOException {
+	    int imageWidth  = image.getWidth();
+	    int imageHeight = image.getHeight();
+
+	    double scaleX = (double)width/imageWidth;
+	    double scaleY = (double)height/imageHeight;
+	    AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+	    AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+
+	    return bilinearScaleOp.filter(
+	        image,
+	        new BufferedImage(width, height, image.getType()));
 	}
 
 	public void tick() {
