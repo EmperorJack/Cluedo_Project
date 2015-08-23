@@ -8,11 +8,13 @@ import static cluedo.view.Canvas.loadImage;
 public abstract class Token {
 
 	private String name;
+	private Image portrait;
 	private Image image;
 
 	public Token(String name) {
 		this.name = name;
-		this.image = loadImage(name + ".jpg");
+		this.portrait = loadImage("cards/" + name + ".jpg");
+		this.image = loadImage("tokens/" + name + ".png");
 	}
 
 	public String getName() {
@@ -23,7 +25,7 @@ public abstract class Token {
 		g2d.drawImage(image, 0, 0, null);
 	}
 	
-	public Image getImage() {
-		return image;
+	public Image getPortrait() {
+		return portrait;
 	}
 }

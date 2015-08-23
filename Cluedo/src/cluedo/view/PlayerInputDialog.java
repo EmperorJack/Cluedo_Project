@@ -91,7 +91,7 @@ public class PlayerInputDialog extends InputDialog {
 
 		// setup the portrait of the currently selected character
 		JPanel portraitPanel = new JPanel(new FlowLayout());
-		imageLabel = new JLabel(new ImageIcon(currentToken.getImage()));
+		imageLabel = new JLabel(new ImageIcon(currentToken.getPortrait()));
 		portraitPanel.add(imageLabel);
 		panel.add(portraitPanel);
 
@@ -144,7 +144,7 @@ public class PlayerInputDialog extends InputDialog {
 				selectedCharacter = name;
 
 				// set the dialog box character portrait to this token image
-				imageLabel.setIcon(new ImageIcon(token.getImage()));
+				imageLabel.setIcon(new ImageIcon(token.getPortrait()));
 			}
 		}
 	}
