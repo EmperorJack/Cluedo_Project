@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 
 import cluedo.board.Board;
 import cluedo.game.Game;
-
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
 
