@@ -26,6 +26,8 @@ public class Board {
 	double scaleTest;
 	private BufferedImage boardImage;
 	int clkCnt = 0;
+	int mouseX;
+	int mouseY;
 	private Player currentPlayer;
 	private Dice dice;
 
@@ -208,9 +210,8 @@ public class Board {
 			BufferedImage imageToDraw  = getScaledImage(boardImage, (int)(boardImage.getWidth(null) * scale), height);
 			g.drawImage(imageToDraw,0,0, null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		g.drawString(mouseX + " " + mouseY, 10 ,10);
 		// TODO draw the board
 	}
 	
@@ -273,5 +274,11 @@ public class Board {
 	
 	public void setPlayer(Player player) {
 		currentPlayer = player;
+	}
+
+	public void updateMousePos(int x, int y) {
+		mouseX = x;
+		mouseY = y;
+		
 	}
 }

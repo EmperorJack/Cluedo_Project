@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -13,13 +15,14 @@ import javax.swing.JPanel;
 import cluedo.board.Board;
 
 @SuppressWarnings("serial")
-public class Canvas extends JPanel {
+public class Canvas extends JPanel implements MouseMotionListener {
 
 	private Board board;
 	private static final String IMAGE_PATH = "/images/";
 
 	public Canvas(Board board) {
 		this.board = board;
+		addMouseMotionListener(this);
 	}
 
 	@Override
@@ -59,5 +62,17 @@ public class Canvas extends JPanel {
 			// failed to load the given image from filename
 			throw new RuntimeException("Unable to load image: " + filename);
 		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		board.updateMousePos(e.getX(), e.getY());
+		
 	}
 }
