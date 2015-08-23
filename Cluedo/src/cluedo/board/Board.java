@@ -6,7 +6,6 @@ import cluedo.tiles.*;
 import cluedo.tokens.*;
 import cluedo.view.Canvas;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
@@ -15,11 +14,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Board {
 	Map<Location, Tile> tiles;
+	Set<Tile> validTiles;
 	String[] boardStrings;
 	List<CharacterToken> characters;
 	Map<String, Room> roomMap;
@@ -50,6 +52,7 @@ public class Board {
 	 * @author Kelly
 	 */
 	public Board(String[] weapons, String[] rooms, Dice dice) {
+		validTiles = new HashSet<Tile>();
 		this.dice = dice;
 		this.boardImage = Canvas.loadImage("board.jpg");
 		scaleTest = 1;
@@ -105,6 +108,12 @@ public class Board {
 			}
 			return (pathLength);
 		}
+	}
+	
+	public void setValidTiles(){
+		Location charLoc = currentPlayer.getToken().getLocation();
+		Dijkstra d = new Dijkstra(tiles);
+		validTiles = d.getValidTiles(charLoc, dice.getResult());
 	}
 
 	/**
@@ -220,9 +229,13 @@ public class Board {
 		g.drawString(mouseX + " " + mouseY, 10 ,10);
 		transform.scale(scale, scale);
 		g.setTransform(transform);
-		for (Tile t: tiles.values()){
-			t.draw(g, gridXoffset, gridYoffset, squareSize);
+
+		if (dice.getResult() > 0){
+			for (Tile t: validTiles){
+				t.draw(g, gridXoffset, gridYoffset, squareSize);
+			}
 		}
+		
 		for (CharacterToken t: characters){
 			AffineTransform tokenTransform = new AffineTransform();
 			tokenTransform.translate(boardOffset, 0);

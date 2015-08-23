@@ -136,7 +136,7 @@ public class Frame extends JFrame {
 		add(actionPanel, BorderLayout.SOUTH);
 		pack();
 		setSize(1000, 1000);
-		setResizable(false);
+		setResizable(true);
 		setLocationRelativeTo(null);
 	}
 

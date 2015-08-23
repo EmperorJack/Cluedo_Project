@@ -58,6 +58,29 @@ public class Dijkstra {
 		}
 		return -1; //NO PATH FOUND
 	}
+	
+	public Set<Tile> getValidTiles(Location start, int diceRoll){
+		HashSet<Tile> validTiles = new HashSet<Tile>();
+		
+		DijkstraNode startNode = nodeMap.get(tileMap.get(start));
+		startNode.setDistance(0);
+		unvisitedNodes.add(startNode);
+		
+		while (unvisitedNodes.size() > 0) {
+			DijkstraNode closest = getClosestNode();
+			unvisitedNodes.remove(closest);
+			visitedNodes.add(closest);
+			setDistances(closest);
+		}
+		for (Tile t: nodeMap.keySet()){
+			if (!(t instanceof WallTile)){
+				if (nodeMap.get(t).getDistance() <= (diceRoll)){
+					validTiles.add(t);
+				}
+			}
+		}
+		return validTiles;
+	}
 
 	/**
 	 * Updates the distances of the surrounding tiles of the current Dijkstra Node and adds them to the fringe set.
@@ -85,13 +108,13 @@ public class Dijkstra {
 		// Get starting location
 		Location start = current.getTile().getLocation();
 		// Check if adjacent tile exists
-		if (inRange(start.getX() - 1))
+		if (inXRange(start.getX() - 1))
 			validLocations.add(new Location(start.getX() - 1, start.getY())); // left
-		if (inRange(start.getX() + 1))
+		if (inXRange(start.getX() + 1))
 			validLocations.add(new Location(start.getX() + 1, start.getY())); // right
-		if (inRange(start.getY() - 1))
+		if (inYRange(start.getY() - 1))
 			validLocations.add(new Location(start.getX(), start.getY() - 1)); // up
-		if (inRange(start.getY() + 1))
+		if (inYRange(start.getY() + 1))
 			validLocations.add(new Location(start.getX(), start.getY() + 1)); // down
 		
 		//SPECIAL CASES! Removing two neighbouring nodes from the algorithm to preserve walls on corner cases.
@@ -127,7 +150,10 @@ public class Dijkstra {
 	 * @param check Integer to check.
 	 * @return True if in bounds of the board, false if not.
 	 */
-	public boolean inRange(int check) {
+	public boolean inXRange(int check) {
+		return (check >= 0 && check <= 23);
+	}
+	public boolean inYRange(int check) {
 		return (check >= 0 && check <= 24);
 	}
 

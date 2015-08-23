@@ -192,9 +192,9 @@ public class Game {
 			// get the value of the rolled dice
 			int rollAmount = dice.getResult();
 			System.out.println(rollAmount);
-
+			board.setValidTiles();
 			// TODO allowing mouse to select move target should start here
-			return ui.requestMove(player, rollAmount);
+			return null;
 		}
 
 		if (actionSelected == 2) {
