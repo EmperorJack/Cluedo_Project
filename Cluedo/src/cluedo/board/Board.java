@@ -326,7 +326,6 @@ public class Board {
 				tokenMoving = false;
 				dice.resetValues();
 				setValidTiles();
-
 			}
 		}
 	}

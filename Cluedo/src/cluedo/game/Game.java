@@ -123,6 +123,8 @@ public class Game {
 
 			// update the board with the current player
 			board.setPlayer(currentPlayer);
+			dice.resetValues();
+			board.setValidTiles();
 
 			// TODO Remove once GUI replaces text output
 			System.out
