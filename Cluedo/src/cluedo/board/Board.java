@@ -40,7 +40,6 @@ public class Board {
 
 	boolean tokenMoving = false;
 	MoveAction move;
-	Tile nextInPath;
 
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
@@ -318,34 +317,16 @@ public class Board {
 	public void tick() {
 		clkCnt++;
 		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
+
 		if (tokenMoving) {
 			CharacterToken playerToken = currentPlayer.getToken();
-			if (playerToken.getLocation().equals(nextInPath.getLocation())) {
-				// need to move to the next tile in path
-				nextInPath = move.nextTile();
-				if (nextInPath == null) {
-					tokenMoving = false;
-					setValidTiles();
-				}
+			if (!move.isFinished()) {
+				move.tick(playerToken);
 			} else {
-				move.tick();
-				double moveFraction = move.getFrame() / 5.0f;
-				double currentX = (playerToken.getLocation().getX() + (nextInPath
-						.getLocation().getX() - playerToken.getLocation()
-						.getX())
-						* moveFraction)
-						* squareSize + gridXoffset;
-				double currentY = (playerToken.getLocation().getY() + (nextInPath
-						.getLocation().getY() - playerToken.getLocation()
-						.getY())
-						* moveFraction)
-						* squareSize + gridYoffset;
-				playerToken.setX((int) currentX);
-				playerToken.setY((int) currentY);
-				if (move.getFrame() == 5) {
-					playerToken.setLocation(nextInPath.getLocation());
-					move.reset();
-				}
+				tokenMoving = false;
+				dice.resetValues();
+				setValidTiles();
+
 			}
 		}
 	}
@@ -401,16 +382,18 @@ public class Board {
 		mouseX = x;
 		mouseY = y;
 		// updateValid tiles
-		setValidTiles();
-		Tile selected = getSelectedTile();
-		if (selected == null || !validTiles.contains(selected))
-			return null; // can't move here
-		Dijkstra d = new Dijkstra(tiles);
-		List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
-				.getLocation(), selected.getLocation());
-		move = new MoveAction(selected.getLocation(), path);
-		nextInPath = move.nextTile();
-		tokenMoving = true; 
-		return move;
+		if (!tokenMoving) {
+			setValidTiles();
+			Tile selected = getSelectedTile();
+			if (selected == null || !validTiles.contains(selected))
+				return null; // can't move here, can't move yet
+			Dijkstra d = new Dijkstra(tiles);
+			List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
+					.getLocation(), selected.getLocation());
+			move = new MoveAction(selected.getLocation(), path);
+			tokenMoving = true;
+			return move;
+		}
+		return null;
 	}
 }

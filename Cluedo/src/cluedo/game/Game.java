@@ -33,6 +33,7 @@ public class Game {
 	private Deck deck;
 	private Dice dice;
 	private int winner;
+	private boolean rolled = false;
 	private boolean moved = false;
 	private boolean suggested = false;
 	private boolean endTurn = false;
@@ -132,6 +133,7 @@ public class Game {
 			ui.printPlayerCardInfo(currentPlayer);
 
 			// reset turn flags
+			rolled = false;
 			moved = false;
 			suggested = false;
 			endTurn = false;
@@ -139,7 +141,8 @@ public class Game {
 			while (!endTurn) {
 				// enable the buttons that can be used in the turn
 				if (!moved) {
-					frame.setButtonSelectable("rollDice", true);
+					if (!rolled)
+						frame.setButtonSelectable("rollDice", true);
 					if (playerRoom != null && playerRoom.hasPassage()) {
 						// if the player is in a room with secret passage
 						frame.setButtonSelectable("secretPassage", true);
@@ -165,7 +168,9 @@ public class Game {
 							playerRoom, actionSelected);
 
 					// then perform the action
-					performAction(currentPlayer, playerRoom, action);
+					if (action != null) {
+						performAction(currentPlayer, playerRoom, action);
+					}
 
 					// update the player room in case it changed
 					playerRoom = board.roomIn(currentPlayer.getToken());
@@ -174,10 +179,6 @@ public class Game {
 					endTurn = true;
 				}
 			}
-
-			// reset the dice values for the next turn
-			dice.resetValues();
-
 			// disable all frame action buttons
 			frame.setButtonSelectable("all", false);
 		} while (winner == 0);
@@ -195,12 +196,8 @@ public class Game {
 
 			// roll the dice
 			dice.roll();
-
-			// get the value of the rolled dice
-			int rollAmount = dice.getResult();
-			System.out.println(rollAmount);
 			board.setValidTiles();
-			// TODO allowing mouse to select move target should start here
+			rolled = true;
 			return null;
 		}
 
@@ -267,14 +264,6 @@ public class Game {
 
 	// TODO COMMENT
 	private void performAction(Player player, Room playerRoom, Action action) {
-		// if a valid move action was chosen
-		if (action instanceof MoveAction) {
-			// move the player and print the board result
-			Location loc = ((MoveAction) action).getLocation();
-			board.movePlayer(player.getToken(), loc);
-			moved = true;
-			return;
-		}
 
 		// if a secret passage action was chosen
 		if (action instanceof SecretPassageAction) {
@@ -339,7 +328,7 @@ public class Game {
 		} else {
 			// player is eliminated due to bad accusation
 			player.eliminate();
-			
+
 			// construct a list of the accusation cards
 			List<Card> accusationCards = new ArrayList<Card>();
 			accusationCards.add(accusation.getCharacter());
@@ -367,10 +356,14 @@ public class Game {
 				&& deck.getSolution().contains(accusation.getRoom()) && deck
 				.getSolution().contains(accusation.getWeapon()));
 	}
-	
-	public void triggerMove(int x, int y){
-		MoveAction move = board.triggerMove(x, y);
-		if (move != null) moved = true;
+
+	public void triggerMove(int x, int y) {
+		if (!moved) {
+			MoveAction move = board.triggerMove(x, y);
+			if (move != null) {
+				moved = true;
+			}
+		}
 	}
 
 	/**
