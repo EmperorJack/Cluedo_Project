@@ -1,5 +1,6 @@
 package cluedo.board;
 
+import cluedo.actions.MoveAction;
 import cluedo.game.Dice;
 import cluedo.game.Player;
 import cluedo.tiles.*;
@@ -36,6 +37,11 @@ public class Board {
 	double boardScale;
 	private Player currentPlayer;
 	private Dice dice;
+	
+	boolean tokenMoving = false;
+	MoveAction move;
+	Tile nextInPath;
+	
 
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
@@ -66,6 +72,11 @@ public class Board {
 
 		tiles = BoardParser.parseTileBoard(roomMap);
 		characters = BoardParser.parseCharacters();
+		for (CharacterToken t: characters){
+			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
+			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
+		}
+		
 		this.weapons = new ArrayList<WeaponToken>();
 
 		// init weapontokens
@@ -218,13 +229,12 @@ public class Board {
 		return updatedBoard;
 	}
 
-	public Tile getSelectedTile(Graphics2D g) {
+	public Tile getSelectedTile() {
 		double newGridX = gridXoffset * boardScale;
 		double newGridY = gridYoffset * boardScale;
 		double newSquareSize = squareSize * boardScale;
 		int X = (int) ((mouseX - boardOffset - newGridX) / newSquareSize);
 		int Y = (int) ((mouseY - newGridY) / newSquareSize);
-		g.drawString("X:" + X + " " + "Y:" + Y, 20, 20);
 		if (X >= 0 && X <= 23 && Y >= 0 && Y <= 24) {
 			return tiles.get(new Location(X, Y));
 		} else
@@ -252,25 +262,23 @@ public class Board {
 		transform.scale(boardScale, boardScale);
 		g.setTransform(transform);
 
-		Tile selected = getSelectedTile(g);
+		Tile selected = getSelectedTile();
 		if (selected != null) {
 			if (validTiles.contains(selected)) {
-				selected.draw(g, gridXoffset, gridYoffset, squareSize,
-						new Color(0, 255, 0, 125)); // You can move here, draw green
+				selected.draw(g, new Color(0, 255, 0, 125)); // You can move here, draw green
 			} else {
-				selected.draw(g, gridXoffset, gridYoffset, squareSize,
-						new Color(255, 0, 0, 125)); // You cannot move here, draw red
+				selected.draw(g, new Color(255, 0, 0, 125)); // You cannot move here, draw red
 			}
 		}
 
 		for (Tile t : validTiles) {
 			if (selected != null) { // If there is a selected tile do not draw it
 				if (!t.equals(selected)) {
-					t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0, 0, 255, 125));
+					t.draw(g, new Color(0, 0, 255, 125));
 
 				}
 			} else { // Otherwise draw all valid tiles.
-				t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0, 0,255, 125));
+				t.draw(g,  new Color(0, 0,255, 125));
 			}
 		}
 
@@ -286,10 +294,8 @@ public class Board {
 		for (CharacterToken t : characters) {
 			AffineTransform tokenTransform = new AffineTransform();
 			tokenTransform.translate(boardOffset, 0);
-			int tokenXoffSet = t.getLocation().getX() * squareSize + gridXoffset;
-			int tokenYoffSet = t.getLocation().getY() * squareSize + gridYoffset;
 			tokenTransform.scale(boardScale, boardScale);
-			tokenTransform.translate(tokenXoffSet, tokenYoffSet);
+			tokenTransform.translate(t.getXPos(), t.getYPos());
 
 			g.setTransform(tokenTransform);
 			t.draw(g);
@@ -301,6 +307,25 @@ public class Board {
 	public void tick() {
 		clkCnt++;
 		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
+		if (tokenMoving){
+			CharacterToken playerToken = currentPlayer.getToken();
+			if (playerToken.getLocation().equals(nextInPath.getLocation())){
+				//need to move to the next tile in path
+				nextInPath = move.nextTile();
+				if (nextInPath == null) tokenMoving = false;
+			} else {
+				move.tick();
+				double moveFraction = move.getFrame()/10.0f;
+				double currentX = (playerToken.getLocation().getX() + (nextInPath.getLocation().getX() - playerToken.getLocation().getX()) * moveFraction) * squareSize + gridXoffset;
+				double currentY = (playerToken.getLocation().getY() + (nextInPath.getLocation().getY() - playerToken.getLocation().getY()) * moveFraction) * squareSize + gridYoffset;
+				playerToken.setX((int)currentX);
+				playerToken.setY((int)currentY);
+				if (move.getFrame() == 10){
+					playerToken.setLocation(nextInPath.getLocation());
+					move.reset();
+				}
+			}
+		}
 	}
 
 	/**
@@ -348,5 +373,19 @@ public class Board {
 	public void updateMousePos(int x, int y) {
 		mouseX = x;
 		mouseY = y;
+	}
+
+	public void triggerMove(int x, int y) {
+		mouseX = x;
+		mouseY = y;
+		//updateValid tiles
+		setValidTiles();
+		Tile selected = getSelectedTile();
+		if (selected == null || !validTiles.contains(selected)) return;	//can't move here
+		Dijkstra d = new Dijkstra(tiles);
+		List<Tile> path = d.getDijsktraPath(currentPlayer.getToken().getLocation(), selected.getLocation());
+		move = new MoveAction(selected.getLocation(), path);
+		nextInPath = move.nextTile();
+		tokenMoving = true;
 	}
 }

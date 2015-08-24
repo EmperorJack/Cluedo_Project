@@ -16,7 +16,7 @@ public abstract class Tile {
 		return location;
 	}
 	
-	public abstract void draw(Graphics2D g, int gridXoffset, int gridYoffset, int squareSize, Color color);
+	public abstract void draw(Graphics2D g, Color color);
 
 	@Override
 	public int hashCode() {

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import cluedo.tiles.Tile;
 import cluedo.tiles.WallTile;
@@ -59,9 +60,7 @@ public class Dijkstra {
 		return -1; //NO PATH FOUND
 	}
 	
-	public Set<Tile> getValidTiles(Location start, int diceRoll){
-		HashSet<Tile> validTiles = new HashSet<Tile>();
-		
+	public void doDijkstra(Location start){
 		DijkstraNode startNode = nodeMap.get(tileMap.get(start));
 		startNode.setDistance(0);
 		unvisitedNodes.add(startNode);
@@ -72,6 +71,11 @@ public class Dijkstra {
 			visitedNodes.add(closest);
 			setDistances(closest);
 		}
+	}
+	
+	public Set<Tile> getValidTiles(Location start, int diceRoll){
+		HashSet<Tile> validTiles = new HashSet<Tile>();
+		doDijkstra(start);
 		for (Tile t: nodeMap.keySet()){
 			if (!(t instanceof WallTile)){
 				if (nodeMap.get(t).getDistance() <= (diceRoll)){
@@ -80,6 +84,22 @@ public class Dijkstra {
 			}
 		}
 		return validTiles;
+	}
+	
+	public List<Tile> getDijsktraPath (Location start, Location destination){
+		Stack<Tile> dijkstraStack = new Stack<Tile>();
+		List<Tile> dijkstraPath = new ArrayList<Tile>();
+		doDijkstra(start);
+		DijkstraNode pathNode = nodeMap.get(tileMap.get(destination));
+		while (pathNode != null){
+			dijkstraStack.push(pathNode.getTile());
+			pathNode = pathNode.getPrevious();
+		}
+		while (!dijkstraStack.isEmpty()){
+			Tile t = dijkstraStack.pop();
+			dijkstraPath.add(t);
+		}
+		return dijkstraPath;
 	}
 
 	/**

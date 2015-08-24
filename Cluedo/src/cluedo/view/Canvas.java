@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ import javax.swing.JPanel;
 import cluedo.board.Board;
 
 @SuppressWarnings("serial")
-public class Canvas extends JPanel implements MouseMotionListener {
+public class Canvas extends JPanel implements MouseMotionListener, MouseListener {
 
 	private Board board;
 	private static final String IMAGE_PATH = "/images/";
@@ -23,6 +24,7 @@ public class Canvas extends JPanel implements MouseMotionListener {
 	public Canvas(Board board) {
 		this.board = board;
 		addMouseMotionListener(this);
+		addMouseListener(this);
 	}
 
 	@Override
@@ -74,4 +76,34 @@ public class Canvas extends JPanel implements MouseMotionListener {
 		board.updateMousePos(e.getX(), e.getY());
 		
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		board.triggerMove(e.getX(), e.getY());
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

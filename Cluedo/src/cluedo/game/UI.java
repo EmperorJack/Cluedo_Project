@@ -295,9 +295,11 @@ public class UI {
 					row = -1;
 				}
 			}
+		}
+		return move;
 
 			// create a new move action
-			move = new MoveAction(col, row);
+			/*move = new MoveAction(col, row);
 
 			// check to see if the target tile is valid
 			if (board.getTile(move.getLocation()) instanceof WallTile) {
@@ -332,7 +334,7 @@ public class UI {
 		}
 
 		// return the valid move action
-		return move;
+		return move;*/
 	}
 
 	/**

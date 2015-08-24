@@ -9,6 +9,10 @@ public class CharacterToken extends Token {
 	Location location;
 	Room room;
 	boolean inRoom;
+	boolean moving;
+	int xPos;
+	int yPos;
+	
 
 	public CharacterToken(String name, char characterLetter, int x, int y) {
 		super(name);
@@ -50,5 +54,29 @@ public class CharacterToken extends Token {
 
 	public boolean inRoom() {
 		return inRoom;
+	}
+
+	public void setX(int x) {
+		xPos = x;
+	}
+	
+	public void setY(int y) {
+		yPos = y;
+	}
+
+	public int getXPos() {
+		return xPos;
+	}
+	
+	public int getYPos() {
+		return yPos;
+	}
+	
+	public void updateX(int deltaX){
+		xPos += deltaX;
+	}
+	
+	public void updateY(int deltaY){
+		yPos += deltaY;
 	}
 }

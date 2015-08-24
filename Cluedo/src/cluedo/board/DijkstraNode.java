@@ -47,5 +47,9 @@ public class DijkstraNode {
 	public void setPrevious(DijkstraNode prev){
 		this.previous = prev;
 	}
+	
+	public DijkstraNode getPrevious(){
+		return previous;
+	}
 
 }
