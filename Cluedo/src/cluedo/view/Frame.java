@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 
 import cluedo.board.Board;
 import cluedo.cards.Card;
+import cluedo.control.Controller;
 import cluedo.game.Player;
 
 @SuppressWarnings("serial")
@@ -35,7 +36,7 @@ public class Frame extends JFrame implements KeyListener {
 	private int actionButtonSelected;
 	private boolean awaitingInput;
 
-	public Frame(Board board) {
+	public Frame(Board board, Controller controller) {
 		super("Cluedo Game");
 
 		// setup menu bar
@@ -58,7 +59,7 @@ public class Frame extends JFrame implements KeyListener {
 		setJMenuBar(menuBar);
 
 		// setup canvas with center border layout
-		canvas = new Canvas(board);
+		canvas = new Canvas(board, controller);
 		canvas.setSize(988, 985);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);

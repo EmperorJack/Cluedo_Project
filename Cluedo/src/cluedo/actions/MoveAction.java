@@ -14,6 +14,7 @@ public class MoveAction implements Action {
 	private Location endLocation;
 	public List<Tile> path;
 	public int frameCounter;
+	boolean finished = false;
 
 	/**
 	 * Setup a new move action.
@@ -42,6 +43,14 @@ public class MoveAction implements Action {
 	
 	public int getFrame(){
 		return frameCounter;
+	}
+	
+	public void setFinished(){
+		finished = true;
+	}
+	
+	public boolean isFinished(){
+		return finished;
 	}
 
 	public Tile nextTile() {

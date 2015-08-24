@@ -8,6 +8,7 @@ import java.util.List;
 import cluedo.game.ClockThread;
 import cluedo.board.*;
 import cluedo.cards.Card;
+import cluedo.control.Controller;
 import cluedo.actions.*;
 import cluedo.tokens.CharacterToken;
 import cluedo.view.*;
@@ -21,6 +22,7 @@ public class Game {
 	private UI ui;
 	private Board board;
 	private Frame frame;
+	private Controller controller;
 
 	// player fields
 	private int numberPlayers;
@@ -51,7 +53,8 @@ public class Game {
 		dice = new Dice();
 		board = new Board(WEAPONS, ROOMS, dice);
 		ui = new UI(board);
-		frame = new Frame(board);
+		controller = new Controller(board, this);
+		frame = new Frame(board, controller);
 		winner = 0;
 
 		// start the clock thread for continuous board updating
@@ -363,6 +366,11 @@ public class Game {
 		return (deck.getSolution().contains(accusation.getCharacter())
 				&& deck.getSolution().contains(accusation.getRoom()) && deck
 				.getSolution().contains(accusation.getWeapon()));
+	}
+	
+	public void triggerMove(int x, int y){
+		MoveAction move = board.triggerMove(x, y);
+		if (move != null) moved = true;
 	}
 
 	/**

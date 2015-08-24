@@ -14,17 +14,20 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import cluedo.board.Board;
+import cluedo.control.Controller;
+import cluedo.game.Game;
 
 @SuppressWarnings("serial")
-public class Canvas extends JPanel implements MouseMotionListener, MouseListener {
+public class Canvas extends JPanel{
 
 	private Board board;
+	private Game game;
 	private static final String IMAGE_PATH = "/images/";
 
-	public Canvas(Board board) {
+	public Canvas(Board board, Controller controller) {
 		this.board = board;
-		addMouseMotionListener(this);
-		addMouseListener(this);
+		addMouseMotionListener(controller);
+		addMouseListener(controller);
 	}
 
 	@Override
@@ -63,47 +66,6 @@ public class Canvas extends JPanel implements MouseMotionListener, MouseListener
 			// failed to load the given image from filename
 			throw new RuntimeException("Unable to load image: " + filename);
 		}
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		board.updateMousePos(e.getX(), e.getY());
-		
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		board.triggerMove(e.getX(), e.getY());
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

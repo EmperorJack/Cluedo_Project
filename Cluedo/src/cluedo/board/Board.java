@@ -37,11 +37,10 @@ public class Board {
 	double boardScale;
 	private Player currentPlayer;
 	private Dice dice;
-	
+
 	boolean tokenMoving = false;
 	MoveAction move;
 	Tile nextInPath;
-	
 
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
@@ -72,11 +71,11 @@ public class Board {
 
 		tiles = BoardParser.parseTileBoard(roomMap);
 		characters = BoardParser.parseCharacters();
-		for (CharacterToken t: characters){
+		for (CharacterToken t : characters) {
 			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
 			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
 		}
-		
+
 		this.weapons = new ArrayList<WeaponToken>();
 
 		// init weapontokens
@@ -124,9 +123,12 @@ public class Board {
 	}
 
 	public void setValidTiles() {
-		Location charLoc = currentPlayer.getToken().getLocation();
-		Dijkstra d = new Dijkstra(tiles);
-		validTiles = d.getValidTiles(charLoc, dice.getResult());
+		if (dice.getResult() > 0) {
+			Location charLoc = currentPlayer.getToken().getLocation();
+			Dijkstra d = new Dijkstra(tiles);
+			validTiles = d.getValidTiles(charLoc, dice.getResult());
+		} else
+			validTiles.clear();
 	}
 
 	/**
@@ -243,14 +245,16 @@ public class Board {
 
 	public void draw(Graphics2D g, int width, int height) {
 
-		boardScale = (double) height / boardImage.getHeight(null); // Scalar of the image
-		//boardScale*=scaleTest;
+		boardScale = (double) height / boardImage.getHeight(null); // Scalar of
+																	// the image
+		// boardScale*=scaleTest;
 		boardOffset = (int) (width - boardImage.getWidth(null) * boardScale) / 2;
 		AffineTransform transform = new AffineTransform();
 		transform.translate(boardOffset, 0);
 		g.setTransform(transform);
-		AffineTransform scaleTransform = AffineTransform.getScaleInstance(boardScale, boardScale);
-		
+		AffineTransform scaleTransform = AffineTransform.getScaleInstance(
+				boardScale, boardScale);
+
 		AffineTransformOp bilinearScaleOp = new AffineTransformOp(
 				scaleTransform, AffineTransformOp.TYPE_BILINEAR);
 		g.drawImage(bilinearScaleOp.filter((BufferedImage) boardImage,
@@ -265,28 +269,35 @@ public class Board {
 		Tile selected = getSelectedTile();
 		if (selected != null) {
 			if (validTiles.contains(selected)) {
-				selected.draw(g, new Color(0, 255, 0, 125)); // You can move here, draw green
+				selected.draw(g, new Color(0, 255, 0, 125)); // You can move
+																// here, draw
+																// green
 			} else {
-				selected.draw(g, new Color(255, 0, 0, 125)); // You cannot move here, draw red
+				selected.draw(g, new Color(255, 0, 0, 125)); // You cannot move
+																// here, draw
+																// red
 			}
 		}
 
 		for (Tile t : validTiles) {
-			if (selected != null) { // If there is a selected tile do not draw it
+			if (selected != null) { // If there is a selected tile do not draw
+									// it
 				if (!t.equals(selected)) {
 					t.draw(g, new Color(0, 0, 255, 125));
 
 				}
 			} else { // Otherwise draw all valid tiles.
-				t.draw(g,  new Color(0, 0,255, 125));
+				t.draw(g, new Color(0, 0, 255, 125));
 			}
 		}
 
-		if (dice.getResult() > 0) { // Draw dice at the bottom right next to the board
+		if (dice.getResult() > 0) { // Draw dice at the bottom right next to the
+									// board
 			AffineTransform diceTransform = new AffineTransform();
 			diceTransform.translate(boardOffset, 0);
 			diceTransform.scale(boardScale, boardScale);
-			diceTransform.translate(boardImage.getWidth(null), boardImage.getHeight(null) - 200);
+			diceTransform.translate(boardImage.getWidth(null),
+					boardImage.getHeight(null) - 200);
 			g.setTransform(diceTransform);
 			dice.draw(g);
 		}
@@ -307,23 +318,31 @@ public class Board {
 	public void tick() {
 		clkCnt++;
 		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
-		if (tokenMoving){
+		if (tokenMoving) {
 			CharacterToken playerToken = currentPlayer.getToken();
-			if (playerToken.getLocation().equals(nextInPath.getLocation())){
-				//need to move to the next tile in path
+			if (playerToken.getLocation().equals(nextInPath.getLocation())) {
+				// need to move to the next tile in path
 				nextInPath = move.nextTile();
-				if (nextInPath == null){
+				if (nextInPath == null) {
 					tokenMoving = false;
 					setValidTiles();
 				}
 			} else {
 				move.tick();
-				double moveFraction = move.getFrame()/5.0f;
-				double currentX = (playerToken.getLocation().getX() + (nextInPath.getLocation().getX() - playerToken.getLocation().getX()) * moveFraction) * squareSize + gridXoffset;
-				double currentY = (playerToken.getLocation().getY() + (nextInPath.getLocation().getY() - playerToken.getLocation().getY()) * moveFraction) * squareSize + gridYoffset;
-				playerToken.setX((int)currentX);
-				playerToken.setY((int)currentY);
-				if (move.getFrame() == 5){
+				double moveFraction = move.getFrame() / 5.0f;
+				double currentX = (playerToken.getLocation().getX() + (nextInPath
+						.getLocation().getX() - playerToken.getLocation()
+						.getX())
+						* moveFraction)
+						* squareSize + gridXoffset;
+				double currentY = (playerToken.getLocation().getY() + (nextInPath
+						.getLocation().getY() - playerToken.getLocation()
+						.getY())
+						* moveFraction)
+						* squareSize + gridYoffset;
+				playerToken.setX((int) currentX);
+				playerToken.setY((int) currentY);
+				if (move.getFrame() == 5) {
 					playerToken.setLocation(nextInPath.getLocation());
 					move.reset();
 				}
@@ -378,17 +397,20 @@ public class Board {
 		mouseY = y;
 	}
 
-	public void triggerMove(int x, int y) {
+	public MoveAction triggerMove(int x, int y) {
 		mouseX = x;
 		mouseY = y;
-		//updateValid tiles
+		// updateValid tiles
 		setValidTiles();
 		Tile selected = getSelectedTile();
-		if (selected == null || !validTiles.contains(selected)) return;	//can't move here
+		if (selected == null || !validTiles.contains(selected))
+			return null; // can't move here
 		Dijkstra d = new Dijkstra(tiles);
-		List<Tile> path = d.getDijsktraPath(currentPlayer.getToken().getLocation(), selected.getLocation());
+		List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
+				.getLocation(), selected.getLocation());
 		move = new MoveAction(selected.getLocation(), path);
 		nextInPath = move.nextTile();
-		tokenMoving = true;
+		tokenMoving = true; 
+		return move;
 	}
 }
