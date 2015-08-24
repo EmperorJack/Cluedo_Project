@@ -245,16 +245,21 @@ public class Board {
 		g.drawString(mouseX + " " + mouseY, 10 ,10);
 		transform.scale(boardScale, boardScale);
 		g.setTransform(transform);
+		Tile selected = getSelectedTile(g);
+		if (selected != null) {
+			selected.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,255,0,125));
+		}
 
 		if (dice.getResult() > 0){
 			for (Tile t: validTiles){
 				t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,0,255,125));
 			}
-		}
-		
-		Tile selected = getSelectedTile(g);
-		if (selected != null) {
-			selected.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,255,0,125));
+			AffineTransform diceTransform = new AffineTransform();
+			diceTransform.translate(boardOffset, 0);
+			diceTransform.scale(boardScale,boardScale);
+			diceTransform.translate(boardImage.getWidth(null), boardImage.getHeight(null) - 200);
+			g.setTransform(diceTransform);
+			dice.draw(g);
 		}
 		
 		for (CharacterToken t: characters){
