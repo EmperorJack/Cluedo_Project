@@ -312,15 +312,18 @@ public class Board {
 			if (playerToken.getLocation().equals(nextInPath.getLocation())){
 				//need to move to the next tile in path
 				nextInPath = move.nextTile();
-				if (nextInPath == null) tokenMoving = false;
+				if (nextInPath == null){
+					tokenMoving = false;
+					setValidTiles();
+				}
 			} else {
 				move.tick();
-				double moveFraction = move.getFrame()/10.0f;
+				double moveFraction = move.getFrame()/5.0f;
 				double currentX = (playerToken.getLocation().getX() + (nextInPath.getLocation().getX() - playerToken.getLocation().getX()) * moveFraction) * squareSize + gridXoffset;
 				double currentY = (playerToken.getLocation().getY() + (nextInPath.getLocation().getY() - playerToken.getLocation().getY()) * moveFraction) * squareSize + gridYoffset;
 				playerToken.setX((int)currentX);
 				playerToken.setY((int)currentY);
-				if (move.getFrame() == 10){
+				if (move.getFrame() == 5){
 					playerToken.setLocation(nextInPath.getLocation());
 					move.reset();
 				}
