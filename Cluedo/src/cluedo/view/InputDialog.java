@@ -1,5 +1,8 @@
 package cluedo.view;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 
 /**
@@ -15,9 +18,22 @@ public abstract class InputDialog extends JFrame {
 	// once input is complete the dialog box will return to the caller
 	boolean complete;
 
+	// if the dialog was closed before input was confirmed
+	boolean closed;
+
 	public InputDialog(String name) {
 		super(name);
 		complete = false;
+
+		// setup close operation
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				closed = true;
+				complete = true;
+			}
+		});
 	}
 
 	/**
@@ -35,5 +51,15 @@ public abstract class InputDialog extends JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Returns true / false depending on if the user closed the dialog before
+	 * confirming their input.
+	 * 
+	 * @return If the dialog was closed.
+	 */
+	public boolean wasClosed() {
+		return closed;
 	}
 }

@@ -191,6 +191,22 @@ public class Frame extends JFrame {
 		return action;
 	}
 
+	public boolean accusationConfirmDialog() {
+		// get user input from a dialog box
+		int reply = JOptionPane.showConfirmDialog(null,
+				"A bad accusation will eliminate you from the game.\n"
+						+ "A correct one will make you the winner!\n"
+						+ "Are you sure you want to make an accusation?",
+				"Accusation Confirmation", JOptionPane.YES_NO_OPTION);
+
+		// quit if the yes reply was selected
+		if (reply == JOptionPane.YES_OPTION) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Prompts the user to confirm they want to quit the game.
 	 */

@@ -116,7 +116,7 @@ public class Game {
 
 			// get the room the player is in (null for no room)
 			Room playerRoom = board.roomIn(currentPlayer.getToken());
-			
+
 			// update the board with the current player
 			board.setPlayer(currentPlayer);
 
@@ -218,13 +218,20 @@ public class Game {
 			// dispose of the dialog box
 			dialog.dispose();
 
+			// check if the window was closed before input confirmation given
+			if (dialog.wasClosed()) {
+				return null;
+			}
+
 			return suggestion;
 		}
 
 		// accusation action selected
 		if (actionSelected == 4) {
 			// check the player wants to make an accusation
-			// TODO Confirm player wants to make an accusation here
+			if (!frame.accusationConfirmDialog()) {
+				return null;
+			}
 
 			// setup a dialog box for the player to input their suggestion
 			CardInputDialog dialog = new CardInputDialog(player, playerRoom,
@@ -239,6 +246,11 @@ public class Game {
 
 			// dispose of the dialog box
 			dialog.dispose();
+
+			// check if the window was closed before input confirmation given
+			if (dialog.wasClosed()) {
+				return null;
+			}
 
 			return accusation;
 		}
@@ -477,6 +489,12 @@ public class Game {
 
 			// dispose of the dialog box
 			dialog.dispose();
+
+			// check if the window was closed before input confirmation given
+			if (dialog.wasClosed()) {
+				// quit the game
+				System.exit(0);
+			}
 
 			// give the player a copy of the deck for possible suggestion cards
 			players[i].setNonRefutedCards(deck.getCharacters(),
