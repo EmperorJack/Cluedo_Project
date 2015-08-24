@@ -36,7 +36,7 @@ public class Board {
 	double boardScale;
 	private Player currentPlayer;
 	private Dice dice;
-	
+
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
 	public static final int gridYoffset = 41;
@@ -111,8 +111,8 @@ public class Board {
 			return (pathLength);
 		}
 	}
-	
-	public void setValidTiles(){
+
+	public void setValidTiles() {
 		Location charLoc = currentPlayer.getToken().getLocation();
 		Dijkstra d = new Dijkstra(tiles);
 		validTiles = d.getValidTiles(charLoc, dice.getResult());
@@ -217,66 +217,86 @@ public class Board {
 		}
 		return updatedBoard;
 	}
-	
-	public Tile getSelectedTile(Graphics2D g){
-		double newGridX = gridXoffset *  boardScale;
-		double newGridY = gridYoffset *  boardScale;
-		double newSquareSize = squareSize *boardScale;
-		int X = (int)((mouseX - boardOffset - newGridX)/newSquareSize);
-		int Y = (int)((mouseY - newGridY)/newSquareSize);
+
+	public Tile getSelectedTile(Graphics2D g) {
+		double newGridX = gridXoffset * boardScale;
+		double newGridY = gridYoffset * boardScale;
+		double newSquareSize = squareSize * boardScale;
+		int X = (int) ((mouseX - boardOffset - newGridX) / newSquareSize);
+		int Y = (int) ((mouseY - newGridY) / newSquareSize);
 		g.drawString("X:" + X + " " + "Y:" + Y, 20, 20);
-		if (X >= 0 && X <= 23 && Y >= 0 && Y <= 24){
-			return tiles.get(new Location(X,Y));
-		}
-		else return null;
+		if (X >= 0 && X <= 23 && Y >= 0 && Y <= 24) {
+			return tiles.get(new Location(X, Y));
+		} else
+			return null;
 	}
 
 	public void draw(Graphics2D g, int width, int height) {
-		
-		boardScale = (double)height/boardImage.getHeight(null); //Scalar of the image
-		boardOffset = (int)(width - boardImage.getWidth(null) * boardScale)/2;
+
+		boardScale = (double) height / boardImage.getHeight(null); // Scalar of the image
+		boardScale*=scaleTest;
+		boardOffset = (int) (width - boardImage.getWidth(null) * boardScale) / 2;
 		AffineTransform transform = new AffineTransform();
 		transform.translate(boardOffset, 0);
 		g.setTransform(transform);
 		AffineTransform scaleTransform = AffineTransform.getScaleInstance(boardScale, boardScale);
-		AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
-		//g.drawImage(boardImage,0,0,null);
-	    g.drawImage(bilinearScaleOp.filter((BufferedImage)boardImage, new BufferedImage((int)(boardImage.getWidth(null) * boardScale), height, ((BufferedImage) boardImage).getType())), 0, 0, null);
-		g.drawString(mouseX + " " + mouseY, 10 ,10);
+		
+		AffineTransformOp bilinearScaleOp = new AffineTransformOp(
+				scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+		g.drawImage(bilinearScaleOp.filter((BufferedImage) boardImage,
+				new BufferedImage(
+						(int) (boardImage.getWidth(null) * boardScale), height,
+						((BufferedImage) boardImage).getType())), 0, 0, null);
+
+		g.drawString(mouseX + " " + mouseY, 10, 10);
 		transform.scale(boardScale, boardScale);
 		g.setTransform(transform);
+
 		Tile selected = getSelectedTile(g);
 		if (selected != null) {
-			selected.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,255,0,125));
+			if (validTiles.contains(selected)) {
+				selected.draw(g, gridXoffset, gridYoffset, squareSize,
+						new Color(0, 255, 0, 125)); // You can move here, draw green
+			} else {
+				selected.draw(g, gridXoffset, gridYoffset, squareSize,
+						new Color(255, 0, 0, 125)); // You cannot move here, draw red
+			}
 		}
 
-		if (dice.getResult() > 0){
-			for (Tile t: validTiles){
-				t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0,0,255,125));
+		for (Tile t : validTiles) {
+			if (selected != null) { // If there is a selected tile do not draw it
+				if (!t.equals(selected)) {
+					t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0, 0, 255, 125));
+
+				}
+			} else { // Otherwise draw all valid tiles.
+				t.draw(g, gridXoffset, gridYoffset, squareSize, new Color(0, 0,255, 125));
 			}
+		}
+
+		if (dice.getResult() > 0) { // Draw dice at the bottom right next to the board
 			AffineTransform diceTransform = new AffineTransform();
 			diceTransform.translate(boardOffset, 0);
-			diceTransform.scale(boardScale,boardScale);
+			diceTransform.scale(boardScale, boardScale);
 			diceTransform.translate(boardImage.getWidth(null), boardImage.getHeight(null) - 200);
 			g.setTransform(diceTransform);
 			dice.draw(g);
 		}
-		
-		for (CharacterToken t: characters){
+
+		for (CharacterToken t : characters) {
 			AffineTransform tokenTransform = new AffineTransform();
 			tokenTransform.translate(boardOffset, 0);
 			int tokenXoffSet = t.getLocation().getX() * squareSize + gridXoffset;
 			int tokenYoffSet = t.getLocation().getY() * squareSize + gridYoffset;
-			tokenTransform.scale(boardScale,boardScale);
+			tokenTransform.scale(boardScale, boardScale);
 			tokenTransform.translate(tokenXoffSet, tokenYoffSet);
-			
+
 			g.setTransform(tokenTransform);
 			t.draw(g);
 		}
-		
+
 		// TODO draw the board
 	}
-	
 
 	public void tick() {
 		clkCnt++;
@@ -320,7 +340,7 @@ public class Board {
 		token.leaveRoom();
 		token.setRoom(destination);
 	}
-	
+
 	public void setPlayer(Player player) {
 		currentPlayer = player;
 	}
