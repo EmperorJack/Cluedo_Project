@@ -216,7 +216,7 @@ public class CardInputDialog extends InputDialog {
 		getRootPane().setDefaultButton(okButton);
 		pack();
 		setSize(700, 650);
-		setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);

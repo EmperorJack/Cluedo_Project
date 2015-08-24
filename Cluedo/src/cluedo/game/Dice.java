@@ -54,4 +54,12 @@ public class Dice {
 		}
 
 	}
+	
+	/**
+	 * Reset the dice to 0 values.
+	 */
+	public void resetValues() {
+		value1 = 0;
+		value2 = 0;
+	}
 }

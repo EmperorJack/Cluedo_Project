@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,15 +22,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import cluedo.board.Board;
+import cluedo.cards.Card;
+import cluedo.game.Player;
 
 @SuppressWarnings("serial")
-public class Frame extends JFrame {
+public class Frame extends JFrame implements KeyListener {
 
 	// frame fields
 	private Canvas canvas;
 	private JButton rollDiceButton, secretPassageButton, suggestionButton,
 			accusationButton, endTurnButton;
 	private int actionButtonSelected;
+	private boolean awaitingInput;
 
 	public Frame(Board board) {
 		super("Cluedo Game");
@@ -63,7 +69,7 @@ public class Frame extends JFrame {
 		actionPanel.add(Box.createVerticalStrut(5));
 
 		// setup roll dice button
-		rollDiceButton = new JButton("Roll Dice");
+		rollDiceButton = new JButton("Roll Dice (R)");
 		rollDiceButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -74,7 +80,7 @@ public class Frame extends JFrame {
 		actionPanel.add(rollDiceButton);
 
 		// setup secret passage button
-		secretPassageButton = new JButton("Secret Passage");
+		secretPassageButton = new JButton("Secret Passage (P)");
 		secretPassageButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -85,7 +91,7 @@ public class Frame extends JFrame {
 		actionPanel.add(secretPassageButton);
 
 		// setup suggestion button
-		suggestionButton = new JButton("Suggestion");
+		suggestionButton = new JButton("Suggestion (S)");
 		suggestionButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -96,7 +102,7 @@ public class Frame extends JFrame {
 		actionPanel.add(suggestionButton);
 
 		// setup accusation button
-		accusationButton = new JButton("Accusation");
+		accusationButton = new JButton("Accusation (A)");
 		accusationButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -107,7 +113,7 @@ public class Frame extends JFrame {
 		actionPanel.add(accusationButton);
 
 		// setup end turn button
-		endTurnButton = new JButton("End Turn");
+		endTurnButton = new JButton("End Turn (E)");
 		endTurnButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -138,6 +144,10 @@ public class Frame extends JFrame {
 		setSize(1000, 1000);
 		setResizable(true);
 		setLocationRelativeTo(null);
+
+		// setup key listener
+		addKeyListener(this);
+		setFocusable(true);
 	}
 
 	public void update() {
@@ -171,7 +181,17 @@ public class Frame extends JFrame {
 		}
 	}
 
+	/**
+	 * Awaits the player to give an action input via button or shortcut key.
+	 * Keeps the main thread isolated and will return to the caller only once
+	 * input has been made.
+	 * 
+	 * @return
+	 */
 	public int requestActionButtonInput() {
+		// indicate the frame is waiting for player action input
+		awaitingInput = true;
+
 		// while an action button has not been pressed
 		while (actionButtonSelected == 0) {
 			try {
@@ -188,6 +208,7 @@ public class Frame extends JFrame {
 
 		// reset the selected action and return the temporary variable
 		actionButtonSelected = 0;
+		awaitingInput = false;
 		return action;
 	}
 
@@ -205,6 +226,102 @@ public class Frame extends JFrame {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Display a message about the result of a suggestion action. The result
+	 * being a card was refuted.
+	 * 
+	 * @param player
+	 *            The player who made the suggestion.
+	 * @param refutingPlayer
+	 *            The player who refuted a suggestion card.
+	 * @param refutedCard
+	 *            The card that was refuted.
+	 */
+	public void displayRefutedInfoDialog(Player player, Player refutingPlayer,
+			Card refutedCard) {
+		String output = String
+				.format("%s (%s) made a suggestion but the card [%s] was refuted by %s (%s)!",
+						player.getName(), player.getCharacterName(),
+						refutedCard, refutingPlayer.getName(),
+						refutingPlayer.getCharacterName());
+
+		// display a message dialog with one option to continue
+		Object[] options = { "Ok" };
+		JOptionPane.showOptionDialog(null, output, "Suggestion Result",
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[0]);
+	}
+
+	/**
+	 * Display a message about the result of a suggestion action. The result
+	 * being no cards were refuted.
+	 * 
+	 * @param player
+	 *            The player who made the suggestion.
+	 */
+	public void displayNonRefutedDialog(Player player) {
+		String output = String
+				.format("%s (%s) made a suggestion and no cards were refuted by the other players!",
+						player.getName(), player.getCharacterName());
+
+		// display a message dialog with one option to continue
+		Object[] options = { "Ok" };
+		JOptionPane.showOptionDialog(null, output, "Suggestion Result",
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[0]);
+	}
+
+	/**
+	 * Display a message about the winner in a dialog box. Once closed the game
+	 * will exit.
+	 * 
+	 * @param player
+	 *            The winning player.
+	 * @param solution
+	 *            The solution cards.
+	 */
+	public void playerWinnerDialog(Player player, List<Card> solution) {
+		// construct a string with the player name, character name and solution
+		// cards
+		String output = String
+				.format("%s (%s) has won the game! Either by correct accusation or elimination of all other players!\n"
+						+ "The solution cards were: %s", player.getName(),
+						player.getCharacterName(), solution.toString());
+
+		// display a message dialog with one option to quit
+		Object[] options = { "Quit" };
+		JOptionPane.showOptionDialog(null, output, "Game Won!",
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[0]);
+
+		// quit the game
+		System.exit(0);
+	}
+
+	/**
+	 * Display a message about an eliminated player in a dialog box.
+	 * 
+	 * @param player
+	 *            The eliminated player.
+	 * @param accusation
+	 *            The incorrect cards the player accused.
+	 */
+	public void playerEliminatedDialog(Player player, List<Card> accusation) {
+		// construct a string with the player name, character name and incorrect
+		// accusation cards
+		String output = String.format(
+				"%s (%s) has been eliminated from the game for making a bad accusation!\n"
+						+ "The incorrect accusation cards were: %s",
+				player.getName(), player.getCharacterName(),
+				accusation.toString());
+
+		// display a message dialog with one option to continue
+		Object[] options = { "Ok" };
+		JOptionPane.showOptionDialog(null, output, "Player Eliminated",
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[0]);
 	}
 
 	/**
@@ -249,5 +366,44 @@ public class Frame extends JFrame {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// only allow shortcut key presses if the frame is awaiting player input
+		if (awaitingInput) {
+			// shortcut keys will only activate if the relative button is
+			// enabled
+			if (e.getKeyCode() == KeyEvent.VK_R && rollDiceButton.isEnabled()) {
+				// R key pressed for roll dice
+				actionButtonSelected = 1;
+			} else if (e.getKeyCode() == KeyEvent.VK_P
+					&& secretPassageButton.isEnabled()) {
+				// P key pressed for secret passage
+				actionButtonSelected = 2;
+			} else if (e.getKeyCode() == KeyEvent.VK_S
+					&& suggestionButton.isEnabled()) {
+				// S key pressed for suggestion
+				actionButtonSelected = 3;
+			} else if (e.getKeyCode() == KeyEvent.VK_A
+					&& accusationButton.isEnabled()) {
+				// A key pressed for accusation
+				actionButtonSelected = 4;
+			} else if (e.getKeyCode() == KeyEvent.VK_E
+					&& endTurnButton.isEnabled()) {
+				// E key pressed for end turn
+				actionButtonSelected = 5;
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// unused method
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// unused method
 	}
 }

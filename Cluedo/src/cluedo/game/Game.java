@@ -172,14 +172,18 @@ public class Game {
 				}
 			}
 
+			// reset the dice values for the next turn
+			dice.resetValues();
+
 			// disable all frame action buttons
 			frame.setButtonSelectable("all", false);
 		} while (winner == 0);
 
-		// print the winner information and the solution
-		ui.printWinner(players[winner - 1], deck.getSolution());
+		// display the winner information and the solution
+		frame.playerWinnerDialog(players[winner - 1], deck.getSolution());
 	}
 
+	// TODO COMMENT
 	private Action createActionSelected(Player player, Room playerRoom,
 			int actionSelected) {
 		// process the selected action given by the player input
@@ -258,13 +262,13 @@ public class Game {
 		return null;
 	}
 
+	// TODO COMMENT
 	private void performAction(Player player, Room playerRoom, Action action) {
 		// if a valid move action was chosen
 		if (action instanceof MoveAction) {
 			// move the player and print the board result
 			Location loc = ((MoveAction) action).getLocation();
 			board.movePlayer(player.getToken(), loc);
-			ui.printBoard();
 			moved = true;
 			return;
 		}
@@ -332,7 +336,15 @@ public class Game {
 		} else {
 			// player is eliminated due to bad accusation
 			player.eliminate();
-			ui.printPlayerElimination(player);
+			
+			// construct a list of the accusation cards
+			List<Card> accusationCards = new ArrayList<Card>();
+			accusationCards.add(accusation.getCharacter());
+			accusationCards.add(accusation.getRoom());
+			accusationCards.add(accusation.getWeapon());
+
+			// display the eliminated player information
+			frame.playerEliminatedDialog(player, accusationCards);
 		}
 
 		// no winner was decided
@@ -373,12 +385,10 @@ public class Game {
 		// move the suggested character token to the room
 		String character = suggestion.getCharacter().toString();
 		board.moveTokenToRoom(board.getCharacterToken(character), roomIn);
-		ui.printCharacterMove(character, roomIn.getName());
 
 		// move the suggested weapon token to the room
 		String weapon = suggestion.getWeapon().toString();
 		board.moveTokenToRoom(board.getWeaponToken(weapon), roomIn);
-		ui.printWeaponMove(weapon, roomIn.getName());
 
 		// iterate through all the other players clockwise
 		int i = player.getId() - 1;
@@ -393,7 +403,7 @@ public class Game {
 				player.refuteCard(refutedCard);
 
 				// print information that a suggested card was refuted
-				ui.printRefutedInfo(players[i], refutedCard);
+				frame.displayRefutedInfoDialog(player, players[i], refutedCard);
 
 				// stop iterating through the players now
 				return;
@@ -404,7 +414,7 @@ public class Game {
 		}
 
 		// print information that no suggested card was refuted
-		ui.printNonRefuted();
+		frame.displayNonRefutedDialog(player);
 	}
 
 	/**
