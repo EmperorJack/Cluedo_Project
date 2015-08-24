@@ -234,7 +234,7 @@ public class Board {
 	public void draw(Graphics2D g, int width, int height) {
 
 		boardScale = (double) height / boardImage.getHeight(null); // Scalar of the image
-		boardScale*=scaleTest;
+		//boardScale*=scaleTest;
 		boardOffset = (int) (width - boardImage.getWidth(null) * boardScale) / 2;
 		AffineTransform transform = new AffineTransform();
 		transform.translate(boardOffset, 0);
