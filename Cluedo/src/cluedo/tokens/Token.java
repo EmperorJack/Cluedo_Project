@@ -55,6 +55,11 @@ public abstract class Token {
 	public String getName() {
 		return name;
 	}
+	
+
+	public Room getRoom() {
+		return room;
+	}
 
 	public void draw(Graphics2D g2d) {
 		g2d.drawImage(image, 0, 0, null);

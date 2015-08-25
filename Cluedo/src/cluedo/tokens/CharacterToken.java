@@ -22,7 +22,6 @@ public class CharacterToken extends Token {
 	public char getChar() {
 		return characterLetter;
 	}
-
 	public void setRoom(Room room) {
 		room.addToken(this);
 		this.room = room;
@@ -37,9 +36,6 @@ public class CharacterToken extends Token {
 		}
 	}
 
-	public Room getRoom() {
-		return room;
-	}
 
 	public boolean inRoom() {
 		return inRoom;

@@ -9,7 +9,7 @@ public class MoveSequence implements Action{
 	List<BoardMove> sequence;
 	BoardMove current;
 	Token t;
-	public MoveSequence(MoveAction action, Token t){
+	public MoveSequence(BoardMove action, Token t){
 		sequence = new ArrayList<BoardMove>();
 		current = action;
 		this.t = t;

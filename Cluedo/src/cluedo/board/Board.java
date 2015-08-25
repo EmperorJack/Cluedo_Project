@@ -210,38 +210,8 @@ public class Board {
 
 	@Override
 	public String toString() {
-		String[] updatedBoard = updateBoard();
-		String boardString = ""; // Simply merges the array into a single string
-									// at this point
-		for (int i = 0; i < updatedBoard.length; i++) {
-			boardString += updatedBoard[i] + "\n";
-		}
+		String boardString = "";
 		return boardString;
-	}
-
-	/**
-	 * Splices character positions onto the text board.
-	 * 
-	 * @return A new String array of the board with the correct character
-	 *         positions.
-	 */
-	public String[] updateBoard() {
-		String[] updatedBoard = Arrays
-				.copyOf(boardStrings, boardStrings.length);
-		// for each Character get yPos, get corresponding string, replace new
-		// concatenated string
-		for (CharacterToken c : characters) {
-			if (!c.inRoom()) {
-				int charY = c.getLocation().getY();
-				String charRow = updatedBoard[charY + 1];
-				int charIndex = (c.getLocation().getX() * 2) + 4;
-				String updatedRow = charRow.substring(0, charIndex)
-						+ c.getChar()
-						+ charRow.substring(charIndex + 1, charRow.length());
-				updatedBoard[charY + 1] = updatedRow;
-			}
-		}
-		return updatedBoard;
 	}
 
 	public Tile getSelectedTile() {
@@ -408,12 +378,31 @@ public class Board {
 			Tile selected = getSelectedTile();
 			if (selected == null || !validTiles.contains(selected))
 				return null; // can't move here, can't move yet
-			Dijkstra d = new Dijkstra(tiles);
-			List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
-					.getLocation(), selected.getLocation());
-			move = new MoveSequence(
-					new MoveAction(selected.getLocation(), path),
-					currentPlayer.getToken());
+			if (!currentPlayer.getToken().inRoom()) {
+				Dijkstra d = new Dijkstra(tiles);
+				List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
+						.getLocation(), selected.getLocation());
+				move = new MoveSequence(new MoveAction(selected.getLocation(),
+						path), currentPlayer.getToken());
+			} else {
+				Room room = currentPlayer.getToken().getRoom();
+				currentPlayer.getToken().leaveRoom();
+				Set<DoorTile> doors = room.getEntrances();
+				for (DoorTile door : doors) {
+					Dijkstra d = new Dijkstra(tiles);
+					Set<Tile> tilesToCheck = d.getValidTiles(
+							door.getLocation(), dice.getResult());
+					if (tilesToCheck.contains(selected)) {
+						List<Tile> path = d.getDijsktraPath(door.getLocation(),
+								selected.getLocation());
+						move = new MoveSequence(new WarpAction(
+								door.getLocation()), currentPlayer.getToken());
+						move.addAction(new MoveAction(selected.getLocation(),
+								path));
+						break;
+					}
+				}
+			}
 			if (selected instanceof DoorTile) {
 				currentPlayer.getToken().setRoom(
 						((DoorTile) selected).getRoom());
