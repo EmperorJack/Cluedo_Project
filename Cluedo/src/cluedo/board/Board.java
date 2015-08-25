@@ -155,6 +155,9 @@ public class Board {
 				Dijkstra d = new Dijkstra(tiles);
 				validTiles = d.getValidTiles(charLoc, dice.getResult());
 			}
+			for (CharacterToken c : characters) {
+				validTiles.remove(tiles.get(c.getLocation()));
+			}
 		} else
 			validTiles.clear();
 	}
