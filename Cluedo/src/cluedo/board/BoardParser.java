@@ -268,7 +268,7 @@ public class BoardParser {
 	public static List<CharacterToken> parseCharacters() {
 		List<CharacterToken> characters = new ArrayList<CharacterToken>();
 		try {
-			Scanner parseMapScanner = new Scanner(new File("src/parsemap_2.txt"));
+			Scanner parseMapScanner = new Scanner(new File("parsemap.txt"));
 			int i = 0;
 			while (parseMapScanner.hasNextLine()) {
 				String currentLine = parseMapScanner.nextLine();
