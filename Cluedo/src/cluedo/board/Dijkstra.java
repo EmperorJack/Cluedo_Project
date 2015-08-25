@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import cluedo.tiles.RoomTile;
 import cluedo.tiles.Tile;
 import cluedo.tiles.WallTile;
 
@@ -158,7 +159,7 @@ public class Dijkstra {
 		
 		for (Location loc : validLocations) {
 			Tile t = tileMap.get(loc); //if a neighbouring tile has not been visited and is not a wall, add it to the list.
-			if (!(t instanceof WallTile)
+			if (!(t instanceof WallTile || t instanceof RoomTile)
 					&& !visitedNodes.contains(nodeMap.get(t)))
 				neighbours.add(nodeMap.get(t));
 		}

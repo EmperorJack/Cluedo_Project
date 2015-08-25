@@ -365,7 +365,7 @@ public class Game {
 		// if the player has not moved yet
 		if (!moved) {
 			// create a move action from the board
-			MoveAction move = board.triggerMove(x, y);
+			MoveSequence move = board.triggerMove(x, y);
 
 			// check the move action is valid
 			if (move != null) {

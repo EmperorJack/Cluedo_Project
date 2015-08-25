@@ -1,5 +1,6 @@
 package cluedo.board;
 import java.util.HashSet;
+import java.util.List;
 
 import cluedo.tiles.*;
 import cluedo.tokens.*;
@@ -9,6 +10,7 @@ public class Room {
 	HashSet<DoorTile> entrances;
 	HashSet<CharacterToken> characterTokens;
 	HashSet<WeaponToken> weaponTokens;
+	HashSet<RoomTile> roomTiles;
 	Room passage;
 	
 	
@@ -20,6 +22,7 @@ public class Room {
 	public Room(String name){
 		this.name = name;
 		this.entrances = new HashSet<DoorTile>();
+		this.roomTiles = new HashSet<RoomTile>();
 		this.characterTokens = new HashSet<CharacterToken>();
 		this.weaponTokens = new HashSet<WeaponToken>();
 		passage = null;
@@ -31,6 +34,11 @@ public class Room {
 	 */
 	public void addEntrance(DoorTile entrance){
 		entrances.add(entrance);
+	}
+	
+
+	public void addRoomTile(RoomTile roomTile){
+		roomTiles.add(roomTile);
 	}
 	
 	/**
@@ -135,6 +143,10 @@ public class Room {
 			return roomString;
 		}
 		return new String();
+	}
+
+	public HashSet<RoomTile> getRoomTiles() {
+		return roomTiles;
 	}
 
 }

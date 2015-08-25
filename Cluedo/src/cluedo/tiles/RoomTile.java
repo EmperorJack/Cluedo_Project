@@ -4,17 +4,17 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import cluedo.board.Location;
+import cluedo.board.Room;
 
 public class RoomTile extends Tile{
-
-	public RoomTile(Location location) {
+	Room room;
+	public RoomTile(Location location, Room room) {
 		super(location);
-		// TODO Auto-generated constructor stub
+		this.room = room;
 	}
 
 	@Override
 	public void draw(Graphics2D g, Color color) {
-		// TODO Auto-generated method stub
 		
 	}
 

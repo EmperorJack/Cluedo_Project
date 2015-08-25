@@ -70,7 +70,7 @@ public class BoardParser {
 	public static Map<Location, Tile> parseTileBoard(Map<String, Room> rooms) {
 		Map<Location, Tile> tiles = new HashMap<Location, Tile>();
 		try {
-			Scanner parseMapScanner = new Scanner(new File("src/parsemap.txt"));
+			Scanner parseMapScanner = new Scanner(new File("src/parsemap_2.txt"));
 			int i = 0;
 			while (parseMapScanner.hasNextLine()) {
 				String currentLine = parseMapScanner.nextLine();
@@ -105,36 +105,28 @@ public class BoardParser {
 					case ('1'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Kitchen"));
+								rooms.get("Study"));
 						tiles.put(loc, entrance);
-						rooms.get("Kitchen").addEntrance(entrance);
+						rooms.get("Study").addEntrance(entrance);
 						break;
 					}
 					case ('2'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Ballroom"));
+								rooms.get("Hall"));
 						tiles.put(loc, entrance);
-						rooms.get("Ballroom").addEntrance(entrance);
+						rooms.get("Hall").addEntrance(entrance);
 						break;
 					}
 					case ('3'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Conservatory"));
+								rooms.get("Lounge"));
 						tiles.put(loc, entrance);
-						rooms.get("Conservatory").addEntrance(entrance);
+						rooms.get("Lounge").addEntrance(entrance);
 						break;
 					}
 					case ('4'): {
-						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Billiard Room"));
-						tiles.put(loc, entrance);
-						rooms.get("Billiard Room").addEntrance(entrance);
-						break;
-					}
-					case ('5'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
 								rooms.get("Library"));
@@ -142,27 +134,35 @@ public class BoardParser {
 						rooms.get("Library").addEntrance(entrance);
 						break;
 					}
+					case ('5'): {
+						Location loc = new Location(j, i);
+						DoorTile entrance = new DoorTile(loc,
+								rooms.get("Billiard Room"));
+						tiles.put(loc, entrance);
+						rooms.get("Billiard Room").addEntrance(entrance);
+						break;
+					}
 					case ('6'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Study"));
+								rooms.get("Conservatory"));
 						tiles.put(loc, entrance);
-						rooms.get("Study").addEntrance(entrance);
+						rooms.get("Conservatory").addEntrance(entrance);
 						break;
 					}
 					case ('7'): {
 						Location loc = new Location(j, i);
-						DoorTile entrance = new DoorTile(loc, rooms.get("Hall"));
+						DoorTile entrance = new DoorTile(loc, rooms.get("Ballroom"));
 						tiles.put(loc, entrance);
-						rooms.get("Hall").addEntrance(entrance);
+						rooms.get("Ballroom").addEntrance(entrance);
 						break;
 					}
 					case ('8'): {
 						Location loc = new Location(j, i);
 						DoorTile entrance = new DoorTile(loc,
-								rooms.get("Lounge"));
+								rooms.get("Kitchen"));
 						tiles.put(loc, entrance);
-						rooms.get("Lounge").addEntrance(entrance);
+						rooms.get("Kitchen").addEntrance(entrance);
 						break;
 					}
 					case ('9'): {
@@ -171,6 +171,78 @@ public class BoardParser {
 								rooms.get("Dining Room"));
 						tiles.put(loc, entrance);
 						rooms.get("Dining Room").addEntrance(entrance);
+						break;
+					}
+					case ('!'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Study"));
+						tiles.put(loc, roomTile);
+						rooms.get("Study").addRoomTile(roomTile);
+						break;
+					}
+					case ('@'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Hall"));
+						tiles.put(loc, roomTile);
+						rooms.get("Hall").addRoomTile(roomTile);
+						break;
+					}
+					case ('#'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Lounge"));
+						tiles.put(loc, roomTile);
+						rooms.get("Lounge").addRoomTile(roomTile);
+						break;
+					}
+					case ('$'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Library"));
+						tiles.put(loc, roomTile);
+						rooms.get("Library").addRoomTile(roomTile);
+						break;
+					}
+					case ('%'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Kitchen"));
+						tiles.put(loc, roomTile);
+						rooms.get("Kitchen").addRoomTile(roomTile);
+						break;
+					}
+					case ('^'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Conservatory"));
+						tiles.put(loc, roomTile);
+						rooms.get("Conservatory").addRoomTile(roomTile);
+						break;
+					}
+					case ('&'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Ballroom"));
+						tiles.put(loc, roomTile);
+						rooms.get("Ballroom").addRoomTile(roomTile);
+						break;
+					}
+					case ('*'): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Kitchen"));
+						tiles.put(loc, roomTile);
+						rooms.get("Kitchen").addRoomTile(roomTile);
+						break;
+					}
+					case ('('): {
+						Location loc = new Location(j, i);
+						RoomTile roomTile = new RoomTile(loc,
+								rooms.get("Dining Room"));
+						tiles.put(loc, roomTile);
+						rooms.get("Dining Room").addRoomTile(roomTile);
 						break;
 					}
 					default:
@@ -196,7 +268,7 @@ public class BoardParser {
 	public static List<CharacterToken> parseCharacters() {
 		List<CharacterToken> characters = new ArrayList<CharacterToken>();
 		try {
-			Scanner parseMapScanner = new Scanner(new File("src/parsemap.txt"));
+			Scanner parseMapScanner = new Scanner(new File("src/parsemap_2.txt"));
 			int i = 0;
 			while (parseMapScanner.hasNextLine()) {
 				String currentLine = parseMapScanner.nextLine();

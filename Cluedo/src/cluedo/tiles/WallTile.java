@@ -13,7 +13,6 @@ public class WallTile extends Tile {
 
 	@Override
 	public void draw(Graphics2D g, Color color) {
-		// TODO Auto-generated method stub
 		
 	}
 

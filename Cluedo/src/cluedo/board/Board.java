@@ -1,6 +1,8 @@
 package cluedo.board;
 
 import cluedo.actions.MoveAction;
+import cluedo.actions.MoveSequence;
+import cluedo.actions.WarpAction;
 import cluedo.game.Dice;
 import cluedo.game.Player;
 import cluedo.tiles.*;
@@ -39,7 +41,7 @@ public class Board {
 	private Dice dice;
 
 	boolean tokenMoving = false;
-	MoveAction move;
+	MoveSequence move;
 
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
@@ -123,9 +125,21 @@ public class Board {
 
 	public void setValidTiles() {
 		if (dice.getResult() > 0) {
-			Location charLoc = currentPlayer.getToken().getLocation();
-			Dijkstra d = new Dijkstra(tiles);
-			validTiles = d.getValidTiles(charLoc, dice.getResult());
+			if (currentPlayer.getToken().inRoom()) {
+				Room room = currentPlayer.getToken().getRoom();
+				Set<DoorTile> doors = room.getEntrances();
+				validTiles = new HashSet<Tile>();
+				for (DoorTile door : doors) {
+					Dijkstra d = new Dijkstra(tiles);
+					validTiles.addAll(d.getValidTiles(door.getLocation(),
+							dice.getResult()));
+				}
+
+			} else {
+				Location charLoc = currentPlayer.getToken().getLocation();
+				Dijkstra d = new Dijkstra(tiles);
+				validTiles = d.getValidTiles(charLoc, dice.getResult());
+			}
 		} else
 			validTiles.clear();
 	}
@@ -282,7 +296,12 @@ public class Board {
 			if (selected != null) { // If there is a selected tile do not draw
 									// it
 				if (!t.equals(selected)) {
-					t.draw(g, new Color(0, 0, 255, 125));
+					if (t instanceof PathTile) {
+						t.draw(g, new Color(0, 0, 255, 125));
+					}
+					if (t instanceof DoorTile) {
+						t.draw(g, new Color(0, 255, 255, 125));
+					}
 
 				}
 			} else { // Otherwise draw all valid tiles.
@@ -311,7 +330,6 @@ public class Board {
 			t.draw(g);
 		}
 
-		// TODO draw the board
 	}
 
 	public void tick() {
@@ -319,9 +337,8 @@ public class Board {
 		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
 
 		if (tokenMoving) {
-			CharacterToken playerToken = currentPlayer.getToken();
 			if (!move.isFinished()) {
-				move.tick(playerToken);
+				move.tick();
 			} else {
 				tokenMoving = false;
 				dice.resetValues();
@@ -377,7 +394,7 @@ public class Board {
 		mouseY = y;
 	}
 
-	public MoveAction triggerMove(int x, int y) {
+	public MoveSequence triggerMove(int x, int y) {
 		mouseX = x;
 		mouseY = y;
 		// updateValid tiles
@@ -389,7 +406,21 @@ public class Board {
 			Dijkstra d = new Dijkstra(tiles);
 			List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
 					.getLocation(), selected.getLocation());
-			move = new MoveAction(selected.getLocation(), path);
+			move = new MoveSequence(
+					new MoveAction(selected.getLocation(), path),
+					currentPlayer.getToken());
+			if (selected instanceof DoorTile) {
+				currentPlayer.getToken().setRoom(
+						((DoorTile) selected).getRoom());
+				HashSet<RoomTile> roomTiles = ((DoorTile) selected).getRoom()
+						.getRoomTiles();
+				for (RoomTile t : roomTiles) {
+					if (!hasCharacterOn(t.getLocation())) {
+						move.addAction(new WarpAction(t.getLocation()));
+						break;
+					}
+				}
+			}
 			tokenMoving = true;
 			return move;
 		}

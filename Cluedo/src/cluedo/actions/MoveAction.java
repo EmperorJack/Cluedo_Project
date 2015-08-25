@@ -8,13 +8,14 @@ import static cluedo.board.Board.gridYoffset;
 import cluedo.board.Location;
 import cluedo.tiles.Tile;
 import cluedo.tokens.CharacterToken;
+import cluedo.tokens.Token;
 
 /**
  * Represents a movement action. Has a target location and moves the player
  * character token performing the action to the target. The token will move
  * along a path to the target over time as an animation.
  */
-public class MoveAction implements Action {
+public class MoveAction implements Action, BoardMove {
 	private Location endLocation;
 	private Tile nextInPath;
 	private List<Tile> path;
@@ -47,7 +48,7 @@ public class MoveAction implements Action {
 	 * @param playerToken
 	 *            The character token being moved.
 	 */
-	public void tick(CharacterToken playerToken) {
+	public void tick(Token playerToken) {
 		if (playerToken.getLocation().equals(nextInPath.getLocation())) {
 			nextInPath = nextTile();
 			if (nextInPath == null) {

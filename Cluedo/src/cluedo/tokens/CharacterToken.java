@@ -6,12 +6,8 @@ import cluedo.board.Room;
 public class CharacterToken extends Token {
 
 	char characterLetter;
-	Location location;
-	Room room;
 	boolean inRoom;
 	boolean moving;
-	int xPos;
-	int yPos;
 	
 
 	public CharacterToken(String name, char characterLetter, int x, int y) {
@@ -22,13 +18,6 @@ public class CharacterToken extends Token {
 		inRoom = false;
 	}
 
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setLocation(Location loc) {
-		this.location = loc;
-	}
 
 	public char getChar() {
 		return characterLetter;
@@ -54,22 +43,6 @@ public class CharacterToken extends Token {
 
 	public boolean inRoom() {
 		return inRoom;
-	}
-
-	public void setX(int x) {
-		xPos = x;
-	}
-	
-	public void setY(int y) {
-		yPos = y;
-	}
-
-	public int getXPos() {
-		return xPos;
-	}
-	
-	public int getYPos() {
-		return yPos;
 	}
 	
 	public void updateX(int deltaX){
