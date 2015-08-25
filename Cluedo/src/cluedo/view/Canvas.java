@@ -45,6 +45,8 @@ public class Canvas extends JPanel {
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
+		
+
 		// draw the current game board state
 		board.draw(g2d, getWidth(), getHeight());
 	}

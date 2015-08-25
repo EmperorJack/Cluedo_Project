@@ -51,7 +51,7 @@ public class Dice {
 	public void draw(Graphics2D g2d) {
 		if (face1 != null && face2 != null) {
 			g2d.drawImage(face1, 0, 0, 100, 100, null);
-			g2d.drawImage(face2, 0, 100, 100, 100, null);
+			g2d.drawImage(face2, 150, 0, 100, 100, null);
 		}
 
 	}

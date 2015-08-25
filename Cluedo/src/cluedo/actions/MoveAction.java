@@ -2,9 +2,9 @@ package cluedo.actions;
 
 import java.util.List;
 
-import static cluedo.board.Board.squareSize;
-import static cluedo.board.Board.gridXoffset;
-import static cluedo.board.Board.gridYoffset;
+import static cluedo.board.Board.SQUARE_SIZE;
+import static cluedo.board.Board.GRID_X_OFFSET;
+import static cluedo.board.Board.GRID_Y_OFFSET;
 import cluedo.board.Location;
 import cluedo.tiles.Tile;
 import cluedo.tokens.CharacterToken;
@@ -59,10 +59,10 @@ public class MoveAction implements Action, BoardMove {
 			double moveFraction = frameCounter / 4.0f;
 			double currentX = (playerToken.getLocation().getX() + (nextInPath
 					.getLocation().getX() - playerToken.getLocation().getX())
-					* moveFraction) * squareSize + gridXoffset;
+					* moveFraction) * SQUARE_SIZE + GRID_X_OFFSET;
 			double currentY = (playerToken.getLocation().getY() + (nextInPath
 					.getLocation().getY() - playerToken.getLocation().getY())
-					* moveFraction) * squareSize + gridYoffset;
+					* moveFraction) * SQUARE_SIZE + GRID_Y_OFFSET;
 			playerToken.setX((int) currentX);
 			playerToken.setY((int) currentY);
 			if (frameCounter == 4) {

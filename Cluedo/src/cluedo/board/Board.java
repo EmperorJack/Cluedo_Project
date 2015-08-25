@@ -36,7 +36,8 @@ public class Board {
 	int clkCnt = 0;
 	int mouseX;
 	int mouseY;
-	int boardOffset;
+	int boardXOffset;
+	int boardYOffset;
 	double boardScale;
 	private Player currentPlayer;
 	private Dice dice;
@@ -44,9 +45,12 @@ public class Board {
 	boolean tokenMoving = false;
 	List<MoveSequence> moves;
 
-	public static final int squareSize = 36;
-	public static final int gridXoffset = 61;
-	public static final int gridYoffset = 41;
+	public static final int SQUARE_SIZE = 36;
+	public static final int GRID_X_OFFSET = 318 + 61;
+	public static final int GRID_Y_OFFSET = 41;
+	public static final int BOARD_OFFSET = 318;
+	public static final int BOARD_WIDTH = 1477;
+	private static final double BOARD_HEIGHT = 985;
 
 	/**
 	 * Creates the game board. The underlying board for the game logic is a Map
@@ -75,8 +79,8 @@ public class Board {
 		tiles = BoardParser.parseTileBoard(roomMap);
 		characters = BoardParser.parseCharacters();
 		for (CharacterToken t : characters) {
-			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
-			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
+			t.setX(t.getLocation().getX() * SQUARE_SIZE + GRID_X_OFFSET);
+			t.setY(t.getLocation().getY() * SQUARE_SIZE + GRID_Y_OFFSET);
 		}
 		this.weapons = new ArrayList<WeaponToken>();
 
@@ -96,8 +100,8 @@ public class Board {
 		}
 
 		for (WeaponToken t : this.weapons) {
-			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
-			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
+			t.setX(t.getLocation().getX() * SQUARE_SIZE + GRID_X_OFFSET);
+			t.setY(t.getLocation().getY() * SQUARE_SIZE + GRID_Y_OFFSET);
 		}
 
 	}
@@ -230,11 +234,11 @@ public class Board {
 	}
 
 	public Tile getSelectedTile() {
-		double newGridX = gridXoffset * boardScale;
-		double newGridY = gridYoffset * boardScale;
-		double newSquareSize = squareSize * boardScale;
-		int X = (int) ((mouseX - boardOffset - newGridX) / newSquareSize);
-		int Y = (int) ((mouseY - newGridY) / newSquareSize);
+		double newGridX = GRID_X_OFFSET * boardScale;
+		double newGridY = GRID_Y_OFFSET * boardScale;
+		double newSquareSize = SQUARE_SIZE * boardScale;
+		int X = (int) ((mouseX - boardXOffset - newGridX) / newSquareSize);
+		int Y = (int) ((mouseY - boardYOffset - newGridY) / newSquareSize);
 		if (X >= 0 && X <= 23 && Y >= 0 && Y <= 24) {
 			return tiles.get(new Location(X, Y));
 		} else
@@ -242,23 +246,34 @@ public class Board {
 	}
 
 	public void draw(Graphics2D g, int width, int height) {
-
-		boardScale = (double) height / boardImage.getHeight(null); // Scalar of
-																	// the image
-		// boardScale*=scaleTest;
-		boardOffset = (int) (width - boardImage.getWidth(null) * boardScale) / 2;
+		double boardXScale = (double) width / BOARD_WIDTH;
+		double boardYScale = (double) height / BOARD_HEIGHT; // Scalar of the
+																// image
+		if (boardXScale < boardYScale) {
+			boardScale = boardXScale; // Scalar of the image
+			boardXOffset = 0;
+			boardYOffset = (int) (height - BOARD_HEIGHT * boardScale) / 2;
+		} else {
+			boardScale = boardYScale; // Scalar of the image
+			boardXOffset = (int) (width - BOARD_WIDTH * boardScale) / 2;
+			boardYOffset = 0;
+		}
 		AffineTransform transform = new AffineTransform();
-		transform.translate(boardOffset, 0);
+		transform.translate(boardXOffset, boardYOffset);
 		g.setTransform(transform);
 		AffineTransform scaleTransform = AffineTransform.getScaleInstance(
 				boardScale, boardScale);
 
 		AffineTransformOp bilinearScaleOp = new AffineTransformOp(
 				scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+		g.setColor(Color.GRAY);
+		g.fillRect(0, 0, (int) (BOARD_WIDTH * boardScale),
+				(int) (BOARD_HEIGHT * boardScale));
 		g.drawImage(bilinearScaleOp.filter((BufferedImage) boardImage,
 				new BufferedImage(
-						(int) (boardImage.getWidth(null) * boardScale), height,
-						((BufferedImage) boardImage).getType())), 0, 0, null);
+						(int) (boardImage.getWidth(null) * boardScale), (int) (boardImage.getHeight(null) * boardScale),
+						((BufferedImage) boardImage).getType())),
+				(int) (BOARD_OFFSET * boardScale), 0, null);
 
 		g.drawString(mouseX + " " + mouseY, 10, 10);
 		transform.scale(boardScale, boardScale);
@@ -298,21 +313,26 @@ public class Board {
 				}
 			}
 		}
+		
+		AffineTransform playerTransform = new AffineTransform();
+		playerTransform.translate(boardXOffset, boardYOffset);
+		playerTransform.scale(boardScale, boardScale);
+		g.setTransform(playerTransform);
+		currentPlayer.draw(g);
 
 		if (dice.getResult() > 0) { // Draw dice at the bottom right next to the
 									// board
 			AffineTransform diceTransform = new AffineTransform();
-			diceTransform.translate(boardOffset, 0);
+			diceTransform.translate(boardXOffset, boardYOffset);
 			diceTransform.scale(boardScale, boardScale);
-			diceTransform.translate(boardImage.getWidth(null),
-					boardImage.getHeight(null) - 200);
+			diceTransform.translate(35, 851);
 			g.setTransform(diceTransform);
 			dice.draw(g);
 		}
 
 		for (CharacterToken t : characters) {
 			AffineTransform tokenTransform = new AffineTransform();
-			tokenTransform.translate(boardOffset, 0);
+			tokenTransform.translate(boardXOffset, boardYOffset);
 			tokenTransform.scale(boardScale, boardScale);
 			tokenTransform.translate(t.getXPos(), t.getYPos());
 
@@ -322,7 +342,7 @@ public class Board {
 
 		for (WeaponToken t : weapons) {
 			AffineTransform tokenTransform = new AffineTransform();
-			tokenTransform.translate(boardOffset, 0);
+			tokenTransform.translate(boardXOffset, boardYOffset);
 			tokenTransform.scale(boardScale, boardScale);
 			tokenTransform.translate(t.getXPos(), t.getYPos());
 
@@ -375,7 +395,6 @@ public class Board {
 		return tiles.get(loc);
 	}
 
-
 	public void setPlayer(Player player) {
 		currentPlayer = player;
 	}
@@ -384,36 +403,40 @@ public class Board {
 		mouseX = x;
 		mouseY = y;
 	}
-	
-	public void moveTokensForSuggest(SuggestionAction s){
+
+	public void moveTokensForSuggest(SuggestionAction s) {
 		WeaponToken weapon = getWeaponToken(s.getWeapon().toString());
-		CharacterToken character = getCharacterToken(s.getCharacter().toString());
+		CharacterToken character = getCharacterToken(s.getCharacter()
+				.toString());
 		Room thisRoom = currentPlayer.getToken().getRoom();
-		Location collisionDetect = new Location(0,0);
-		//If tokens are not already in the room, move them.
-		if (!character.inRoom() || !character.getRoom().equals(thisRoom)){
+		Location collisionDetect = new Location(0, 0);
+		// If tokens are not already in the room, move them.
+		if (!character.inRoom() || !character.getRoom().equals(thisRoom)) {
 			Set<RoomTile> roomTiles = thisRoom.getRoomTiles();
-			for (RoomTile roomTile: roomTiles){
-				if(!hasTokenOn(roomTile.getLocation())){
+			for (RoomTile roomTile : roomTiles) {
+				if (!hasTokenOn(roomTile.getLocation())) {
 					collisionDetect = roomTile.getLocation();
-					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), character));
+					moves.add(new MoveSequence(new WarpAction(roomTile
+							.getLocation()), character));
 					character.leaveRoom();
 					character.setRoom(thisRoom);
 					break;
 				}
 			}
 		}
-		if (!weapon.getRoom().equals(thisRoom)){
+		if (!weapon.getRoom().equals(thisRoom)) {
 			Set<RoomTile> roomTiles = thisRoom.getRoomTiles();
-			for (RoomTile roomTile: roomTiles){
-				if(!hasTokenOn(roomTile.getLocation()) && !roomTile.getLocation().equals(collisionDetect)){
-					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), weapon));
+			for (RoomTile roomTile : roomTiles) {
+				if (!hasTokenOn(roomTile.getLocation())
+						&& !roomTile.getLocation().equals(collisionDetect)) {
+					moves.add(new MoveSequence(new WarpAction(roomTile
+							.getLocation()), weapon));
 					weapon.leaveRoom();
 					weapon.setRoom(thisRoom);
 				}
 			}
 		}
-		
+
 	}
 
 	public MoveSequence triggerMove(int x, int y) {
@@ -471,9 +494,10 @@ public class Board {
 	public void moveViaPassage(CharacterToken token, Room destination) {
 		token.leaveRoom();
 		Set<RoomTile> roomTiles = destination.getRoomTiles();
-		for (RoomTile roomTile: roomTiles){
-			if(!hasTokenOn(roomTile.getLocation())){
-				moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), token));
+		for (RoomTile roomTile : roomTiles) {
+			if (!hasTokenOn(roomTile.getLocation())) {
+				moves.add(new MoveSequence(new WarpAction(roomTile
+						.getLocation()), token));
 				token.setRoom(destination);
 				break;
 			}

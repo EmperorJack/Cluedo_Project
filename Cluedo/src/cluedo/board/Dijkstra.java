@@ -139,20 +139,29 @@ public class Dijkstra {
 			validLocations.add(new Location(start.getX(), start.getY() + 1)); // down
 		
 		//SPECIAL CASES! Removing two neighbouring nodes from the algorithm to preserve walls on corner cases.
-		if (start.equals(new Location(6,19))){
-			validLocations.remove(new Location(5,19));
+		if (start.equals(new Location(16,5))){
+			validLocations.remove(new Location(17,5));
 		}
 		
-		if (start.equals(new Location(5,19))){
-			validLocations.remove(new Location(6,19));
+		if (start.equals(new Location(17,5))){
+			validLocations.remove(new Location(16,5));
 		}
 		
-		if (start.equals(new Location(15,20))){
-			validLocations.remove(new Location(16,20));
+		if (start.equals(new Location(6,3))){
+			validLocations.remove(new Location(7,3));
 		}
 		
-		if (start.equals(new Location(16,20))){
-			validLocations.remove(new Location(15,20));
+		if (start.equals(new Location(7,3))){
+			validLocations.remove(new Location(6,3));
+
+		}
+		
+		if (start.equals(new Location(4,18))){
+			validLocations.remove(new Location(4,19));
+
+		}
+		if (start.equals(new Location(4,19))){
+			validLocations.remove(new Location(4,18));
 
 		}
 		

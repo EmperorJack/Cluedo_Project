@@ -1,5 +1,7 @@
 package cluedo.game;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +27,10 @@ public class Player {
 	private ArrayList<RoomCard> nonRefutedRooms;
 	private ArrayList<WeaponCard> nonRefutedWeapons;
 	private boolean eliminated;
+	public static final int HAND_X = 10;
+	public static final int HAND_Y = 160;
+	public static final int CARD_WD = 150;
+	public static final int CARD_HT = 223;
 
 	/**
 	 * Setup a new player.
@@ -77,8 +83,8 @@ public class Player {
 	}
 
 	/**
-	 * Given a card will remove it from the non-refuted card sets. The card has been
-	 * ruled out as a possible solution.
+	 * Given a card will remove it from the non-refuted card sets. The card has
+	 * been ruled out as a possible solution.
 	 * 
 	 * @param c
 	 *            The card to refute.
@@ -106,7 +112,24 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2d) {
-		// TODO draw character hand and token portraits
+		g2d.drawImage(character.getPortrait(), 1318, 371, null);
+		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+		//http://www.coderanch.com/t/336616/GUI/java/Center-Align-text-drawString
+		int stringLen = (int) g2d.getFontMetrics().getStringBounds(name, g2d).getWidth();
+		int start = CARD_WD / 2 - stringLen / 2;
+		g2d.setColor(Color.BLACK);
+		g2d.drawString(name, start + 1318,622);
+		int row = 0;
+		int col = 0;
+		int i = 0;
+		for (Card card : hand) {
+			row = i / 2;
+			col = i % 2;
+			g2d.drawImage(card.getImage(), HAND_X + col * CARD_WD, HAND_Y + row
+					* CARD_HT, null);
+			i++;
+		}
+
 	}
 
 	// get methods below to return player fields
@@ -130,11 +153,11 @@ public class Player {
 	public ArrayList<CharacterCard> getNonRefutedCharacters() {
 		return nonRefutedCharacters;
 	}
-	
+
 	public ArrayList<RoomCard> getNonRefutedRooms() {
 		return nonRefutedRooms;
 	}
-	
+
 	public ArrayList<WeaponCard> getNonRefutedWeapons() {
 		return nonRefutedWeapons;
 	}

@@ -1,9 +1,9 @@
 package cluedo.actions;
 
 
-import static cluedo.board.Board.gridXoffset;
-import static cluedo.board.Board.gridYoffset;
-import static cluedo.board.Board.squareSize;
+import static cluedo.board.Board.SQUARE_SIZE;
+import static cluedo.board.Board.GRID_X_OFFSET;
+import static cluedo.board.Board.GRID_Y_OFFSET;
 
 
 import cluedo.board.Location;
@@ -29,9 +29,9 @@ public class WarpAction implements BoardMove{
 		frameCounter++;
 		double moveFraction = frameCounter / 15.0f;
 		double currentX = (t.getLocation().getX() + (endLocation.getX() - t.getLocation().getX())
-				* moveFraction) * squareSize + gridXoffset;
+				* moveFraction) * SQUARE_SIZE + GRID_X_OFFSET;
 		double currentY = (t.getLocation().getY() + (endLocation.getY() - t.getLocation().getY())
-				* moveFraction) * squareSize + gridYoffset;
+				* moveFraction) * SQUARE_SIZE + GRID_Y_OFFSET;
 		t.setX((int) currentX);
 		t.setY((int) currentY);
 		if (frameCounter == 15){
