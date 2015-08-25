@@ -337,8 +337,8 @@ public class Game {
 		// if a suggestion action was chosen
 		if (action instanceof SuggestionAction) {
 			// perform the suggestion action requested by the player
+			board.moveTokensForSuggest((SuggestionAction) action);
 			performSuggestion(player, (SuggestionAction) action, playerRoom);
-
 			// the player has now made a suggestion
 			suggested = true;
 			return;

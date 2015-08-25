@@ -3,7 +3,6 @@ package cluedo.tokens;
 import cluedo.board.Room;
 
 public class WeaponToken extends Token {
-	Room room;
 
 	public WeaponToken(String name, Room room) {
 		super(name);

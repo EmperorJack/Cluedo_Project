@@ -2,6 +2,7 @@ package cluedo.board;
 
 import cluedo.actions.MoveAction;
 import cluedo.actions.MoveSequence;
+import cluedo.actions.SuggestionAction;
 import cluedo.actions.WarpAction;
 import cluedo.game.Dice;
 import cluedo.game.Player;
@@ -41,7 +42,7 @@ public class Board {
 	private Dice dice;
 
 	boolean tokenMoving = false;
-	MoveSequence move;
+	List<MoveSequence> moves;
 
 	public static final int squareSize = 36;
 	public static final int gridXoffset = 61;
@@ -60,6 +61,7 @@ public class Board {
 	 * @author Kelly
 	 */
 	public Board(String[] weapons, String[] rooms, Dice dice) {
+		moves = new ArrayList<MoveSequence>();
 		validTiles = new HashSet<Tile>();
 		this.dice = dice;
 		this.boardImage = Canvas.loadImage("board.jpg");
@@ -76,7 +78,6 @@ public class Board {
 			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
 			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
 		}
-
 		this.weapons = new ArrayList<WeaponToken>();
 
 		// init weapontokens
@@ -87,9 +88,18 @@ public class Board {
 			WeaponToken tokenToAdd = new WeaponToken(weapons[i],
 					roomMap.get(roomsList.get(randomIndex)));
 			this.weapons.add(tokenToAdd);
-			roomMap.get(roomsList.get(randomIndex)).addToken(tokenToAdd);
+			Set<RoomTile> tiles = roomMap.get(roomsList.get(randomIndex))
+					.getRoomTiles();
+			tokenToAdd.setRoom(roomMap.get(roomsList.get(randomIndex)));
+			tokenToAdd.setLocation(tiles.iterator().next().getLocation());
 			roomsList.remove(randomIndex);
 		}
+
+		for (WeaponToken t : this.weapons) {
+			t.setX(t.getLocation().getX() * squareSize + gridXoffset);
+			t.setY(t.getLocation().getY() * squareSize + gridYoffset);
+		}
+
 	}
 
 	/**
@@ -151,9 +161,13 @@ public class Board {
 	 *            Location to check.
 	 * @return True if there is a CharacterToken, false if not.
 	 */
-	public boolean hasCharacterOn(Location loc) {
+	public boolean hasTokenOn(Location loc) {
 		for (CharacterToken c : characters) {
 			if (c.getLocation().equals(loc))
+				return true;
+		}
+		for (WeaponToken w : weapons) {
+			if (w.getLocation().equals(loc))
 				return true;
 		}
 		return false;
@@ -170,7 +184,7 @@ public class Board {
 	 */
 	public void movePlayer(CharacterToken token, Location loc) {
 		Tile t = getTile(loc);
-		if (!(t instanceof WallTile) && !hasCharacterOn(loc)) {
+		if (!(t instanceof WallTile) && !hasTokenOn(loc)) {
 			if (token.inRoom()) {
 				token.leaveRoom();
 			}
@@ -305,19 +319,29 @@ public class Board {
 			t.draw(g);
 		}
 
+		for (WeaponToken t : weapons) {
+			AffineTransform tokenTransform = new AffineTransform();
+			tokenTransform.translate(boardOffset, 0);
+			tokenTransform.scale(boardScale, boardScale);
+			tokenTransform.translate(t.getXPos(), t.getYPos());
+
+			g.setTransform(tokenTransform);
+			t.draw(g);
+		}
+
 	}
 
 	public void tick() {
-		clkCnt++;
-		scaleTest = 0.9 + (0.1 * (Math.sin(Math.toRadians(clkCnt))));
-
-		if (tokenMoving) {
-			if (!move.isFinished()) {
-				move.tick();
-			} else {
-				tokenMoving = false;
-				dice.resetValues();
-				setValidTiles();
+		if (!moves.isEmpty()) {
+			for (int i = 0; i < moves.size(); i++) {
+				if (moves.get(i).isFinished()) {
+					moves.remove(i);
+				}
+			}
+			for (MoveSequence move : moves) {
+				if (!move.isFinished()) {
+					move.tick();
+				}
 			}
 		}
 	}
@@ -368,56 +392,83 @@ public class Board {
 		mouseX = x;
 		mouseY = y;
 	}
+	
+	public void moveTokensForSuggest(SuggestionAction s){
+		WeaponToken weapon = getWeaponToken(s.getWeapon().toString());
+		CharacterToken character = getCharacterToken(s.getCharacter().toString());
+		Room thisRoom = currentPlayer.getToken().getRoom();
+		Location collisionDetect = new Location(0,0);
+		//If tokens are not already in the room, move them.
+		if (!character.inRoom() || !character.getRoom().equals(thisRoom)){
+			Set<RoomTile> roomTiles = thisRoom.getRoomTiles();
+			for (RoomTile roomTile: roomTiles){
+				if(!hasTokenOn(roomTile.getLocation())){
+					collisionDetect = roomTile.getLocation();
+					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), character));
+					break;
+				}
+			}
+		}
+		if (!weapon.getRoom().equals(thisRoom)){
+			Set<RoomTile> roomTiles = thisRoom.getRoomTiles();
+			for (RoomTile roomTile: roomTiles){
+				if(!hasTokenOn(roomTile.getLocation()) && !roomTile.getLocation().equals(collisionDetect)){
+					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), weapon));
+				}
+			}
+		}
+		
+	}
 
 	public MoveSequence triggerMove(int x, int y) {
+		MoveSequence move = null;
 		mouseX = x;
 		mouseY = y;
 		// updateValid tiles
-		if (!tokenMoving) {
-			setValidTiles();
-			Tile selected = getSelectedTile();
-			if (selected == null || !validTiles.contains(selected))
-				return null; // can't move here, can't move yet
-			if (!currentPlayer.getToken().inRoom()) {
+		setValidTiles();
+		Tile selected = getSelectedTile();
+		if (selected == null || !validTiles.contains(selected))
+			return null; // can't move here, can't move yet
+		if (!currentPlayer.getToken().inRoom()) {
+			Dijkstra d = new Dijkstra(tiles);
+			List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
+					.getLocation(), selected.getLocation());
+			move = new MoveSequence(
+					new MoveAction(selected.getLocation(), path),
+					currentPlayer.getToken());
+		} else {
+			Room room = currentPlayer.getToken().getRoom();
+			currentPlayer.getToken().leaveRoom();
+			Set<DoorTile> doors = room.getEntrances();
+			for (DoorTile door : doors) {
 				Dijkstra d = new Dijkstra(tiles);
-				List<Tile> path = d.getDijsktraPath(currentPlayer.getToken()
-						.getLocation(), selected.getLocation());
-				move = new MoveSequence(new MoveAction(selected.getLocation(),
-						path), currentPlayer.getToken());
-			} else {
-				Room room = currentPlayer.getToken().getRoom();
-				currentPlayer.getToken().leaveRoom();
-				Set<DoorTile> doors = room.getEntrances();
-				for (DoorTile door : doors) {
-					Dijkstra d = new Dijkstra(tiles);
-					Set<Tile> tilesToCheck = d.getValidTiles(
-							door.getLocation(), dice.getResult());
-					if (tilesToCheck.contains(selected)) {
-						List<Tile> path = d.getDijsktraPath(door.getLocation(),
-								selected.getLocation());
-						move = new MoveSequence(new WarpAction(
-								door.getLocation()), currentPlayer.getToken());
-						move.addAction(new MoveAction(selected.getLocation(),
-								path));
-						break;
-					}
+				Set<Tile> tilesToCheck = d.getValidTiles(door.getLocation(),
+						dice.getResult());
+				if (tilesToCheck.contains(selected)) {
+					List<Tile> path = d.getDijsktraPath(door.getLocation(),
+							selected.getLocation());
+					move = new MoveSequence(new WarpAction(door.getLocation()),
+							currentPlayer.getToken());
+					move.addAction(new MoveAction(selected.getLocation(), path));
+					break;
 				}
 			}
-			if (selected instanceof DoorTile) {
-				currentPlayer.getToken().setRoom(
-						((DoorTile) selected).getRoom());
-				HashSet<RoomTile> roomTiles = ((DoorTile) selected).getRoom()
-						.getRoomTiles();
-				for (RoomTile t : roomTiles) {
-					if (!hasCharacterOn(t.getLocation())) {
-						move.addAction(new WarpAction(t.getLocation()));
-						break;
-					}
-				}
-			}
-			tokenMoving = true;
-			return move;
 		}
-		return null;
+		if (selected instanceof DoorTile) {
+			currentPlayer.getToken().setRoom(((DoorTile) selected).getRoom());
+			HashSet<RoomTile> roomTiles = ((DoorTile) selected).getRoom()
+					.getRoomTiles();
+			for (RoomTile t : roomTiles) {
+				if (!hasTokenOn(t.getLocation())) {
+					move.addAction(new WarpAction(t.getLocation()));
+					break;
+				}
+			}
+
+		}
+		moves.add(move);
+		dice.resetValues();
+		setValidTiles();
+		return move;
 	}
 }
