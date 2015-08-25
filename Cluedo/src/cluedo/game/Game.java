@@ -380,6 +380,18 @@ public class Game {
 			if (move != null) {
 				// the player has now moved
 				moved = true;
+				
+				// update the player room in case it changed
+				playerRoom = board.roomIn(currentPlayer.getToken());
+				
+				// if the player is now in a room
+				if (playerRoom != null) {
+					// make the suggestion button available now
+					frame.setButtonSelectable("suggestion", true);
+				}
+				
+				// disable the secret passage button now
+				frame.setButtonSelectable("secretPassage", false);
 			}
 		}
 	}
