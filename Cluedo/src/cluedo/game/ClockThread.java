@@ -31,6 +31,7 @@ public class ClockThread extends Thread {
 				Thread.sleep(delay);
 				board.tick();
 				if(display != null) {
+					// update the frame each tick to allow animations
 					display.update();
 				}
 			} catch(InterruptedException e) {

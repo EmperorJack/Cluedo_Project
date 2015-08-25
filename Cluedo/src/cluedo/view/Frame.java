@@ -26,6 +26,12 @@ import cluedo.cards.Card;
 import cluedo.control.Controller;
 import cluedo.game.Player;
 
+/**
+ * The main swing component for the cluedo game. Creates a GUI frame that
+ * contains a menu, canvas for drawing / player movement and action buttons for
+ * player interaction. Utilizes a key listener to allow the player to use
+ * shortcut keys instead of using the action buttons.
+ */
 @SuppressWarnings("serial")
 public class Frame extends JFrame implements KeyListener {
 
@@ -36,6 +42,14 @@ public class Frame extends JFrame implements KeyListener {
 	private int actionButtonSelected;
 	private boolean awaitingInput;
 
+	/**
+	 * Setup a new frame.
+	 * 
+	 * @param board
+	 *            The game board.
+	 * @param controller
+	 *            The mouse controller.
+	 */
 	public Frame(Board board, Controller controller) {
 		super("Cluedo Game");
 

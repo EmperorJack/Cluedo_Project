@@ -106,7 +106,7 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2d) {
-
+		// TODO draw character hand and token portraits
 	}
 
 	// get methods below to return player fields

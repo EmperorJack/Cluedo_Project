@@ -21,6 +21,8 @@ public abstract class Card {
 	 */
 	public Card(String name) {
 		this.name = name;
+
+		// load the associated image of this card
 		this.image = loadImage("cards/" + name + ".jpg");
 	}
 
@@ -32,7 +34,7 @@ public abstract class Card {
 	public void draw(Graphics g) {
 		g.drawImage(image, 0, 0, null);
 	}
-	
+
 	public Image getImage() {
 		return image;
 	}

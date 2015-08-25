@@ -5,7 +5,6 @@ import java.awt.Image;
 
 import static cluedo.view.Canvas.loadImage;
 
-
 public class Dice {
 
 	private int value1;
@@ -27,8 +26,10 @@ public class Dice {
 	public void roll() {
 		value1 = (int) (Math.random() * 6 + 1);
 		value2 = (int) (Math.random() * 6 + 1);
-		face1 = loadImage("dice/"+value1+".jpg");
-		face2 = loadImage("dice/"+value2+".jpg");
+
+		// load the corresponding dice images for both dice values
+		face1 = loadImage("dice/" + value1 + ".jpg");
+		face2 = loadImage("dice/" + value2 + ".jpg");
 	}
 
 	/**
@@ -48,13 +49,13 @@ public class Dice {
 	 *            The graphics canvas to draw on.
 	 */
 	public void draw(Graphics2D g2d) {
-		if (face1 != null && face2 != null){
-			g2d.drawImage(face1,0,0,100,100,null);
-			g2d.drawImage(face2,0,100,100,100, null);
+		if (face1 != null && face2 != null) {
+			g2d.drawImage(face1, 0, 0, 100, 100, null);
+			g2d.drawImage(face2, 0, 100, 100, 100, null);
 		}
 
 	}
-	
+
 	/**
 	 * Reset the dice to 0 values.
 	 */

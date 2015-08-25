@@ -13,7 +13,11 @@ public abstract class Token {
 
 	public Token(String name) {
 		this.name = name;
+
+		// load the associated portrait of this token (for GUI display)
 		this.portrait = loadImage("cards/" + name + ".jpg");
+
+		// load the associated image of this token (for board display)
 		this.image = loadImage("tokens/" + name + ".png");
 	}
 
@@ -24,7 +28,7 @@ public abstract class Token {
 	public void draw(Graphics2D g2d) {
 		g2d.drawImage(image, 0, 0, null);
 	}
-	
+
 	public Image getPortrait() {
 		return portrait;
 	}

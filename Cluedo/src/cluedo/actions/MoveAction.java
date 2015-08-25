@@ -11,33 +11,42 @@ import cluedo.tokens.CharacterToken;
 
 /**
  * Represents a movement action. Has a target location and moves the player
- * character token performing the action to the target.
+ * character token performing the action to the target. The token will move
+ * along a path to the target over time as an animation.
  */
 public class MoveAction implements Action {
 	private Location endLocation;
-	Tile nextInPath;
-	public List<Tile> path;
-	public int frameCounter;
-	boolean finished = false;
+	private Tile nextInPath;
+	private List<Tile> path;
+	private int frameCounter;
+	private boolean finished;
 
 	/**
-	 * Setup a new move action.
+	 * Setup a new player movement action.
 	 * 
-	 * @param target_x
-	 *            Target x position.
-	 * @param target_y
-	 *            Target y position.
+	 * @param loc
+	 *            The target location being moved to.
+	 * @param path
+	 *            The path to the target location.
 	 */
 	public MoveAction(Location loc, List<Tile> path) {
 		this.endLocation = loc;
 		this.path = path;
 		nextInPath = nextTile();
+		finished = false;
 	}
 
 	public Location getLocation() {
 		return endLocation;
 	}
 
+	/**
+	 * Called each time the clock thread ticks. Allows animation of the token
+	 * moving over time.
+	 * 
+	 * @param playerToken
+	 *            The character token being moved.
+	 */
 	public void tick(CharacterToken playerToken) {
 		if (playerToken.getLocation().equals(nextInPath.getLocation())) {
 			nextInPath = nextTile();
@@ -78,6 +87,11 @@ public class MoveAction implements Action {
 		return finished;
 	}
 
+	/**
+	 * Gets the next tile on the movement path.
+	 * 
+	 * @return The next tile to move to in the path.
+	 */
 	public Tile nextTile() {
 		if (!path.isEmpty()) {
 			Tile t = path.get(0);

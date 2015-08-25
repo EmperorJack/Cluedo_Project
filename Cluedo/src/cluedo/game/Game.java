@@ -33,10 +33,10 @@ public class Game {
 	private Deck deck;
 	private Dice dice;
 	private int winner;
-	private boolean rolled = false;
-	private boolean moved = false;
-	private boolean suggested = false;
-	private boolean endTurn = false;
+	private boolean rolled;
+	private boolean moved;
+	private boolean suggested;
+	private boolean endTurn;
 	public static final String[] CHARACTERS = { "Miss Scarlett",
 			"Colonel Mustard", "Mrs. White", "The Reverend Green",
 			"Mrs. Peacock", "Professor Plum" };
@@ -123,10 +123,12 @@ public class Game {
 
 			// update the board with the current player
 			board.setPlayer(currentPlayer);
+			
+			// reset the dice and movement range from the last turn
 			dice.resetValues();
 			board.setValidTiles();
 
-			// TODO Remove once GUI replaces text output
+			// TODO Remove once GUI replaces text output, delete UI class
 			System.out
 					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.printf("%s (%s)'s turn.\n", currentPlayer.getName(),
@@ -140,18 +142,23 @@ public class Game {
 			suggested = false;
 			endTurn = false;
 
+			// enable the player to select another action until they end their
+			// turn
 			while (!endTurn) {
 				// enable the buttons that can be used in the turn
 				if (!moved) {
+					// if the player has not moved yet
 					if (!rolled)
+						// if the dice has not been rolled yet
 						frame.setButtonSelectable("rollDice", true);
 					if (playerRoom != null && playerRoom.hasPassage()) {
 						// if the player is in a room with secret passage
 						frame.setButtonSelectable("secretPassage", true);
 					}
 				}
+				// if the player has not made a suggestion yet
 				if (!suggested && playerRoom != null) {
-					// if the player is in a room
+					// if the player is also in a room
 					frame.setButtonSelectable("suggestion", true);
 				}
 				frame.setButtonSelectable("accusation", true);
@@ -169,7 +176,7 @@ public class Game {
 					Action action = createActionSelected(currentPlayer,
 							playerRoom, actionSelected);
 
-					// then perform the action
+					// then perform the action if it is not null
 					if (action != null) {
 						performAction(currentPlayer, playerRoom, action);
 					}
@@ -189,7 +196,18 @@ public class Game {
 		frame.playerWinnerDialog(players[winner - 1], deck.getSolution());
 	}
 
-	// TODO COMMENT
+	/**
+	 * Creates an action that can be performed given an index and the player who
+	 * is making the action.
+	 * 
+	 * @param player
+	 *            Player creating the action.
+	 * @param playerRoom
+	 *            The room the player is in, null if no room.
+	 * @param actionSelected
+	 *            The index of the action selected.
+	 * @return The new created action.
+	 */
 	private Action createActionSelected(Player player, Room playerRoom,
 			int actionSelected) {
 		// process the selected action given by the player input
@@ -198,13 +216,18 @@ public class Game {
 
 			// roll the dice
 			dice.roll();
+
+			// display the movement range on the board
 			board.setValidTiles();
+
+			// player has now rolled the dice
 			rolled = true;
 			return null;
 		}
 
+		// secret passage action selected
 		if (actionSelected == 2) {
-			// secret passage action selected
+			// create a secret passage action to move the player
 			return new SecretPassageAction(playerRoom, playerRoom.getPassage());
 		}
 
@@ -226,6 +249,7 @@ public class Game {
 
 			// check if the window was closed before input confirmation given
 			if (dialog.wasClosed()) {
+				// don't return the action
 				return null;
 			}
 
@@ -255,6 +279,7 @@ public class Game {
 
 			// check if the window was closed before input confirmation given
 			if (dialog.wasClosed()) {
+				// don't return the action
 				return null;
 			}
 
@@ -264,7 +289,17 @@ public class Game {
 		return null;
 	}
 
-	// TODO COMMENT
+	/**
+	 * Given an action and a player the action will be executed and the game
+	 * logic updated in fashion.
+	 * 
+	 * @param player
+	 *            The player performing the action.
+	 * @param playerRoom
+	 *            The room the player is in, null if no room.
+	 * @param action
+	 *            The action being performed.
+	 */
 	private void performAction(Player player, Room playerRoom, Action action) {
 
 		// if a secret passage action was chosen
@@ -273,6 +308,8 @@ public class Game {
 			SecretPassageAction passageAction = (SecretPassageAction) action;
 			board.moveTokenToRoom(player.getToken(),
 					passageAction.getDestination());
+
+			// the player has now moved
 			moved = true;
 			return;
 		}
@@ -282,6 +319,8 @@ public class Game {
 			// set winner to the result of the accusation
 			// 1 means they won and 0 means the player was eliminated
 			winner = performAccusation(player, (AccusationAction) action);
+
+			// the player has now ended their turn
 			endTurn = true;
 			return;
 		}
@@ -290,6 +329,8 @@ public class Game {
 		if (action instanceof SuggestionAction) {
 			// perform the suggestion action requested by the player
 			performSuggestion(player, (SuggestionAction) action, playerRoom);
+
+			// the player has now made a suggestion
 			suggested = true;
 			return;
 		}
@@ -308,6 +349,30 @@ public class Game {
 			}
 		}
 		return count;
+	}
+
+	/**
+	 * Called by the controller when the player clicks on the board. The given
+	 * position will be used to compute a movement action the player would like
+	 * to make.
+	 * 
+	 * @param x
+	 *            The x position that was clicked.
+	 * @param y
+	 *            The y position that was clicked.
+	 */
+	public void triggerMove(int x, int y) {
+		// if the player has not moved yet
+		if (!moved) {
+			// create a move action from the board
+			MoveAction move = board.triggerMove(x, y);
+
+			// check the move action is valid
+			if (move != null) {
+				// the player has now moved
+				moved = true;
+			}
+		}
 	}
 
 	/**
@@ -357,15 +422,6 @@ public class Game {
 		return (deck.getSolution().contains(accusation.getCharacter())
 				&& deck.getSolution().contains(accusation.getRoom()) && deck
 				.getSolution().contains(accusation.getWeapon()));
-	}
-
-	public void triggerMove(int x, int y) {
-		if (!moved) {
-			MoveAction move = board.triggerMove(x, y);
-			if (move != null) {
-				moved = true;
-			}
-		}
 	}
 
 	/**

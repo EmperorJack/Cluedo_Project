@@ -1,13 +1,9 @@
 package cluedo.view;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -15,24 +11,30 @@ import javax.swing.JPanel;
 
 import cluedo.board.Board;
 import cluedo.control.Controller;
-import cluedo.game.Game;
 
+/**
+ * A java canvas that allows drawing of the visual elements of the cluedo board.
+ */
 @SuppressWarnings("serial")
-public class Canvas extends JPanel{
+public class Canvas extends JPanel {
 
 	private Board board;
-	private Game game;
 	private static final String IMAGE_PATH = "/images/";
 
+	/**
+	 * Setup a new canvas.
+	 * 
+	 * @param board
+	 *            The game board.
+	 * @param controller
+	 *            The mouse controller.
+	 */
 	public Canvas(Board board, Controller controller) {
 		this.board = board;
+
+		// setup mouse listeners for the controller
 		addMouseMotionListener(controller);
 		addMouseListener(controller);
-	}
-
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(600, 600);
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class Canvas extends JPanel{
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
-		// TODO draw game visible components here
+		// draw the current game board state
 		board.draw(g2d, getWidth(), getHeight());
 	}
 
@@ -51,9 +53,9 @@ public class Canvas extends JPanel{
 	 * Load an image from the file system using a given filename.
 	 * 
 	 * @param filename
+	 *            The filename of the image file.
 	 * @return The image if it was successfully loaded.
 	 */
-		// using the URL means the image loads when stored
 	public static Image loadImage(String filename) {
 		// in a jar or expanded into individual files.
 		java.net.URL imageURL = Canvas.class.getResource(IMAGE_PATH + filename);
@@ -67,5 +69,5 @@ public class Canvas extends JPanel{
 			throw new RuntimeException("Unable to load image: " + filename);
 		}
 	}
-	
+
 }
