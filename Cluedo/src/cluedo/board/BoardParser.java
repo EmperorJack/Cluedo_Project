@@ -208,9 +208,9 @@ public class BoardParser {
 					case ('%'): {
 						Location loc = new Location(j, i);
 						RoomTile roomTile = new RoomTile(loc,
-								rooms.get("Kitchen"));
+								rooms.get("Billiard Room"));
 						tiles.put(loc, roomTile);
-						rooms.get("Kitchen").addRoomTile(roomTile);
+						rooms.get("Billiard Room").addRoomTile(roomTile);
 						break;
 					}
 					case ('^'): {

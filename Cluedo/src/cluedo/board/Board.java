@@ -305,7 +305,12 @@ public class Board {
 
 				}
 			} else { // Otherwise draw all valid tiles.
-				t.draw(g, new Color(0, 0, 255, 125));
+				if (t instanceof PathTile) {
+					t.draw(g, new Color(0, 0, 255, 125));
+				}
+				if (t instanceof DoorTile) {
+					t.draw(g, new Color(0, 255, 255, 125));
+				}
 			}
 		}
 
