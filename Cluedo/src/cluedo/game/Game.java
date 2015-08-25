@@ -28,6 +28,7 @@ public class Game {
 	private int numberPlayers;
 	private Player[] players;
 	private Player currentPlayer;
+	private Room playerRoom;
 
 	// game fields
 	private Deck deck;
@@ -119,11 +120,11 @@ public class Game {
 			}
 
 			// get the room the player is in (null for no room)
-			Room playerRoom = board.roomIn(currentPlayer.getToken());
+			playerRoom = board.roomIn(currentPlayer.getToken());
 
 			// update the board with the current player
 			board.setPlayer(currentPlayer);
-			
+
 			// reset the dice and movement range from the last turn
 			dice.resetValues();
 			board.setValidTiles();
@@ -145,23 +146,34 @@ public class Game {
 			// enable the player to select another action until they end their
 			// turn
 			while (!endTurn) {
+				// update the player room in case it changed
+				playerRoom = board.roomIn(currentPlayer.getToken());
+
 				// enable the buttons that can be used in the turn
-				if (!moved) {
+				// if the player has not made a suggestion yet
+				if (!suggested) {
+					// if the player is also in a room
+					if (playerRoom != null) {
+						frame.setButtonSelectable("suggestion", true);
+					}
+
+					// can make an accusation if no suggestion has been made
+					frame.setButtonSelectable("accusation", true);
+
 					// if the player has not moved yet
-					if (!rolled)
+					if (!moved) {
+
 						// if the dice has not been rolled yet
-						frame.setButtonSelectable("rollDice", true);
-					if (playerRoom != null && playerRoom.hasPassage()) {
+						if (!rolled)
+							frame.setButtonSelectable("rollDice", true);
+
 						// if the player is in a room with secret passage
-						frame.setButtonSelectable("secretPassage", true);
+						
+						if (playerRoom != null && playerRoom.hasPassage()) {
+							frame.setButtonSelectable("secretPassage", true);
+						}
 					}
 				}
-				// if the player has not made a suggestion yet
-				if (!suggested && playerRoom != null) {
-					// if the player is also in a room
-					frame.setButtonSelectable("suggestion", true);
-				}
-				frame.setButtonSelectable("accusation", true);
 				frame.setButtonSelectable("endTurn", true);
 
 				// wait for the frame to get player input for selected action
@@ -180,9 +192,6 @@ public class Game {
 					if (action != null) {
 						performAction(currentPlayer, playerRoom, action);
 					}
-
-					// update the player room in case it changed
-					playerRoom = board.roomIn(currentPlayer.getToken());
 				} else {
 					// player chose to end their turn
 					endTurn = true;
@@ -371,6 +380,18 @@ public class Game {
 			if (move != null) {
 				// the player has now moved
 				moved = true;
+				
+				// update the player room in case it changed
+				playerRoom = board.roomIn(currentPlayer.getToken());
+				
+				// if the player is now in a room
+				if (playerRoom != null) {
+					// make the suggestion button available now
+					frame.setButtonSelectable("suggestion", true);
+				}
+				
+				// disable the secret passage button now
+				frame.setButtonSelectable("secretPassage", false);
 			}
 		}
 	}
