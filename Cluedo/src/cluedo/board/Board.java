@@ -405,6 +405,8 @@ public class Board {
 				if(!hasTokenOn(roomTile.getLocation())){
 					collisionDetect = roomTile.getLocation();
 					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), character));
+					character.leaveRoom();
+					character.setRoom(thisRoom);
 					break;
 				}
 			}
@@ -414,6 +416,8 @@ public class Board {
 			for (RoomTile roomTile: roomTiles){
 				if(!hasTokenOn(roomTile.getLocation()) && !roomTile.getLocation().equals(collisionDetect)){
 					moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), weapon));
+					weapon.leaveRoom();
+					weapon.setRoom(thisRoom);
 				}
 			}
 		}
