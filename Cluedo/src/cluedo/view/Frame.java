@@ -12,9 +12,9 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -81,7 +81,7 @@ public class Frame extends JFrame implements KeyListener {
 		// setup panel with action buttons
 		JPanel actionPanel = new JPanel();
 		actionPanel.setLayout(new GridLayout(1, 0, 10, 10));
-		actionPanel.add(Box.createVerticalStrut(5));
+		actionPanel.add(new JLabel());
 
 		// setup roll dice button
 		rollDiceButton = new JButton("Roll Dice (R)");
@@ -138,7 +138,7 @@ public class Frame extends JFrame implements KeyListener {
 		});
 		actionPanel.add(endTurnButton);
 
-		actionPanel.add(Box.createVerticalStrut(5));
+		actionPanel.add(new JLabel());
 		setButtonSelectable("all", false);
 
 		// setup close operation
