@@ -315,7 +315,7 @@ public class Game {
 		if (action instanceof SecretPassageAction) {
 			// move the player via secret passage
 			SecretPassageAction passageAction = (SecretPassageAction) action;
-			board.moveTokenToRoom(player.getToken(),
+			board.moveViaPassage(player.getToken(),
 					passageAction.getDestination());
 
 			// the player has now moved
@@ -463,15 +463,7 @@ public class Game {
 	private void performSuggestion(Player player, SuggestionAction suggestion,
 			Room roomIn) {
 		Card refutedCard;
-
-		// move the suggested character token to the room
-		String character = suggestion.getCharacter().toString();
-		board.moveTokenToRoom(board.getCharacterToken(character), roomIn);
-
-		// move the suggested weapon token to the room
-		String weapon = suggestion.getWeapon().toString();
-		board.moveTokenToRoom(board.getWeaponToken(weapon), roomIn);
-
+		
 		// iterate through all the other players clockwise
 		int i = player.getId() - 1;
 		i = (i + 1) % numberPlayers;

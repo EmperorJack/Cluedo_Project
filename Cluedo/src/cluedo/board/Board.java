@@ -374,15 +374,6 @@ public class Board {
 		return tiles.get(loc);
 	}
 
-	public void moveTokenToRoom(CharacterToken token, Room destination) {
-		token.leaveRoom();
-		token.setRoom(destination);
-	}
-
-	public void moveTokenToRoom(WeaponToken token, Room destination) {
-		token.leaveRoom();
-		token.setRoom(destination);
-	}
 
 	public void setPlayer(Player player) {
 		currentPlayer = player;
@@ -474,5 +465,17 @@ public class Board {
 		dice.resetValues();
 		setValidTiles();
 		return move;
+	}
+
+	public void moveViaPassage(CharacterToken token, Room destination) {
+		token.leaveRoom();
+		Set<RoomTile> roomTiles = destination.getRoomTiles();
+		for (RoomTile roomTile: roomTiles){
+			if(!hasTokenOn(roomTile.getLocation())){
+				moves.add(new MoveSequence(new WarpAction(roomTile.getLocation()), token));
+				token.setRoom(destination);
+				break;
+			}
+		}
 	}
 }

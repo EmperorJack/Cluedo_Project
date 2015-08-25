@@ -201,7 +201,7 @@ public class Tests {
 		b.movePlayer(missScarlett, new Location(5,19));
 		Room r = missScarlett.getRoom();
 		Room p = r.getPassage();
-		b.moveTokenToRoom(missScarlett, p);
+	//	b.moveTokenToRoom(missScarlett, p);
 		//moved through passage
 		assertTrue(missScarlett.getRoom().equals(p));
 	}
