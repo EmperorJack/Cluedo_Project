@@ -128,7 +128,7 @@ public class Board {
 			if (currentPlayer.getToken().inRoom()) {
 				Room room = currentPlayer.getToken().getRoom();
 				Set<DoorTile> doors = room.getEntrances();
-				validTiles = new HashSet<Tile>();
+				validTiles.clear();
 				for (DoorTile door : doors) {
 					Dijkstra d = new Dijkstra(tiles);
 					validTiles.addAll(d.getValidTiles(door.getLocation(),
