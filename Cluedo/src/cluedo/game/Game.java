@@ -388,6 +388,8 @@ public class Game {
 				if (playerRoom != null) {
 					// make the suggestion button available now
 					frame.setButtonSelectable("suggestion", true);
+				} else {
+					frame.setButtonSelectable("suggestion", false);
 				}
 				
 				// disable the secret passage button now
