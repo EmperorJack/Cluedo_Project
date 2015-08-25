@@ -22,7 +22,7 @@ public class BoardParser {
 		String[] boardStrings = new String[27]; // construct array of strings
 		try {
 			Scanner stringMapScanner = new Scanner(
-					new File("cluedomap.txt"));
+					new File("src/maps/parsemap.txt"));
 			int i = 0;
 			while (stringMapScanner.hasNextLine()) { // scan each line of the
 														// board into the array
@@ -70,7 +70,7 @@ public class BoardParser {
 	public static Map<Location, Tile> parseTileBoard(Map<String, Room> rooms) {
 		Map<Location, Tile> tiles = new HashMap<Location, Tile>();
 		try {
-			Scanner parseMapScanner = new Scanner(new File("parsemap.txt"));
+			Scanner parseMapScanner = new Scanner(new File("src/maps/parsemap.txt"));
 			int i = 0;
 			while (parseMapScanner.hasNextLine()) {
 				String currentLine = parseMapScanner.nextLine();
@@ -268,7 +268,7 @@ public class BoardParser {
 	public static List<CharacterToken> parseCharacters() {
 		List<CharacterToken> characters = new ArrayList<CharacterToken>();
 		try {
-			Scanner parseMapScanner = new Scanner(new File("parsemap.txt"));
+			Scanner parseMapScanner = new Scanner(new File("src/maps/parsemap.txt"));
 			int i = 0;
 			while (parseMapScanner.hasNextLine()) {
 				String currentLine = parseMapScanner.nextLine();
