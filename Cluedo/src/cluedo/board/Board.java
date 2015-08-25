@@ -16,7 +16,6 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -481,7 +480,7 @@ public class Board {
 			HashSet<RoomTile> roomTiles = ((DoorTile) selected).getRoom()
 					.getRoomTiles();
 			for (RoomTile t : roomTiles) {
-				if (!hasTokenOn(t.getLocation())) {
+				if (move != null && !hasTokenOn(t.getLocation())) {
 					move.addAction(new WarpAction(t.getLocation()));
 					break;
 				}

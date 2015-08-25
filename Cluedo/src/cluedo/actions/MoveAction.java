@@ -7,7 +7,6 @@ import static cluedo.board.Board.GRID_X_OFFSET;
 import static cluedo.board.Board.GRID_Y_OFFSET;
 import cluedo.board.Location;
 import cluedo.tiles.Tile;
-import cluedo.tokens.CharacterToken;
 import cluedo.tokens.Token;
 
 /**

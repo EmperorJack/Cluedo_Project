@@ -1,6 +1,5 @@
 package cluedo.board;
 import java.util.HashSet;
-import java.util.List;
 
 import cluedo.tiles.*;
 import cluedo.tokens.*;

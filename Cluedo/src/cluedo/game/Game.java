@@ -19,7 +19,6 @@ import cluedo.view.*;
 public class Game {
 
 	// system fields
-	private UI ui;
 	private Board board;
 	private Frame frame;
 	private Controller controller;
@@ -54,7 +53,6 @@ public class Game {
 		// setup game systems
 		dice = new Dice();
 		board = new Board(WEAPONS, ROOMS, dice);
-		ui = new UI(board);
 		controller = new Controller(board, this);
 		frame = new Frame(board, controller);
 		winner = 0;
@@ -90,7 +88,6 @@ public class Game {
 		// setup system
 		dice = new Dice();
 		board = new Board(WEAPONS, ROOMS, dice);
-		ui = new UI(board);
 	}
 
 	/**
@@ -128,14 +125,6 @@ public class Game {
 			// reset the dice and movement range from the last turn
 			dice.resetValues();
 			board.setValidTiles();
-
-			// TODO Remove once GUI replaces text output, delete UI class
-			System.out
-					.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-			System.out.printf("%s (%s)'s turn.\n", currentPlayer.getName(),
-					currentPlayer.getCharacterName());
-			// print player card info
-			ui.printPlayerCardInfo(currentPlayer);
 
 			// reset turn flags
 			rolled = false;
