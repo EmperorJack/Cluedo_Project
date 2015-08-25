@@ -144,6 +144,7 @@ public class Board {
 					validTiles.addAll(d.getValidTiles(door.getLocation(),
 							dice.getResult()));
 				}
+				validTiles.removeAll(doors);
 
 			} else {
 				Location charLoc = currentPlayer.getToken().getLocation();
